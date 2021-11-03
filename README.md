@@ -1,14 +1,10 @@
-# Detailed dataset on lymphatic progression patterns in oropharyngeal squamous cell carcinoma
+> :warning: **Note:** This abstract, as well as all data and figures are subject to change prior to publication of our paper.
 
-<div style="background: peachpuff; margin-bottom: 15px; padding: 10px; border-radius: 3px;">
-    <strong>Note:</strong> This abstract, as well as all data and figures are subject to change prior to publication of our paper.
-</div>
+# Detailed dataset on lymphatic progression patterns in oropharyngeal squamous cell carcinoma
 
 Jean-Marc Hoffmann, Bertrand Pouymayou, Roman Ludwig, Matthias Guckenberger, Panagiotis Balermpas, Jan Unkelbach
 
 Departement of Radiation Oncology, University Hospital Zurich, Switzerland
-
-***
 
 ## Purpose/Objective: 
 
