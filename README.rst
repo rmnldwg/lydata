@@ -1,6 +1,3 @@
-.. warning:: 
-    The content here is still subject to significant change.
-
 .. image:: ./github-social-card.png
 
 
