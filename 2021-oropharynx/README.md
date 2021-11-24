@@ -32,7 +32,7 @@ The data is provided as a CSV-table containing one row for each of the 287 patie
     1. **`right:`** All findings of involved lymph nodes on the right side of the patient’s neck
         1. **`<LNL>:`** One column is provided for each recorded lymph node level. For each level `true` indicates at least one finding diagnosed as malignant lymph node in the respective LNL, `false` means no malignant lymph node has been found and an empty field indicates that no diagnosis is available for this LNL according to the respective diagnostic modality. `<LNL>` can be: I, Ia, Ib, II, IIa, IIb, III, IV, V, VI, VII, VIII, IX, X.
     1. **`left:`** Same as b) but for the left side of the patient’s neck
-        1. **`<LNL>:`** same as under 3)b)i)
+        1. **`<LNL>:`** same as under 3.2.1
 
 ## Online Interface
 
