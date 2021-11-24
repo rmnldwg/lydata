@@ -17,8 +17,8 @@ To account for this microscopic involvement, parts of the lymphatic system are o
 However, while the prevalence of involvement has been reported in the literature, e.g. in [5]_ and [6]_, and the general lymph drainage pathways are understood well, the detailed progression patterns of HNSCC remain poorly quantified. We believe that the risk for microscopic involvement in an LNL depends highly on the specific diagnose of a particular patient and their treatment can hence be personalized if the progression patterns were better quantified.
 
 
-Goal
-====
+Our Goal
+========
 
 In this repository we aim to provide data on the detailed lymphatic progression patterns extracted from patients of the University Hospital Zurch (USZ). The data can be used freely and we hope clincians in the field find it useful as well. Ideally, we can motivate other researchers to share their data in similar detail and openness, so that large multicentric datasets can be built.
 
@@ -29,7 +29,9 @@ Available datasets
 2021 oropharynx
 ---------------
 
-The first dataset we are able to share consists of 287 patients with a primary tumor in the oropharynx, treated at our institution between 2013 and 2019. We published a `paper <green-journal>`_ on it and descibe the data in more detail `here <data-in-brief>`_. It can be found in the folder ``2021-oropharynx`` alongside a ``jupyter`` notebook that was used to create the figures in the mentioned publication.
+The first dataset we are able to share consists of 287 patients with a primary tumor in the oropharynx, treated at our institution between 2013 and 2019. It can be found in the folder ``2021-oropharynx`` alongside a ``jupyter`` notebook that was used to create figures.
+
+We have submitted a paper on it to *Radiother & Oncology* and make this data available through a *Data in Brief* paper as well. We will update this section and link to the publications, as soon as they are accepted.
 
 stay tuned for more...
 ----------------------
@@ -37,8 +39,8 @@ stay tuned for more...
 We are in the process of collecting more data of patients with primary tumors in other locations.
 
 
-Further reading
-===============
+See also
+========
 
 LyProX Interface
 ----------------
