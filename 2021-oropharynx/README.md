@@ -1,6 +1,6 @@
-# Data description
+## Data description
 
-`data.csv`: CSV-table containing one row for each of the 287 patients. The table has a header with three levels that describe the columns. Below we explain each column in the form of a list with three levels.
+The data is provided as a CSV-table containing one row for each of the 287 patients. The table has a header with three levels that describe the columns. Below we explain each column in the form of a list with three levels.
 
 ## Columns
 
@@ -9,10 +9,10 @@
         1. **`id:`** Enumeration of the patients
         1. **`sex:`** Sex of the patient
         1. **`age:`** Patient’s age at diagnosis
-        1. **`diagnose_date:`** Date of diagnosis (format `YYYY-mm-dd`)
-        1. **`alcohol_abuse:`** `true` for patients that have been consuming or still consume alcohol abusively, `false` otherwise
-        1. **`nicotine_abuse:`** `true` for patients that have been or are smokers
-        1. **`hpv_status:`** `true` if the patient has had an infection with high-risk human papilloma virus (type HPV-16)
+        1. **`diagnose_date:`** Date of diagnosis (format `YYYY-mm-dd`) defined as the date of first histological confirmation of HNSCC.
+        1. **`alcohol_abuse:`** `true` for patients who stated that they consume alcohol regularly, `false` otherwise
+        1. **`nicotine_abuse:`** `true` for patients who have been regular smokers (> 10 pack years)
+        1. **`hpv_status:`** `true` for patients with human papilloma virus associated tumors (as defined by p16 immunohistochemistry)
         1. **`neck_dissection:`** Indicates whether the patient has received a neck dissection as part of the treatment.
         1. **`tnm_edition:`** The edition of the TNM classification used to classify the patient [6]
         1. **`n_stage:`** Degree of spread to regional lymph nodes
@@ -33,3 +33,7 @@
         1. **`<LNL>:`** One column is provided for each recorded lymph node level. For each level `true` indicates at least one finding diagnosed as malignant lymph node in the respective LNL, `false` means no malignant lymph node has been found and an empty field indicates that no diagnosis is available for this LNL according to the respective diagnostic modality. `<LNL>` can be: I, Ia, Ib, II, IIa, IIb, III, IV, V, VI, VII, VIII, IX, X.
     1. **`left:`** Same as b) but for the left side of the patient’s neck
         1. **`<LNL>:`** same as under 3)b)i)
+
+## Online Interface
+
+We provide a user-friendly and intuitive graphical user interface to view the dataset, which is available at https://2021-oropharynx.lyprox.org/. The GUI has two main functionalities: the patient list and the dashboard. The patient list allows for viewing the characteristics of a patient, corresponding to one row of the csv file, in a visually appealing and intuitive way. The dashboard allows for filtering of the dataset. For example, the user may select all patients with primary tumors extending over the mid-sagittal plane with involvement of ipsilateral level III. The dashboard will then display the number or percentage of patients with metastases in each of the other LNLs.
