@@ -1,0 +1,54 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: >-
+  A dataset on patient-individual lymph node
+  involvement in oropharyngeal squamous cell
+  carcinoma
+message: >-
+  If you use this dataset, please cite it using the
+  metadata from this file.
+type: dataset
+authors:
+  - given-names: Roman
+    family-names: Ludwig
+    email: roman.ludwig@usz.ch
+    affiliation: University Hospital Zurich
+    orcid: 'https://orcid.org/0000-0001-9434-328X'
+  - given-names: Jean-Marc
+    family-names: Hoffmann
+    affiliation: University Hospital Zurich
+  - given-names: Bertrand
+    family-names: Pouymayou
+    affiliation: University Hospital Zurich
+  - given-names: Grégoire
+    family-names: Morand
+    affiliation: University Hospital Zurich
+    orcid: 'https://orcid.org/0000-0002-6150-6772'
+  - given-names: Martina
+    family-names: Broglie Däppen
+    affiliation: University Hospital Zurich
+  - given-names: Matthias
+    family-names: Guckenberger
+    affiliation: University Hospital Zurich
+    orcid: 'https://orcid.org/0000-0002-7146-9071'
+  - given-names: Vincent
+    family-names: Grégoire
+    affiliation: Centre Léon Bérard Lyon
+  - given-names: Panagiotis
+    family-names: Balermpas
+    affiliation: University Hospital Zurich
+    orcid: 'https://orcid.org/0000-0001-5261-6446'
+  - given-names: Jan
+    family-names: Unkelbach
+    affiliation: University Hospital Zurich
+    orcid: 'https://orcid.org/0000-0002-4275-990X'
+url: 'https://lyprox.org'
+keywords:
+  - head & neck squamous cell carcinoma
+  - patterns of progression
+  - lymphatic involvement
+  - interface
+license: MIT
+date-released: '2021-11-24'
