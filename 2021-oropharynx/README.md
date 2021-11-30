@@ -1,6 +1,11 @@
+## Curation of the Dataset
+
+We have detailed inclusion criteria and what was considered lymphatic involvement in our paper that has been submitted to the journal of Radiation & Oncology. It will soon be available as a preprint on [medRxiv](https://medrxiv.org) and we will update this section as soon as there is a decision from the peer review process.
+
+
 ## Data description
 
-The data is provided as a CSV-table containing one row for each of the 287 patients. The table has a header with three levels that describe the columns. Below we explain each column in the form of a list with three levels. So, for example, list entry 1.1.7 refers to a column with the three-level header `patient | # | hpv_status` and underneath it tha patients' HPV status is listed.
+The data is provided as a CSV-table containing one row for each of the 287 patients. The table has a header with three levels that describe the columns. Below we explain each column in the form of a list with three levels. So, for example, list entry 1.i.g refers to a column with the three-level header `patient | # | hpv_status` and underneath it tha patients' HPV status is listed.
 
 
 ## Columns
@@ -32,8 +37,8 @@ The data is provided as a CSV-table containing one row for each of the 287 patie
         1. **`date:`** Day on which a diagnose with the respective modality was performed
     1. **`right:`** All findings of involved lymph nodes on the right side of the patient’s neck
         1. **`<LNL>:`** One column is provided for each recorded lymph node level. For each level `true` indicates at least one finding diagnosed as malignant lymph node in the respective LNL, `false` means no malignant lymph node has been found and an empty field indicates that no diagnosis is available for this LNL according to the respective diagnostic modality. `<LNL>` can be: I, Ia, Ib, II, IIa, IIb, III, IV, V, VI, VII, VIII, IX, X.
-    1. **`left:`** Same as 3.2 but for the left side of the patient’s neck
-        1. **`<LNL>:`** same as under 3.2.1
+    1. **`left:`** Same as 3.ii but for the left side of the patient’s neck
+        1. **`<LNL>:`** same as under 3.ii.a
 
 
 ## Online Interface
@@ -44,15 +49,15 @@ We provide a user-friendly and intuitive graphical user interface to view the da
 ## References
 <a id="1">[1]</a>
 J. D. Brierley, M. K. Gospodarowicz, and C. Wittekind, 
-TNM Classification of Malignant Tumours. 
+"TNM Classification of Malignant Tumours." 
 John Wiley & Sons, 2017.
 
 <a id="2">[2]</a>
 World Health Organization, Ed., 
-International statistical classification of diseases and related health problems, 10th revision, 2nd edition. 
+"International statistical classification of diseases and related health problems, 10th revision, 2nd edition." 
 Geneva: World Health Organization, 2004.
 
 <a id="3">[3]</a>
 A. G. Fritz, Ed., 
-International classification of diseases for oncology: ICD-O, 3rd ed. 
+"International classification of diseases for oncology: ICD-O, 3rd ed." 
 Geneva: World Health Organization, 2000.
