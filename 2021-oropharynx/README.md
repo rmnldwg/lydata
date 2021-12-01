@@ -1,4 +1,14 @@
-## Curation of the Dataset
+# 2021 Oropharynx Dataset
+
+This folder contains 
+
+* the data itself as `data.csv`
+* a citation file `CITATION.cff` that should be used to cite his dataset as long as the main publication in *Data in Brief* is not published
+* a jupyter notebook `figures.ipynb` for rendering figures visualizing different aspects of the data
+* the folder `figures` containing the already rendered figures which we also used in our publication for *Radiation & Oncology* (in review)
+
+
+## Curation of the Data
 
 We have detailed inclusion criteria and what was considered lymphatic involvement in our paper that has been submitted to the journal of Radiation & Oncology. It will soon be available as a preprint on [medRxiv](https://medrxiv.org) and we will update this section as soon as there is a decision from the peer review process.
 
