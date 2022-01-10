@@ -1,5 +1,8 @@
 .. image:: ./github-social-card.png
 
+.. image:: https://zenodo.org/badge/423488981.svg
+   :target: https://zenodo.org/badge/latestdoi/423488981
+
 
 What is lyDATA?
 ===============
