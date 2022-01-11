@@ -2,7 +2,7 @@
 # Visit https://bit.ly/cffinit to generate yours today!
 
 cff-version: 1.2.0
-title: lyDATA/2021-oropharynx
+title: lyDATA
 message: >-
   If you use this dataset, please cite it using the
   metadata from this file.
@@ -46,9 +46,13 @@ authors:
     orcid: 'https://orcid.org/0000-0002-4275-990X'
 identifiers:
   - type: doi
-    value: 'https://doi.org/10.5281/zenodo.5833836'
-repository-code: 'https://github.com/rmnldwg/lydata/tree/main/2021-oropharynx'
+    value: 'https://doi.org/10.5281/zenodo.5833835'
+repository-code: 'https://github.com/rmnldwg/lydata'
 url: 'https://lyprox.org'
+abstract: >-
+  Repository for storing datasets that report detailed 
+  lymphatic progression patterns of head & neck cancer 
+  patients.
 keywords:
   - head & neck squamous cell carcinoma
   - patterns of progression
