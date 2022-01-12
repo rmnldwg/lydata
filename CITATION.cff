@@ -46,7 +46,7 @@ authors:
     orcid: 'https://orcid.org/0000-0002-4275-990X'
 identifiers:
   - type: doi
-    value: 'https://doi.org/10.5281/zenodo.5833835'
+    value: '10.5281/zenodo.5833835'
 repository-code: 'https://github.com/rmnldwg/lydata'
 url: 'https://lyprox.org'
 abstract: >-
