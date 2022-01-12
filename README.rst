@@ -45,7 +45,7 @@ We are in the process of collecting more data of patients with primary tumors in
 Attribution
 ===========
 
-Every folder that corresponds to a dataset also contains a ``CITATION.cff`` file which may be used to cite the respective dataset. To cite the entire repository with all datasets inside, use the ``CITATION.cff`` at the root of the repository (or just click the `Cite this repository` button on the right).
+Every folder that corresponds to a dataset also contains a ``CITATION.cff`` file which may be used to cite the respective dataset. To cite the entire repository with all datasets inside, use the ``CITATION.cff`` at the root of the repository (or just click the *Cite this repository* button on the right).
 
 
 See also

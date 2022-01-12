@@ -10,7 +10,10 @@ This folder contains
 
 ## Curation of the Data
 
-We have detailed inclusion criteria and what was considered lymphatic involvement in our paper that has been submitted to the journal of Radiation & Oncology. It will soon be available as a preprint on [medRxiv](https://medrxiv.org) and we will update this section as soon as there is a decision from the peer review process.
+We have detailed inclusion criteria and what was considered lymphatic involvement in our paper that has been submitted to the journal of [Radiotherapy & Oncology](https://www.thegreenjournal.com/). It is available as a preprint on [medRxiv](https://medrxiv.org) and we will update this section as soon as there is a decision from the peer review process.
+
+![Greeen Journal](https://img.shields.io/badge/RadOnc-under%20review-orange)
+[![medRxiv](https://img.shields.io/badge/medRxiv-2021.12.01.21267001-blue)](https://doi.org/10.1101/2021.12.01.21267001)
 
 
 ## Data description

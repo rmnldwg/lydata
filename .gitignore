@@ -128,5 +128,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# VS code
+.vscode
+
 # affinity photo file
 *.afphoto
