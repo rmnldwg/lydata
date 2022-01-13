@@ -1,6 +1,6 @@
 .. image:: ./github-social-card.png
 
-.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.5833835.svg
+.. image:: https://img.shields.io/badge/DOI-10.5281%2Fzenodo.5833835-informational
    :target: https://doi.org/10.5281/zenodo.5833835
 
 
