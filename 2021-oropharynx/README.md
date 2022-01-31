@@ -41,16 +41,17 @@ The data is provided as a CSV-table containing one row for each of the 287 patie
         1. **`location:`** Anatomic location of the tumor
         1. **`subsite:`** ICD-O-3 code associated with a tumor at the particular location according to the world health organization [[2]](#2), [[3]](#3)
         1. **`side:`** Lateralization of the tumor. Can be `“left”` or `“right”` for tumors that have their center of mass clearly on the respective side of the mid-sagittal line and `“central”` for patients with a tumor on the mid-sagittal line.
-        1. **`extension:`** True if part of the tumor extends over the mid-sagittal line
-        1. **`volume:`** Volume of the tumor in cm3
-        1. **`stage_prefix:`** Prefix modifier of the T-category. Can be `“c”` or `“p”`
-        1. **`t_stage:`** T-category of the tumor, according to TNM staging
+        2. **`central:`** Whether the tumor is centralized or not.
+        3. **`extension:`** True if part of the tumor extends over the mid-sagittal line
+        4. **`volume:`** Volume of the tumor in cm3
+        5. **`stage_prefix:`** Prefix modifier of the T-category. Can be `“c”` or `“p”`
+        6. **`t_stage:`** T-category of the tumor, according to TNM staging
 3. **`<diagnostic modality>:`** Each recorded diagnostic modality is indicated by its own top-level header. In this file FNA, CT, MRI, PET, path (pathology) and pCT (planning CT) are provided
     1. **`info:`** 
         1. **`date:`** Day on which a diagnose with the respective modality was performed
-    1. **`right:`** All findings of involved lymph nodes on the right side of the patient’s neck
+    2. **`ipsi:`** All findings of involved lymph nodes on the ipsilateral side of the patient’s neck
         1. **`<LNL>:`** One column is provided for each recorded lymph node level. For each level `true` indicates at least one finding diagnosed as malignant lymph node in the respective LNL, `false` means no malignant lymph node has been found and an empty field indicates that no diagnosis is available for this LNL according to the respective diagnostic modality. `<LNL>` can be: I, Ia, Ib, II, IIa, IIb, III, IV, V, VI, VII, VIII, IX, X.
-    1. **`left:`** Same as 3.ii but for the left side of the patient’s neck
+    3. **`contra:`** Same as 3.ii but for the contralateral side of the patient’s neck
         1. **`<LNL>:`** same as under 3.ii.a
 
 
