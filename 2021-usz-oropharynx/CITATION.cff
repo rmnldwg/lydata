@@ -44,7 +44,7 @@ authors:
     email: jan.unkelbach@usz.ch
     affiliation: University Hospital Zurich
     orcid: 'https://orcid.org/0000-0002-4275-990X'
-repository-code: 'https://github.com/rmnldwg/lydata/tree/main/2021-oropharynx'
+repository-code: 'https://github.com/rmnldwg/lydata/tree/main/2021-usz-oropharynx'
 url: 'https://lyprox.org'
 keywords:
   - head & neck squamous cell carcinoma
