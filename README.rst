@@ -1,9 +1,5 @@
 .. image:: ./github-social-card.png
 
-.. image:: https://img.shields.io/badge/DOI-10.5281%2Fzenodo.5833835-informational
-   :target: https://doi.org/10.5281/zenodo.5833835
-
-
 What is lyDATA?
 ===============
 
@@ -29,10 +25,19 @@ In this repository we aim to provide data on the detailed lymphatic progression 
 Available datasets
 ==================
 
-2021 oropharynx
----------------
+2021 USZ Oropharynx
+-------------------
 
-The first dataset we are able to share consists of 287 patients with a primary tumor in the oropharynx, treated at our institution between 2013 and 2019. It can be found in the folder ``2021-oropharynx`` alongside a ``jupyter`` notebook that was used to create figures.
+.. image:: https://img.shields.io/badge/Rad%20Onc-j.radonc.2022.01.035-3e6e0e
+    :target: https://doi.org/10.1016/j.radonc.2022.01.035
+
+.. image:: https://img.shields.io/badge/medR%CF%87iv-2021.12.01.21267001-0e4c92
+    :target: https://doi.org/10.1101/2021.12.01.21267001
+
+.. image:: https://img.shields.io/badge/DOI-10.5281%2Fzenodo.5833835-informational
+   :target: https://doi.org/10.5281/zenodo.5833835
+
+The first dataset we are able to share consists of 287 patients with a primary tumor in the oropharynx, treated at the University Hospital Zurich (USZ) between 2013 and 2019. It can be found in the folder ``2021-usz-oropharynx`` alongside a ``jupyter`` notebook that was used to create figures.
 
 We have published a paper about it in *Radiotherapy & Oncology* [9]_, with a preprint available on *medRxiv* [10]_. The data will soon be described in detail by a *Data in Brief* paper (still under review).
 

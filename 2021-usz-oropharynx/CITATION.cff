@@ -2,10 +2,17 @@
 # Visit https://bit.ly/cffinit to generate yours today!
 
 cff-version: 1.2.0
-title: lyDATA/2021-oropharynx
+title: lyDATA/2021-usz-oropharynx
+abstract: >-
+  Patterns of lymphatic progression of oropharyngeal SCC patients treated at
+  the USZ between 2013 and 2019.
 message: >-
-  If you use this dataset, please cite it using the
-  metadata from this file.
+  If you use this dataset, please cite it using the metadata from this file.
+keywords:
+  - head & neck squamous cell carcinoma
+  - patterns of progression
+  - lymphatic involvement
+  - interface
 type: dataset
 authors:
   - given-names: Roman
@@ -44,12 +51,10 @@ authors:
     email: jan.unkelbach@usz.ch
     affiliation: University Hospital Zurich
     orcid: 'https://orcid.org/0000-0002-4275-990X'
+identifiers:
+  - type: doi
+    value: '10.5281/zenodo.5833835'
 repository-code: 'https://github.com/rmnldwg/lydata/tree/main/2021-usz-oropharynx'
 url: 'https://lyprox.org'
-keywords:
-  - head & neck squamous cell carcinoma
-  - patterns of progression
-  - lymphatic involvement
-  - interface
 license: MIT
 date-released: '2021-11-24'
