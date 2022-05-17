@@ -1,24 +1,15 @@
-# 2021 USZ Oropharynx
+# 2021 CLB Oropharynx
 
-[![Greeen Journal](https://img.shields.io/badge/Rad%20Onc-j.radonc.2022.01.035-3e6e0e)](https://doi.org/10.1016/j.radonc.2022.01.035)
-[![medRxiv](https://img.shields.io/badge/medR%CF%87iv-2021.12.01.21267001-0e4c92)](https://doi.org/10.1101/2021.12.01.21267001)
-[![Zenodo DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.5833835-informational)](https://doi.org/10.5281/zenodo.5833835)
+> ⚠️ **WARNING:** Not yet finished!
 
-This folder contains the detailed patterns of lymphatic progression of 287 patients with squamous cell carcinomas (SCCs) in the oropharynx, treated at the University Hospital Zurich (USZ) between 2013 and 2019.
+[![Green Journal](https://img.shields.io/badge/Rad%20Onc-j.radonc.2021.01.028-3e6e0e)](https://doi.org/10.1016/j.radonc.2021.01.028)
 
-You can find here
-
-* the data itself as `data.csv`
-* a citation file `CITATION.cff` that should be used to cite his dataset as long as the main publication in *Data in Brief* is not published
-* a jupyter notebook `figures.ipynb` for rendering figures visualizing different aspects of the data
-* the folder `figures` containing the already rendered figures which we also used in our publication for *Radiation & Oncology* [[1]](#1).
-
+This folder contains the detailed patterns of lymphatic progression of 263 patients with squamous cell carcinomas (SCCs) in the oropharynx, treated at the Centre Léon Bérard (CLB) between 2014 and 2018.
 
 ## Curation
 
-We have detailed inclusion criteria and what was considered lymphatic involvement in our paper that has been published in the journal of *Radiotherapy & Oncology* [[1]](#1), which is also available as a [preprint] on *medRxiv* and we have submitted a *Data in Brief* manuscript as well, detailing the data only.
+This is detailed in their publication [[1]](#1) and a manuscript describing the data has also been submitted to *Data in Brief*.
 
-[preprint]: https://doi.org/10.1101/2021.12.01.21267001
 
 ## Description
 
@@ -35,6 +26,7 @@ The data is provided as a CSV-table containing one row for each of the 287 patie
         1. **`diagnose_date:`** Date of diagnosis (format `YYYY-mm-dd`) defined as the date of first histological confirmation of HNSCC.
         1. **`alcohol_abuse:`** `true` for patients who stated that they consume alcohol regularly, `false` otherwise
         1. **`nicotine_abuse:`** `true` for patients who have been regular smokers (> 10 pack years)
+        1. **`pack_years:`** Number of pack years of smoking hitory of the patient
         1. **`hpv_status:`** `true` for patients with human papilloma virus associated tumors (as defined by p16 immunohistochemistry)
         1. **`neck_dissection:`** Indicates whether the patient has received a neck dissection as part of the treatment.
         1. **`tnm_edition:`** The edition of the TNM classification used to classify the patient [[2]](#2)
@@ -50,26 +42,33 @@ The data is provided as a CSV-table containing one row for each of the 287 patie
         4. **`volume:`** Volume of the tumor in cm3
         5. **`stage_prefix:`** Prefix modifier of the T-category. Can be `“c”` or `“p”`
         6. **`t_stage:`** T-category of the tumor, according to TNM staging
-3. **`<diagnostic modality>:`** Each recorded diagnostic modality is indicated by its own top-level header. In this file FNA, CT, MRI, PET, pathology and pCT (planning CT) are provided
+3. **`<diagnostic modality>:`** Each recorded diagnostic modality is indicated by its own top-level header. In this file `diagnostic_consensus` and `pathology` are provided.
     1. **`info:`** 
         1. **`date:`** Day on which a diagnose with the respective modality was performed
     2. **`ipsi:`** All findings of involved lymph nodes on the ipsilateral side of the patient’s neck
         1. **`<LNL>:`** One column is provided for each recorded lymph node level. For each level `true` indicates at least one finding diagnosed as malignant lymph node in the respective LNL, `false` means no malignant lymph node has been found and an empty field indicates that no diagnosis is available for this LNL according to the respective diagnostic modality. `<LNL>` can be: I, Ia, Ib, II, IIa, IIb, III, IV, V, VI, VII, VIII, IX, X.
     3. **`contra:`** Same as 3.ii but for the contralateral side of the patient’s neck
         1. **`<LNL>:`** same as under 3.ii.a
-
-
-## Online Interface
-
-We provide a user-friendly and intuitive graphical user interface to view the dataset, which is available at https://2021-oropharynx.lyprox.org/. The GUI has two main functionalities: the patient list and the dashboard. The patient list allows for viewing the characteristics of a patient, corresponding to one row of the csv file, in a visually appealing and intuitive way. The dashboard allows for filtering of the dataset. For example, the user may select all patients with primary tumors extending over the mid-sagittal plane with involvement of ipsilateral level III. The dashboard will then display the number or percentage of patients with metastases in each of the other LNLs.
+4. **`total_dissected:`** The number of dissected lymph nodes per LNL.
+   1. **`info:`**
+      1. **`date:`** Day on which the neck dissection was performed
+   2. **`ipsi:`** Number of dissected lymph nodes from the LNLs on the ipsilateral side of the neck
+      1. **`<LNL>:`** One column is provided for each recorded lymph node level. For each level a non-negative integer indicates the number of lymph nodes that were dissected in the respective `<LNL>`. A missing entry indicates that the LNL was not resected.
+   3. **`contra:`** Same as 4.ii, but for the contralateral side of the neck
+      1. **`<LNL>:`** Same as under 4.ii.a
+5. **`positive_dissected:`** The number of dissected lymph nodes that were found to harbour metastases per LNL.
+   1. **`info:`**
+      1. **`date:`** Day on which the neck dissection was performed
+   2. **`ipsi:`** Number of pathologically involved lymph nodes from the LNLs on the ipsilateral side of the neck
+      1. **`<LNL>:`** One column is provided for each recorded lymph node level. For each level a non-negative integer indicates the number of lymph nodes that were found to harbour malignant disease in the respective `<LNL>`. A missing entry indicates that the LNL was not resected.
+   3. **`contra:`** Same as 5.ii, but for the contralateral side of the neck
+      1. **`<LNL>:`** Same as under 5.ii.a
 
 
 ## References
 
 <a id="1">[1]</a>
-R. Ludwig, B. Pouymayou, J.-M. Hoffmann *et al*, 
-"Detailed patient-individual reporting of lymph node involvement in oropharyngeal squamous cell carcinoma with an online interface." 
-Radiotherapy & Oncology, 2021, DOI: [10.1016/j.radonc.2022.01.035](https://doi.org/10.1016/j.radonc.2022.01.035)
+L. Bauwens *et al*, "Prevalence and distribution of cervical lymph node metastases in HPV-positive and HPV-negative oropharyngeal squamous cell carcinoma", Radiotherapy & Oncology, 2021, DOI: [10.1016/j.radonc.2021.01.028](https://doi.org/10.1016/j.radonc.2021.01.028)
 
 <a id="2">[2]</a>
 J. D. Brierley, M. K. Gospodarowicz, and C. Wittekind, 
