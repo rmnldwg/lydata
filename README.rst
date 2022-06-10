@@ -29,12 +29,24 @@ In this repository we aim to provide data on the detailed lymphatic progression 
 Available datasets
 ==================
 
-2021 oropharynx
----------------
+2021 USZ Oropharynx
+-------------------
+
+.. image:: https://img.shields.io/badge/Rad%20Onc-j.radonc.2022.01.035-3e6e0e
+    :target: https://doi.org/10.1016/j.radonc.2022.01.035
+
+.. image:: https://img.shields.io/badge/medR%CF%87iv-2021.12.01.21267001-0e4c92
+    :target: https://doi.org/10.1101/2021.12.01.21267001
+
+.. image:: https://img.shields.io/badge/DiB-10.1016%2Fj.dib.2022.108345-orange
+    :target: https://doi.org/10.1016/j.dib.2022.108345
+
+.. image:: https://img.shields.io/badge/DOI-10.5281%2Fzenodo.5833835-informational
+    :target: https://doi.org/10.5281/zenodo.5833835
 
 The first dataset we are able to share consists of 287 patients with a primary tumor in the oropharynx, treated at our institution between 2013 and 2019. It can be found in the folder ``2021-oropharynx`` alongside a ``jupyter`` notebook that was used to create figures.
 
-We have published a paper about it in *Radiotherapy & Oncology* [9]_, with a preprint available on *medRxiv* [10]_. The data will soon be described in detail by a *Data in Brief* paper (still under review).
+We have published a paper about it in *Radiotherapy & Oncology* [9]_ (a preprint is also available on *medRxiv* [10]_). The dataset is described in detail and can be freely used and cited as a *Data in Brief* paper [11]_.
 
 stay tuned for more...
 ----------------------
@@ -76,3 +88,4 @@ References
 .. [8] Roman Ludwig, B. Pouymayou, P. Balermpas, and J. Unkelbach, **A hidden Markov model for lymphatic tumor progression in the head and neck**, *Sci Rep*, vol. 11, no. 1, p. 12261, Dec. 2021, doi: https://doi.org/10.1038/s41598-021-91544-1.
 .. [9] Roman Ludwig et al., **Detailed patient-individual reporting of lymph node involvement in oropharyngeal squamous cell carcinoma with an online interface**, *Radiotherapy and Oncology*, Feb. 2022, doi: https://doi.org/10.1016/j.radonc.2022.01.035.
 .. [10] Roman Ludwig, J.-M. Hoffmann, B. Pouymayou et al., **Detailed patient-individual reporting of lymph node involvement in oropharyngeal squamous cell carcinoma with an online interface**, *medRxiv*, Dec. 2021. doi: https://doi.org/10.1101/2021.12.01.21267001.
+.. [11] Roman Ludwig, Jean-Marc Hoffmann, Bertrand Pouymayou et al., **A dataset on patient-individual lymph node involvement in oropharyngeal squamous cell carcinoma**, *Data in Brief*, 2022, 108345, https://doi.org/10.1016/j.dib.2022.108345.
