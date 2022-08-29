@@ -1,27 +1,27 @@
-# 2021 Oropharynx Dataset
+# 2021 USZ Oropharynx
 
-This folder contains 
+[![Greeen Journal](https://img.shields.io/badge/Rad%20Onc-j.radonc.2022.01.035-3e6e0e)](https://doi.org/10.1016/j.radonc.2022.01.035)
+[![medRxiv](https://img.shields.io/badge/medR%CF%87iv-2021.12.01.21267001-0e4c92)](https://doi.org/10.1101/2021.12.01.21267001)
+[![Zenodo DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.5833835-informational)](https://doi.org/10.5281/zenodo.5833835)
+
+This folder contains the detailed patterns of lymphatic progression of 287 patients with squamous cell carcinomas (SCCs) in the oropharynx, treated at the University Hospital Zurich (USZ) between 2013 and 2019.
+
+You can find here
 
 * the data itself as `data.csv`
 * a citation file `CITATION.cff` that should be used to cite his dataset as long as the main publication in *Data in Brief* is not published
 * a jupyter notebook `figures.ipynb` for rendering figures visualizing different aspects of the data
-* the folder `figures` containing the already rendered figures which we also used in our publication for *Radiation & Oncology* (in review)
+* the folder `figures` containing the already rendered figures which we also used in our publication for *Radiation & Oncology* [[1]](#1).
 
+## Curation
 
-## Curation of the Data
+## Curation
 
-We have detailed inclusion criteria and what was considered lymphatic involvement in our paper that has been published in the journal of [Radiotherapy & Oncology] (a preprint is also available on [medRxiv]). The data of this repository is also - and in somewhat more detail - described and provided in its own publication in [Data in Brief], enabling anyone to reuse and cite our dataset.
+We have detailed inclusion criteria and what was considered lymphatic involvement in our paper that has been published in the journal of *Radiotherapy & Oncology* [[1]](#1), which is also available as a [preprint] on *medRxiv* and we have submitted a *Data in Brief* manuscript as well, detailing the data only.
 
-[Radiotherapy & Oncology]: https://www.thegreenjournal.com
-[Data in Brief]: https://journals.elsevier.com/data-in-brief
-[medRxiv]: https://medrxiv.org
+[preprint]: https://doi.org/10.1101/2021.12.01.21267001
 
-[![Greeen Journal](https://img.shields.io/badge/Rad%20Onc-j.radonc.2022.01.035-3e6e0e)](https://doi.org/10.1016/j.radonc.2022.01.035)
-[![Data in Brief](https://img.shields.io/badge/DiB-10.1016%2Fj.dib.2022.108345-orange)](https://doi.org/10.1016/j.dib.2022.108345)
-[![medRxiv](https://img.shields.io/badge/medR%CF%87iv-2021.12.01.21267001-0e4c92)](https://doi.org/10.1101/2021.12.01.21267001)
-
-
-## Data description
+## Description
 
 The data is provided as a CSV-table containing one row for each of the 287 patients. The table has a header with three levels that describe the columns. Below we explain each column in the form of a list with three levels. So, for example, list entry 1.i.g refers to a column with the three-level header `patient | # | hpv_status` and underneath it tha patients' HPV status is listed.
 
@@ -38,20 +38,20 @@ The data is provided as a CSV-table containing one row for each of the 287 patie
         1. **`nicotine_abuse:`** `true` for patients who have been regular smokers (> 10 pack years)
         1. **`hpv_status:`** `true` for patients with human papilloma virus associated tumors (as defined by p16 immunohistochemistry)
         1. **`neck_dissection:`** Indicates whether the patient has received a neck dissection as part of the treatment.
-        1. **`tnm_edition:`** The edition of the TNM classification used to classify the patient [[1]](#1)
+        1. **`tnm_edition:`** The edition of the TNM classification used to classify the patient [[2]](#2)
         1. **`n_stage:`** Degree of spread to regional lymph nodes
         1. **`m_stage:`** Presence of distant metastases
 2. **`tumor:`** Information about tumors is stored under this top-level header
     1. **`<number>:`** The second level enumerates the synchronous tumors. In our database, no patient has had a second tumor, but this structure of the file allows us to include such patients in the future. The third-level headers are the same for each tumor.
         1. **`location:`** Anatomic location of the tumor
-        1. **`subsite:`** ICD-O-3 code associated with a tumor at the particular location according to the world health organization [[2]](#2), [[3]](#3)
+        1. **`subsite:`** ICD-O-3 code associated with a tumor at the particular location according to the world health organization [[3]](#3), [[4]](#4)
         1. **`side:`** Lateralization of the tumor. Can be `“left”` or `“right”` for tumors that have their center of mass clearly on the respective side of the mid-sagittal line and `“central”` for patients with a tumor on the mid-sagittal line.
         2. **`central:`** Whether the tumor is centralized or not.
         3. **`extension:`** True if part of the tumor extends over the mid-sagittal line
         4. **`volume:`** Volume of the tumor in cm3
         5. **`stage_prefix:`** Prefix modifier of the T-category. Can be `“c”` or `“p”`
         6. **`t_stage:`** T-category of the tumor, according to TNM staging
-3. **`<diagnostic modality>:`** Each recorded diagnostic modality is indicated by its own top-level header. In this file FNA, CT, MRI, PET, path (pathology) and pCT (planning CT) are provided
+3. **`<diagnostic modality>:`** Each recorded diagnostic modality is indicated by its own top-level header. In this file FNA, CT, MRI, PET, pathology and pCT (planning CT) are provided
     1. **`info:`** 
         1. **`date:`** Day on which a diagnose with the respective modality was performed
     2. **`ipsi:`** All findings of involved lymph nodes on the ipsilateral side of the patient’s neck
@@ -66,17 +66,23 @@ We provide a user-friendly and intuitive graphical user interface to view the da
 
 
 ## References
+
 <a id="1">[1]</a>
+R. Ludwig, B. Pouymayou, J.-M. Hoffmann *et al*, 
+"Detailed patient-individual reporting of lymph node involvement in oropharyngeal squamous cell carcinoma with an online interface." 
+Radiotherapy & Oncology, 2021, DOI: [10.1016/j.radonc.2022.01.035](https://doi.org/10.1016/j.radonc.2022.01.035)
+
+<a id="2">[2]</a>
 J. D. Brierley, M. K. Gospodarowicz, and C. Wittekind, 
 "TNM Classification of Malignant Tumours." 
 John Wiley & Sons, 2017.
 
-<a id="2">[2]</a>
+<a id="3">[3]</a>
 World Health Organization, Ed., 
 "International statistical classification of diseases and related health problems, 10th revision, 2nd edition." 
 Geneva: World Health Organization, 2004.
 
-<a id="3">[3]</a>
+<a id="4">[4]</a>
 A. G. Fritz, Ed., 
 "International classification of diseases for oncology: ICD-O, 3rd ed." 
 Geneva: World Health Organization, 2000.

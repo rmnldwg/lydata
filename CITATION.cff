@@ -3,9 +3,20 @@
 
 cff-version: 1.2.0
 title: lyDATA
+abstract: >-
+  Repository for storing datasets that report detailed lymphatic progression
+  patterns of patients with head and neck squamous cell carcinomas. This
+  repository contains various subfolders that report cohorts/datasets from
+  different release dates, institutions and tumor subsites.
 message: >-
-  If you use this dataset, please cite it using the
-  metadata from this file.
+  If you use any of the datasets in this repository, please cite them using the
+  respective CITATION.cff file in the corresponding subfolder. Use the metadata
+  from this file if you refer to the collection of all datasets only.
+keywords:
+  - head & neck squamous cell carcinoma
+  - patterns of progression
+  - lymphatic involvement
+  - interface
 type: dataset
 authors:
   - given-names: Roman
@@ -13,50 +24,13 @@ authors:
     email: roman.ludwig@usz.ch
     affiliation: University Hospital Zurich
     orcid: 'https://orcid.org/0000-0001-9434-328X'
-  - given-names: Jean-Marc
-    family-names: Hoffmann
-    affiliation: University Hospital Zurich
-    orcid: https://orcid.org/0000-0003-1193-0863
-  - given-names: Bertrand
-    family-names: Pouymayou
-    affiliation: University Hospital Zurich
-    orcid: https://orcid.org/0000-0002-8060-7827
-  - given-names: Grégoire
-    family-names: Morand
-    affiliation: University Hospital Zurich
-    orcid: 'https://orcid.org/0000-0002-6150-6772'
-  - given-names: Martina
-    family-names: Broglie Däppen
-    affiliation: University Hospital Zurich
-  - given-names: Matthias
-    family-names: Guckenberger
-    affiliation: University Hospital Zurich
-    orcid: 'https://orcid.org/0000-0002-7146-9071'
-  - given-names: Vincent
-    family-names: Grégoire
-    affiliation: Centre Léon Bérard Lyon
-  - given-names: Panagiotis
-    family-names: Balermpas
-    affiliation: University Hospital Zurich
-    orcid: 'https://orcid.org/0000-0001-5261-6446'
-  - given-names: Jan
-    family-names: Unkelbach
-    email: jan.unkelbach@usz.ch
-    affiliation: University Hospital Zurich
-    orcid: 'https://orcid.org/0000-0002-4275-990X'
 identifiers:
-  - type: doi
+  - description: >-
+      Collection of archived snapshots of lymphatic progression patterns
+      for oropharyngeal SCC patients treated at the USZ between 2013 and 2019.
+    type: doi
     value: '10.5281/zenodo.5833835'
 repository-code: 'https://github.com/rmnldwg/lydata'
 url: 'https://lyprox.org'
-abstract: >-
-  Repository for storing datasets that report detailed 
-  lymphatic progression patterns of head & neck cancer 
-  patients.
-keywords:
-  - head & neck squamous cell carcinoma
-  - patterns of progression
-  - lymphatic involvement
-  - interface
 license: MIT
 date-released: '2021-11-24'
