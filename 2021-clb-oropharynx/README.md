@@ -2,7 +2,7 @@
 
 > ⚠️ **WARNING**
 > 
-> This is not yet finalized.
+> This is not yet finalized and peer-reviewed. You can download and use the data, but be aware that this data may be corrected and changed at any point. So, we'd recommend not to publish anything based on this data just yet.
 
 [![Green Journal](https://img.shields.io/badge/Rad%20Onc-j.radonc.2021.01.028-3e6e0e)](https://doi.org/10.1016/j.radonc.2021.01.028)
 
