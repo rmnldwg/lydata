@@ -16,9 +16,15 @@ You can find here
 
 ## Curation
 
-We have detailed inclusion criteria and what was considered lymphatic involvement in our paper that has been published in the journal of *Radiotherapy & Oncology* [[1]](#1), which is also available as a [preprint] on *medRxiv* and we have submitted a *Data in Brief* manuscript as well, detailing the data only.
+We have detailed inclusion criteria and what was considered lymphatic involvement in our paper that has been published in the journal of [Radiotherapy & Oncology] (a preprint is also available on [medRxiv]). The data of this repository is also - and in somewhat more detail - described and provided in its own publication in [Data in Brief], enabling anyone to reuse and cite our dataset.
 
-[preprint]: https://doi.org/10.1101/2021.12.01.21267001
+[Radiotherapy & Oncology]: https://www.thegreenjournal.com
+[Data in Brief]: https://journals.elsevier.com/data-in-brief
+[medRxiv]: https://medrxiv.org
+
+[![Greeen Journal](https://img.shields.io/badge/Rad%20Onc-j.radonc.2022.01.035-3e6e0e)](https://doi.org/10.1016/j.radonc.2022.01.035)
+[![Data in Brief](https://img.shields.io/badge/DiB-10.1016%2Fj.dib.2022.108345-orange)](https://doi.org/10.1016/j.dib.2022.108345)
+[![medRxiv](https://img.shields.io/badge/medR%CF%87iv-2021.12.01.21267001-0e4c92)](https://doi.org/10.1101/2021.12.01.21267001)
 
 ## Description
 
