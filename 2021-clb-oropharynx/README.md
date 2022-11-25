@@ -1,7 +1,6 @@
 # 2021 CLB Oropharynx
 
-> ⚠️ **WARNING**
-> 
+> :warning: **WARNING**  
 > This is not yet finalized.
 
 [![Green Journal](https://img.shields.io/badge/Rad%20Onc-j.radonc.2021.01.028-3e6e0e)](https://doi.org/10.1016/j.radonc.2021.01.028)
