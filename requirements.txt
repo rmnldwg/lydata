@@ -3,3 +3,5 @@ pandas
 matplotlib
 jupyter
 jupyter-contrib-nbextensions
+icd10-cm
+lyscripts==0.6.3
