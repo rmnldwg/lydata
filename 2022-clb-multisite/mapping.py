@@ -253,14 +253,14 @@ column_map = {
     ('diagnostic_consensus', 'ipsi'  , 'III' ): {"func": set_diagnostic_consensus, "columns": [('31_lvl_0', '31_lvl_1', '+')]},
     ('diagnostic_consensus', 'ipsi'  , 'IV'  ): {"func": set_diagnostic_consensus, "columns": [('33_lvl_0', '33_lvl_1', '+')]},
     ('diagnostic_consensus', 'ipsi'  , 'V'   ): {"func": set_diagnostic_consensus, "columns": [('35_lvl_0', '35_lvl_1', '+')]},
-    ('diagnostic_consensus', 'ipsi'  , 'VII' ): {"func": set_diagnostic_consensus, "columns": [('37_lvl_0', '37_lvl_1', '+')]},
+    # ('diagnostic_consensus', 'ipsi'  , 'VII' ): {"func": set_diagnostic_consensus, "columns": [('37_lvl_0', '37_lvl_1', '+')]},
     ('diagnostic_consensus', 'contra', 'Ia'  ): {"func": set_diagnostic_consensus, "columns": [('39_lvl_0', '39_lvl_1', '+')]},
     ('diagnostic_consensus', 'contra', 'Ib'  ): {"func": set_diagnostic_consensus, "columns": [('41_lvl_0', '41_lvl_1', '+')]},
     ('diagnostic_consensus', 'contra', 'II'  ): {"func": set_diagnostic_consensus, "columns": [('43_lvl_0', '43_lvl_1', '+')]},
     ('diagnostic_consensus', 'contra', 'III' ): {"func": set_diagnostic_consensus, "columns": [('45_lvl_0', '45_lvl_1', '+')]},
     ('diagnostic_consensus', 'contra', 'IV'  ): {"func": set_diagnostic_consensus, "columns": [('47_lvl_0', '47_lvl_1', '+')]},
     ('diagnostic_consensus', 'contra', 'V'   ): {"func": set_diagnostic_consensus, "columns": [('49_lvl_0', '49_lvl_1', '+')]},
-    ('diagnostic_consensus', 'contra', 'VII' ): {"func": set_diagnostic_consensus, "columns": [('51_lvl_0', '51_lvl_1', '+')]},
+    # ('diagnostic_consensus', 'contra', 'VII' ): {"func": set_diagnostic_consensus, "columns": [('51_lvl_0', '51_lvl_1', '+')]},
 
     # how many LNLs were dissected
     ('total_dissected'     , 'info'  , 'date'): {"func": robust(smpl_date), "columns": [('Date of', 'surgery', '90_lvl_2')]},
