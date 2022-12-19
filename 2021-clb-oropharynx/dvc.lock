@@ -1,0 +1,15 @@
+schema: '2.0'
+stages:
+  lyproxify:
+    cmd: "lyscripts data lyproxify -i raw.csv -o data.csv -m mapping.py -r 0\n"
+    deps:
+    - path: mapping.py
+      md5: c0b27c7faf48f0e3bb964412f52b4482
+      size: 10674
+    - path: raw.csv
+      md5: 98c4150858d3818eb094de8703a8d0ba
+      size: 99682
+    outs:
+    - path: data.csv
+      md5: d40c0a1ae967a6983d60a0a809cf3972
+      size: 92742

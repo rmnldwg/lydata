@@ -13,6 +13,7 @@ You can find here
 * a jupyter notebook `figures.ipynb` for rendering figures visualizing different aspects of the data
 * the folder `figures` containing the already rendered figures which we also used in our publication for *Radiation & Oncology* [[1]](#1).
 
+## Curation
 
 ## Curation
 
