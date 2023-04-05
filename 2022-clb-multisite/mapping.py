@@ -79,13 +79,15 @@ def parse_pathology(entry, *_args, **_kwargs):
     return False if entry == 0 else True
 
 
-def was_not_resected(entry, *_args, **_kwargs):
+def set_diagnostic_consensus(entry, *_args, **_kwargs):
     """
-    Return `False`, meaning 'healthy', when no entry about a resected LNL is available,
-    indicating the level was not resected and it must hence have been clincially
-    negative.
+    Return `False`, meaning 'healthy', when no entry about a resected LNL is available
+    or when the pathology report says it was healhty. This is a hack to tackle the
+    issue described here:
+
+    https://github.com/rmnldwg/lyprox/issues/92
     """
-    if np.isnan(entry):
+    if np.isnan(entry) or entry == 0:
         return False
     return None
 
@@ -245,20 +247,20 @@ column_map = {
 
     # indicate negative clinical involvement when a level was not dissected (needs to be verified)
     ('diagnostic_consensus', 'info'  , 'date'): {"func": robust(smpl_date), "columns": [('Date of', 'surgery', '90_lvl_2')]},
-    ('diagnostic_consensus', 'ipsi'  , 'Ia'  ): {"func": was_not_resected, "columns": [('Homolateral neck node infiltration', 'LIa', 'tot')]},
-    ('diagnostic_consensus', 'ipsi'  , 'Ib'  ): {"func": was_not_resected, "columns": [('26_lvl_0', 'LIb', 'tot')]},
-    ('diagnostic_consensus', 'ipsi'  , 'II'  ): {"func": was_not_resected, "columns": [('28_lvl_0', 'LII', 'tot')]},
-    ('diagnostic_consensus', 'ipsi'  , 'III' ): {"func": was_not_resected, "columns": [('30_lvl_0', 'LIII', 'tot')]},
-    ('diagnostic_consensus', 'ipsi'  , 'IV'  ): {"func": was_not_resected, "columns": [('32_lvl_0', 'LIV', 'tot')]},
-    ('diagnostic_consensus', 'ipsi'  , 'V'   ): {"func": was_not_resected, "columns": [('34_lvl_0', 'LV', 'tot')]},
-    ('diagnostic_consensus', 'ipsi'  , 'VII' ): {"func": was_not_resected, "columns": [('36_lvl_0', 'LVII', 'tot')]},
-    ('diagnostic_consensus', 'contra', 'Ia'  ): {"func": was_not_resected, "columns": [('Heterolateral neck node infiltration', 'LIa', 'tot')]},
-    ('diagnostic_consensus', 'contra', 'Ib'  ): {"func": was_not_resected, "columns": [('40_lvl_0', 'LIb', 'tot')]},
-    ('diagnostic_consensus', 'contra', 'II'  ): {"func": was_not_resected, "columns": [('42_lvl_0', 'LII', 'tot')]},
-    ('diagnostic_consensus', 'contra', 'III' ): {"func": was_not_resected, "columns": [('44_lvl_0', 'LIII', 'tot')]},
-    ('diagnostic_consensus', 'contra', 'IV'  ): {"func": was_not_resected, "columns": [('46_lvl_0', 'LIV', 'tot')]},
-    ('diagnostic_consensus', 'contra', 'V'   ): {"func": was_not_resected, "columns": [('48_lvl_0', 'LV', 'tot')]},
-    ('diagnostic_consensus', 'contra', 'VII' ): {"func": was_not_resected, "columns": [('50_lvl_0', 'LVII', 'tot')]},
+    ('diagnostic_consensus', 'ipsi'  , 'Ia'  ): {"func": set_diagnostic_consensus, "columns": [('25_lvl_0', '25_lvl_1', '+')]},
+    ('diagnostic_consensus', 'ipsi'  , 'Ib'  ): {"func": set_diagnostic_consensus, "columns": [('27_lvl_0', '27_lvl_1', '+')]},
+    ('diagnostic_consensus', 'ipsi'  , 'II'  ): {"func": set_diagnostic_consensus, "columns": [('29_lvl_0', '29_lvl_1', '+')]},
+    ('diagnostic_consensus', 'ipsi'  , 'III' ): {"func": set_diagnostic_consensus, "columns": [('31_lvl_0', '31_lvl_1', '+')]},
+    ('diagnostic_consensus', 'ipsi'  , 'IV'  ): {"func": set_diagnostic_consensus, "columns": [('33_lvl_0', '33_lvl_1', '+')]},
+    ('diagnostic_consensus', 'ipsi'  , 'V'   ): {"func": set_diagnostic_consensus, "columns": [('35_lvl_0', '35_lvl_1', '+')]},
+    # ('diagnostic_consensus', 'ipsi'  , 'VII' ): {"func": set_diagnostic_consensus, "columns": [('37_lvl_0', '37_lvl_1', '+')]},
+    ('diagnostic_consensus', 'contra', 'Ia'  ): {"func": set_diagnostic_consensus, "columns": [('39_lvl_0', '39_lvl_1', '+')]},
+    ('diagnostic_consensus', 'contra', 'Ib'  ): {"func": set_diagnostic_consensus, "columns": [('41_lvl_0', '41_lvl_1', '+')]},
+    ('diagnostic_consensus', 'contra', 'II'  ): {"func": set_diagnostic_consensus, "columns": [('43_lvl_0', '43_lvl_1', '+')]},
+    ('diagnostic_consensus', 'contra', 'III' ): {"func": set_diagnostic_consensus, "columns": [('45_lvl_0', '45_lvl_1', '+')]},
+    ('diagnostic_consensus', 'contra', 'IV'  ): {"func": set_diagnostic_consensus, "columns": [('47_lvl_0', '47_lvl_1', '+')]},
+    ('diagnostic_consensus', 'contra', 'V'   ): {"func": set_diagnostic_consensus, "columns": [('49_lvl_0', '49_lvl_1', '+')]},
+    # ('diagnostic_consensus', 'contra', 'VII' ): {"func": set_diagnostic_consensus, "columns": [('51_lvl_0', '51_lvl_1', '+')]},
 
     # how many LNLs were dissected
     ('total_dissected'     , 'info'  , 'date'): {"func": robust(smpl_date), "columns": [('Date of', 'surgery', '90_lvl_2')]},
