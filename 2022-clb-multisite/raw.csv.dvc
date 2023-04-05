@@ -1,0 +1,5 @@
+outs:
+- md5: 4df7c504c92c369c2f891b0d170041bb
+  size: 215489
+  path: raw.csv
+  cache: false

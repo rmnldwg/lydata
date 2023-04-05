@@ -1,0 +1,16 @@
+schema: '2.0'
+stages:
+  lyproxify:
+    cmd: "lyscripts data lyproxify -i raw.csv -o data.csv -m mapping.py -r 0 1 2 --drop-rows\
+      \ 439 --add-index\n"
+    deps:
+    - path: mapping.py
+      md5: f915852f496793dcb962f9e478d1ab5b
+      size: 15072
+    - path: raw.csv
+      md5: 4df7c504c92c369c2f891b0d170041bb
+      size: 215489
+    outs:
+    - path: data.csv
+      md5: 96e24966aef559a8652d5ef77cb67f7c
+      size: 118182
