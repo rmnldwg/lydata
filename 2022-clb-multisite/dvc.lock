@@ -5,12 +5,12 @@ stages:
       \ 439 --add-index\n"
     deps:
     - path: mapping.py
-      md5: f915852f496793dcb962f9e478d1ab5b
-      size: 15072
+      md5: 4dd67ebac24451b1a64f703e3d158021
+      size: 15237
     - path: raw.csv
       md5: 4df7c504c92c369c2f891b0d170041bb
       size: 215489
     outs:
     - path: data.csv
-      md5: 96e24966aef559a8652d5ef77cb67f7c
-      size: 118182
+      md5: c314b7b65b23b6dd5c0ac4e51b3646ca
+      size: 120291
