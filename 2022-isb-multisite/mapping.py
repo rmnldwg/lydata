@@ -219,21 +219,33 @@ def map_mri(entry, mri_or_ct, *_args, **_kwargs):
     return robust(smpl_diagnose)(entry)
 
 
-def _from_pathology(entry) -> Dict[str, int]:
+def _from_pathology(entry) -> tuple[dict[str, int], bool]:
     """
-    Infer how many nodes in an LNL where investigated/positive per resection.
+    Infer how many nodes in an LNL where investigated/positive per resection. And if the
+    LNL showed signs of extracapsular extension (ECE).
+
+    The way the data was collected is a bit tricky: Generally, they report the number
+    of nodes in an LNL that were investigated or positive (depending on the column one
+    looks at). But if multiple levels were resected and investigated en bloc, they
+    wrote the finding in each LNL and appended a letter to the number. So, if LNL I was
+    resected together with LNL II and they found in total 10 nodes, they would write
+    `LNL I: 10a` and `LNL II: 10a`.
+    
+    Additionally, if extracapsular extension was found, they would add 100 to the
+    number. And if parts of an LNL were resected with another LNL, but another part of
+    the LNL was investigated on its own, they would write something like `12 + 4b`.
     """
     res = {}
     # If not available, leave empty
     if entry is None or entry == 'n/a' or pd.isna(entry):
-        return res
+        return res, False
 
     # split entry at '+' that may be surrounded by whitespace
     separator = re.compile(r"\s?\+\s?")
     marks = separator.split(entry)
 
     if marks is None or len(marks) == 0:
-        return res
+        return res, False
 
     # find numbers like '103b'
     pattern = re.compile("([0-9]{1,3})([a-z])?")
@@ -242,17 +254,18 @@ def _from_pathology(entry) -> Dict[str, int]:
     for mark in marks:
         match = pattern.search(mark)
         num = int(match.group(1)) % 100
+        has_ece = int(match.group(1)) // 100 == 1
         symbol = match.group(2) or "this"
         res[symbol] = num + res.get(symbol, 0)
 
-    return res
+    return res, has_ece
 
 
 def num_from_pathology(entry, *_args, **_kwargs) -> Optional[int]:
     """
     Infer number of involved nodes in LNL from pathology report.
     """
-    res = _from_pathology(entry)
+    res, _ = _from_pathology(entry)
 
     if len(res) == 0:
         return None
@@ -280,9 +293,13 @@ def binary_from_pathology(entry, *_args, **_kwargs) -> Optional[bool]:
 
 def num_super_from_pathology(*lnl_entries, lnl="I", side="left") -> Optional[int]:
     """
-    Infer number of involved super LNLs (e.g. I, II and V) from pathology.
+    Infer number of involved lymph nodes in super LNL (e.g. I, II and V) from pathology.
+
+    This involves checking if other LNLs have been resected with the LNL in question.
+    In that case, we do not know if the LNL in question was involved or if it was only
+    one of the co-resected LNLs.
     """
-    lnl_results = [_from_pathology(e) for e in lnl_entries]
+    lnl_results = [_from_pathology(e)[0] for e in lnl_entries]
     symbols = {s for lnl_res in lnl_results for s in lnl_res.keys() if s != "this"}
 
     known_lnl_invs = np.array([lnl_res.get("this") for lnl_res in lnl_results])
@@ -310,6 +327,17 @@ def binary_super_from_pathology(*lnl_entries, lnl="I", side="left") -> Optional[
         return None
 
     return num > 0
+
+
+def map_ece(*lnl_entries, **_kwargs):
+    """
+    Infer from the provided columns if the patient had LNL involvement with
+    extra-capsular extension.
+    
+    In the data, this is incoded by the value 100 being added to the number of
+    positive LNLs.
+    """
+    return any(_from_pathology(e)[1] for e in lnl_entries)
 
 
 def get_ct_date(entry, mri_or_ct, *_args, **_kwargs):
@@ -352,6 +380,7 @@ column_map = {
     ('patient' , '#'    , 'tnm_edition'    ): {"func": robust(int), "columns": ["TNM Edition"]},
     ('patient' , '#'    , 'n_stage'        ): {"func": map_n_stage, "columns": ["pN"]},
     ('patient' , '#'    , 'm_stage'        ): {"func": lambda x, *a, **k: 2 if x == 'x' else robust(int)(x), "columns": ["M-Stage"]},
+    ('patient' , '#'    , 'extracapsular'  ): {"func": map_ece, "columns": PATHOLOGY_COLS_POSITIVE},
 
     # Tumor information
     ('tumor'   , '1'    , 'location'       ): {"func": map_location, "columns": ["Primary Tumor"]},
