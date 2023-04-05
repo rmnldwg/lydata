@@ -48,6 +48,8 @@ def robust(func):
     """
     # pylint: disable=bare-except
     def wrapper(entry, *_args, **_kwargs):
+        if pd.isna(entry):
+            return None
         try:
             return func(entry)
         except:
@@ -218,6 +220,7 @@ column_map = {
     ('patient' , '#'    , 'tnm_edition'    ): {"func": get_tnm_version, "columns": TNM_COLS},
     ('patient' , '#'    , 'n_stage'        ): {"func": get_n_category, "columns": TNM_COLS},
     ('patient' , '#'    , 'm_stage'        ): {"default": 2},
+    ('patient' , '#'    , 'extracapsular'  ): {"func": robust(bool), "columns": [("ENE", "0=n;1=y", "7_lvl_2")]},
 
     # Tumor information
     ('tumor'   , '1'    , 'location'       ): {"default": None},
