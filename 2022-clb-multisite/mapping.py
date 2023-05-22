@@ -6,6 +6,7 @@ The most important definitions in here are the list `exclude` and the dictionary
 `column_map` that defines how to construct the new columns based on the `raw.csv` data.
 """
 import re
+from typing import Optional
 
 import icd10
 import numpy as np
@@ -299,3 +300,397 @@ column_map = {
     ('positive_dissected'  , 'contra', 'V'   ): {"func": robust(int), "columns": [('49_lvl_0', '49_lvl_1', '+')]},
     ('positive_dissected'  , 'contra', 'VII' ): {"func": robust(int), "columns": [('51_lvl_0', '51_lvl_1', '+')]},
 }
+
+# I want to convert the above dictionary into a nested dictionary (three levels deep)
+# that can then be flattened to yield the above form
+new_column_map = {
+    # Patient information
+    "patient": {
+        "#": {
+            "id": {
+                "func": str,
+                "columns": [("patient", "#", "id")],
+            },
+            "institution": {
+                "default": "Centre Léon Bérard",
+            },
+            "sex": {
+                "func": lambda x, *a, **k: "male" if x == 1 else "female",
+                "columns": [("Sex", "(1=m ; 2=f)", "3_lvl_2")],
+            },
+            "age": {
+                "func": robust(int),
+                "columns": [('Age at', 'diagnosis', '92_lvl_2')],
+            },  # They have used the date of surgery to compute this,
+            "weight": {
+                "func": robust(float),
+                "columns": [('Weight at', 'diagnosis', '54_lvl_2')],
+            },
+            "diagnose_date": {
+                "func": robust(smpl_date),
+                "columns": [('Date of', 'surgery', '90_lvl_2')],
+            },  # There is no date of diagnosis in the file,
+            "alcohol_abuse": {
+                "func": lambda x, *a, **k: False if x == 0 else True,
+                "columns": [('alcool 0=n', '1=y;2=<6m', '5_lvl_2')],
+            },
+            "nicotine_abuse": {
+                "func": lambda x, *a, **k: False if x == 0 else True,
+                "columns": [('Tobacco 0=n', '1=y;2=>6m', '4_lvl_2')],
+            },
+            "hpv_status": {
+                "func": extract_hpv,
+                "columns": [('HPV/p16', 'status 0=no', '1=y;blank=not tested')],
+            },
+            "neck_dissection": {
+                "default": True,
+            },
+            "tnm_edition": {
+                "func": get_tnm_version,
+                "columns": TNM_COLS,
+            },
+            "n_stage": {
+                "func": get_n_category,
+                "columns": TNM_COLS,
+            },
+            "m_stage": {
+                "default": 2,
+            },
+            "extracapsular": {
+                "func": robust(bool),
+                "columns": [("ENE", "0=n;1=y", "7_lvl_2")],
+            },
+        },
+    },
+
+    # Tumor information
+    "tumor": {
+        "1": {
+            "location": {
+                "default": None,
+            },
+            "subsite": {
+                "columns": [('ICDO-3', '1_lvl_1', '1_lvl_2')],
+            },
+            "central": {
+                "default": None,
+            },
+            "extension": {
+                "default": None,
+            },
+            "volume": {
+                "default": None,
+            },
+            "stage_prefix": {
+                "func": get_tnm_prefix,
+                "columns": TNM_COLS,
+            },
+            "t_stage": {
+                "func": get_t_category,
+                "columns": TNM_COLS,
+            },
+        },
+    },
+
+    # Involvement information from pathology
+    "pathology": {
+        "info": {
+            "date": {
+                "func": robust(smpl_date),
+                "columns": [('Date of', 'surgery', '90_lvl_2')],
+            },
+        },
+        "ipsi": {
+            "Ia": {
+                "func": parse_pathology,
+                "columns": [('25_lvl_0', '25_lvl_1', '+')],
+            },
+            "Ib": {
+                "func": parse_pathology,
+                "columns": [('27_lvl_0', '27_lvl_1', '+')],
+            },
+            "II": {
+                "func": parse_pathology,
+                "columns": [('29_lvl_0', '29_lvl_1', '+')],
+            },
+            "III": {
+                "func": parse_pathology,
+                "columns": [('31_lvl_0', '31_lvl_1', '+')],
+            },
+            "IV": {
+                "func": parse_pathology,
+                "columns": [('33_lvl_0', '33_lvl_1', '+')],
+            },
+            "V" : {
+                "func": parse_pathology,
+                "columns": [('35_lvl_0', '35_lvl_1', '+')],
+            },
+            "VII": {
+                "func": parse_pathology,
+                "columns": [('37_lvl_0', '37_lvl_1', '+')],
+            },
+        },
+        "contra": {
+            "Ia": {
+                "func": parse_pathology,
+                "columns": [('39_lvl_0', '39_lvl_1', '+')],
+            },
+            "Ib": {
+                "func": parse_pathology,
+                "columns": [('41_lvl_0', '41_lvl_1', '+')],
+            },
+            "II": {
+                "func": parse_pathology,
+                "columns": [('43_lvl_0', '43_lvl_1', '+')],
+            },
+            "III": {
+                "func": parse_pathology,
+                "columns": [('45_lvl_0', '45_lvl_1', '+')],
+            },
+            "IV": {
+                "func": parse_pathology,
+                "columns": [('47_lvl_0', '47_lvl_1', '+')],
+            },
+            "V" : {
+                "func": parse_pathology,
+                "columns": [('49_lvl_0', '49_lvl_1', '+')],
+            },
+            "VII": {
+                "func": parse_pathology,
+                "columns": [('51_lvl_0', '51_lvl_1', '+')],
+            },
+        },
+    },
+
+    # Diagnostic consensus
+    "diagnostic_consensus": {
+        "info": {
+            "date": {
+                "func": robust(smpl_date),
+                "columns": [('Date of', 'surgery', '90_lvl_2')],
+            },
+        },
+        "ipsi": {
+            "Ia": {
+                "func": set_diagnostic_consensus,
+                "columns": [('25_lvl_0', '25_lvl_1', '+')],
+            },
+            "Ib": {
+                "func": set_diagnostic_consensus,
+                "columns": [('27_lvl_0', '27_lvl_1', '+')],
+            },
+            "II": {
+                "func": set_diagnostic_consensus,
+                "columns": [('29_lvl_0', '29_lvl_1', '+')],
+            },
+            "III": {
+                "func": set_diagnostic_consensus,
+                "columns": [('31_lvl_0', '31_lvl_1', '+')],
+            },
+            "IV": {
+                "func": set_diagnostic_consensus,
+                "columns": [('33_lvl_0', '33_lvl_1', '+')],
+            },
+            "V": {
+                "func": set_diagnostic_consensus,
+                "columns": [('35_lvl_0', '35_lvl_1', '+')],
+            },
+        },
+        "contra": {
+            "Ia": {
+                "func": set_diagnostic_consensus,
+                "columns": [('39_lvl_0', '39_lvl_1', '+')],
+            },
+            "Ib": {
+                "func": set_diagnostic_consensus,
+                "columns": [('41_lvl_0', '41_lvl_1', '+')],
+            },
+            "II": {
+                "func": set_diagnostic_consensus,
+                "columns": [('43_lvl_0', '43_lvl_1', '+')],
+            },
+            "III": {
+                "func": set_diagnostic_consensus,
+                "columns": [('45_lvl_0', '45_lvl_1', '+')],
+            },
+            "IV": {
+                "func": set_diagnostic_consensus,
+                "columns": [('47_lvl_0', '47_lvl_1', '+')],
+            },
+            "V": {
+                "func": set_diagnostic_consensus,
+                "columns": [('49_lvl_0', '49_lvl_1', '+')],
+            },
+        },
+    },
+
+    # Number of dissected lymph nodes
+    "total_dissected": {
+        "info": {
+            "date": {
+                "func": robust(smpl_date),
+                "columns": [('Date of', 'surgery', '90_lvl_2')],
+            },
+        },
+        "ipsi": {
+            "Ia": {
+                "func": robust(int),
+                "columns": [('Homolateral neck node infiltration', 'LIa', 'tot')],
+            },
+            "Ib": {
+                "func": robust(int),
+                "columns": [('26_lvl_0', 'LIb', 'tot')],
+            },
+            "II": {
+                "func": robust(int),
+                "columns": [('28_lvl_0', 'LII', 'tot')],
+            },
+            "III": {
+                "func": robust(int),
+                "columns": [('30_lvl_0', 'LIII', 'tot')],
+            },
+            "IV": {
+                "func": robust(int),
+                "columns": [('32_lvl_0', 'LIV', 'tot')],
+            },
+            "V": {
+                "func": robust(int),
+                "columns": [('34_lvl_0', 'LV', 'tot')],
+            },
+            "VII": {
+                "func": robust(int),
+                "columns": [('36_lvl_0', 'LVII', 'tot')],
+            },
+        },
+        "contra": {
+            "Ia": {
+                "func": robust(int),
+                "columns": [('Heterolateral neck node infiltration', 'LIa', 'tot')],
+            },
+            "Ib": {
+                "func": robust(int),
+                "columns": [('40_lvl_0', 'LIb', 'tot')],
+            },
+            "II": {
+                "func": robust(int),
+                "columns": [('42_lvl_0', 'LII', 'tot')],
+            },
+            "III": {
+                "func": robust(int),
+                "columns": [('44_lvl_0', 'LIII', 'tot')],
+            },
+            "IV": {
+                "func": robust(int),
+                "columns": [('46_lvl_0', 'LIV', 'tot')],
+            },
+            "V": {
+                "func": robust(int),
+                "columns": [('48_lvl_0', 'LV', 'tot')],
+            },
+            "VII": {
+                "func": robust(int),
+                "columns": [('50_lvl_0', 'LVII', 'tot')],
+            },
+        },
+    },
+
+    # Number of positive lymph nodes
+    "positive_dissected": {
+        "info": {
+            "date": {
+                "func": robust(smpl_date),
+                "columns": [('Date of', 'surgery', '90_lvl_2')],
+            },
+        },
+        "ipsi": {
+            "Ia": {
+                "func": robust(int),
+                "columns": [('25_lvl_0', '25_lvl_1', '+')],
+            },
+            "Ib": {
+                "func": robust(int),
+                "columns": [('27_lvl_0', '27_lvl_1', '+')],
+            },
+            "II": {
+                "func": robust(int),
+                "columns": [('29_lvl_0', '29_lvl_1', '+')],
+            },
+            "III": {
+                "func": robust(int),
+                "columns": [('31_lvl_0', '31_lvl_1', '+')],
+            },
+            "IV": {
+                "func": robust(int),
+                "columns": [('33_lvl_0', '33_lvl_1', '+')],
+            },
+            "V": {
+                "func": robust(int),
+                "columns": [('35_lvl_0', '35_lvl_1', '+')],
+            },
+            "VII": {
+                "func": robust(int),
+                "columns": [('37_lvl_0', '37_lvl_1', '+')],
+            },
+        },
+        "contra": {
+            "Ia": {
+                "func": robust(int),
+                "columns": [('39_lvl_0', '39_lvl_1', '+')],
+            },
+            "Ib": {
+                "func": robust(int),
+                "columns": [('41_lvl_0', '41_lvl_1', '+')],
+            },
+            "II": {
+                "func": robust(int),
+                "columns": [('43_lvl_0', '43_lvl_1', '+')],
+            },
+            "III": {
+                "func": robust(int),
+                "columns": [('45_lvl_0', '45_lvl_1', '+')],
+            },
+            "IV": {
+                "func": robust(int),
+                "columns": [('47_lvl_0', '47_lvl_1', '+')],
+            },
+            "V": {
+                "func": robust(int),
+                "columns": [('49_lvl_0', '49_lvl_1', '+')],
+            },
+            "VII": {
+                "func": robust(int),
+                "columns": [('51_lvl_0', '51_lvl_1', '+')],
+            },
+        },
+    },
+}
+
+
+def flatten(
+    nested: dict,
+    prev_key: tuple = (),
+    result: Optional[dict] = None,
+    max_depth: Optional[int] = None,
+) -> dict:
+    """
+    Flatten a `nested` dictionary recursivel by extending the `prev_key` tuple.
+
+    For example:
+    >>> nested = {"hi": {"there": "buddy"}, "how": {"are": "you?"}}
+    >>> flatten(nested)
+    {('hi', 'there'): 'buddy', ('how', 'are'): 'you?'}
+    """
+    if result is None:
+        result = {}
+
+    for key, val in nested.items():
+        is_dict = isinstance(val, dict)
+        current_depth = len((*prev_key, key))
+        has_reached_max_depth = max_depth is not None and current_depth >= max_depth
+
+        if is_dict and not has_reached_max_depth:
+            flatten(val, (*prev_key, key), result, max_depth=max_depth)
+        else:
+            result[(*prev_key, key)] = val
+
+    return result
