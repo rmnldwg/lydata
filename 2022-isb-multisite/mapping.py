@@ -137,6 +137,8 @@ def map_to_lnl(entry, tumor_side, *_args, **_kwargs) -> Optional[List[str]]:
 def map_t_stage(clinical, pathological, *_args, **_kwargs):
     """
     Map their T-stage encoding to actual T-stages.
+
+    The clinical stage is only used if the pathological stage is not available.
     """
     map_dict = {
         1: 1,
@@ -145,11 +147,12 @@ def map_t_stage(clinical, pathological, *_args, **_kwargs):
         4: 3,
         5: 4,
         6: 4,
+        None: None,   # robust(int) returns None if an exception is thrown
     }
-    try:
+    if pd.isna(pathological) or pathological == "n/a":
         return map_dict[robust(int)(clinical)]
-    except KeyError:
-        return None
+
+    return map_dict[robust(int)(pathological)]
 
 
 def map_n_stage(entry, *_args, **_kwargs):
