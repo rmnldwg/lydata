@@ -57,7 +57,6 @@ respective column is about. This is used to generate the documentation for the
 ---
 """
 import re
-from typing import Any
 
 import icd10
 import numpy as np
@@ -353,6 +352,7 @@ COLUMN_MAP = {
             },
             "subsite": {
                 "__doc__": "The subsite of the tumor, specified by ICD-O-3 code.",
+                "func": lambda x, *_a, **_kw: x,
                 "columns": [('ICDO-3', '1_lvl_1', '1_lvl_2')],
             },
             "central": {

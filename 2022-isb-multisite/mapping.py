@@ -363,13 +363,13 @@ def get_mri_date(entry, mri_or_ct, *_args, **_kwargs):
     return robust(smpl_date)(entry)
 
 
-exclude = [
+EXCLUDE = [
     ("Exclusion", lambda s: s == 1)
 ]
 
 
 # dictionary indicating how to transform the columns
-column_map = {
+COLUMN_MAP = {
     # Patient information
     ('patient' , '#'    , 'id'             ): {"func": str, "columns": ["Local Study ID"]},
     ('patient' , '#'    , 'institution'    ): {"default": "Inselspital Bern"},

@@ -4,4 +4,4 @@ matplotlib
 jupyter
 jupyter-contrib-nbextensions
 icd10-cm
-lyscripts==0.6.7
+lyscripts==0.6.8

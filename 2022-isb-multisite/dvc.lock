@@ -4,12 +4,12 @@ stages:
     cmd: "lyscripts data lyproxify -i raw.csv -o data.csv -m mapping.py -r 0\n"
     deps:
     - path: mapping.py
-      md5: 7af01c7ef451c401fcdb4a17a37729d5
-      size: 29203
+      md5: 19a8332a4762501ac846cf39a99ad3ca
+      size: 29412
     - path: raw.csv
       md5: 5a3d19b6e9b14978155698d0198f90c9
       size: 167140
     outs:
     - path: data.csv
-      md5: 1e93faee094990b1022a83eb116a426b
+      md5: afe08de0b0a6d348b24c3855d4ea6016
       size: 184432
