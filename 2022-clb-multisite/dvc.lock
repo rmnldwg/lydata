@@ -18,18 +18,18 @@ stages:
     cmd: "python render.py\n"
     deps:
     - path: README.template
-      md5: 6b68299a0761824c637ce1ee2bc11357
-      size: 610
+      md5: f13cc752ef38306fc9693caf20b06eb6
+      size: 615
     - path: mapping.py
       md5: 82e3a332bcfc1fe048096451e9389f18
       size: 28444
     - path: render.py
-      md5: 676943c81a1f1f75fe3a7ff06734de73
-      size: 603
+      md5: 142ee8a2e4f2df81d8428378221eb524
+      size: 608
     outs:
-    - path: README.md
-      md5: 236f8b328346225da9c53af34a5506ce
-      size: 8520
+    - path: README.partial
+      md5: d3f25ce7c23814bc51eb97c43e91b54c
+      size: 8525
   append-docs:
     cmd: "../.venv/bin/lazydocs --output-path=stdout mapping.py >> README.md\n"
     deps:
@@ -37,7 +37,7 @@ stages:
       md5: 82e3a332bcfc1fe048096451e9389f18
       size: 28444
   description-and-docs:
-    cmd: "python render.py ../.venv/bin/lazydocs --output-path=\"README.md\" mapping.py\n"
+    cmd: "python render.py\n"
     deps:
     - path: README.template
       md5: 6b68299a0761824c637ce1ee2bc11357
@@ -52,3 +52,50 @@ stages:
     - path: README.md
       md5: 236f8b328346225da9c53af34a5506ce
       size: 8520
+  test:
+    cmd:
+    - ../.venv/bin/lazydocs --output-path=. mapping.py
+    - cat README.md mapping.py.md > test.md
+    - rm mapping.py.md
+    deps:
+    - path: README.md
+      md5: 236f8b328346225da9c53af34a5506ce
+      size: 8520
+    - path: mapping.py
+      md5: 82e3a332bcfc1fe048096451e9389f18
+      size: 28444
+    outs:
+    - path: test.md
+      md5: 410c3eb6c19846015a0716402c258ad7
+      size: 16412
+  mapping-docs:
+    cmd: "../.venv/bin/lazydocs --output-path=. mapping.py\n"
+    deps:
+    - path: mapping.py
+      md5: 82e3a332bcfc1fe048096451e9389f18
+      size: 28444
+    outs:
+    - path: mapping.py.md
+      md5: ccb23bf4a83fc6d22c00f33ea57d4ae8
+      size: 7892
+  concat-readme:
+    cmd:
+    - ../.venv/bin/lazydocs --output-path=. --no-watermark mapping.py
+    - cat README.partial mapping.py.md > README.md
+    deps:
+    - path: README.partial
+      md5: d3f25ce7c23814bc51eb97c43e91b54c
+      size: 8525
+    - path: mapping.py
+      md5: 82e3a332bcfc1fe048096451e9389f18
+      size: 28444
+    outs:
+    - path: README.md
+      md5: ca6f0865b2b78202a7e1c10753e00523
+      size: 16314
+  clean:
+    cmd: "rm README.partial mapping.py.md\n"
+    deps:
+    - path: README.md
+      md5: ca6f0865b2b78202a7e1c10753e00523
+      size: 16314

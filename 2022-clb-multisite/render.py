@@ -15,5 +15,5 @@ if __name__ == "__main__":
     template = env.get_template("README.template")
     result = template.render(description=generate_markdown_docs(COLUMN_MAP))
 
-    with open(parent_dir / "README.md", "w") as f:
+    with open(parent_dir / "README.partial", "w") as f:
         f.write(result)
