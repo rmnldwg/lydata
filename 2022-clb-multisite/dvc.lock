@@ -14,3 +14,41 @@ stages:
     - path: data.csv
       md5: c314b7b65b23b6dd5c0ac4e51b3646ca
       size: 120291
+  data-description:
+    cmd: "python render.py\n"
+    deps:
+    - path: README.template
+      md5: 6b68299a0761824c637ce1ee2bc11357
+      size: 610
+    - path: mapping.py
+      md5: 82e3a332bcfc1fe048096451e9389f18
+      size: 28444
+    - path: render.py
+      md5: 676943c81a1f1f75fe3a7ff06734de73
+      size: 603
+    outs:
+    - path: README.md
+      md5: 236f8b328346225da9c53af34a5506ce
+      size: 8520
+  append-docs:
+    cmd: "../.venv/bin/lazydocs --output-path=stdout mapping.py >> README.md\n"
+    deps:
+    - path: mapping.py
+      md5: 82e3a332bcfc1fe048096451e9389f18
+      size: 28444
+  description-and-docs:
+    cmd: "python render.py ../.venv/bin/lazydocs --output-path=\"README.md\" mapping.py\n"
+    deps:
+    - path: README.template
+      md5: 6b68299a0761824c637ce1ee2bc11357
+      size: 610
+    - path: mapping.py
+      md5: 82e3a332bcfc1fe048096451e9389f18
+      size: 28444
+    - path: render.py
+      md5: 676943c81a1f1f75fe3a7ff06734de73
+      size: 603
+    outs:
+    - path: README.md
+      md5: 236f8b328346225da9c53af34a5506ce
+      size: 8520

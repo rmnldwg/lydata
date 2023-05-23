@@ -18,3 +18,19 @@ stages:
     outs:
       - data.csv:
           cache: false
+
+  description-and-docs:
+    desc:
+      Generate the description of the `data.csv` columns from the `COLUMN_MAP` inside
+      the `mapping.py` file and insert it into the `README.template` to render the
+      `README.md` of this dataset. Then, use lazydocs to generate a documentation of
+      the `mapping.py` file and append it to the `README.md`.
+    deps:
+      - README.template
+      - render.py
+      - mapping.py
+    outs:
+      - README.md
+    cmd: >
+      python render.py
+      ../.venv/bin/lazydocs --output-path="README.md" mapping.py
