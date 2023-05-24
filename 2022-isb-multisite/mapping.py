@@ -53,15 +53,15 @@ ALL_FALSE = [False] * 8
 SUBLVL_PATTERN = {
     "left": {
         #      right side  Ia     Ib     IIa    IIb    III    IV     Va     Vb
-        "I":  [*ALL_FALSE, True , True , False, False, False, False, False, False],
-        "II": [*ALL_FALSE, False, False, True , True , False, False, False, False],
-        "V":  [*ALL_FALSE, False, False, False, False, False, False, True , True ],
+        "I": [*ALL_FALSE, True, True, False, False, False, False, False, False],
+        "II": [*ALL_FALSE, False, False, True, True, False, False, False, False],
+        "V": [*ALL_FALSE, False, False, False, False, False, False, True, True],
     },
     "right": {
         #      Ia     Ib     IIa    IIb    III    IV     Va     Vb     left side
-        "I":  [True , True , False, False, False, False, False, False, *ALL_FALSE],
-        "II": [False, False, True , True , False, False, False, False, *ALL_FALSE],
-        "V":  [False, False, False, False, False, False, True , True , *ALL_FALSE],
+        "I": [True, True, False, False, False, False, False, False, *ALL_FALSE],
+        "II": [False, False, True, True, False, False, False, False, *ALL_FALSE],
+        "V": [False, False, False, False, False, False, True, True, *ALL_FALSE],
     },
 }
 
@@ -84,6 +84,7 @@ def robust(func):
     Wrapper that makes any type-conversion function 'robust' by simply returning
     `None` whenever any exception is thrown.
     """
+
     # pylint: disable=bare-except
     def wrapper(entry, *_args, **_kwargs):
         try:
@@ -100,7 +101,7 @@ def get_subsite(entry, *_args, **_kwargs):
     """
     match = re.search("(C[0-9]{2})(.[0-9]{1})?", entry)
     if match:
-        for i in [0,1]:
+        for i in [0, 1]:
             match_str = match.group(i)
             code = icd10.find(match_str)
             if code is not None and code.billable:
@@ -147,7 +148,7 @@ def map_t_stage(clinical, pathological, *_args, **_kwargs):
         4: 3,
         5: 4,
         6: 4,
-        None: None,   # robust(int) returns None if an exception is thrown
+        None: None,  # robust(int) returns None if an exception is thrown
     }
     if pd.isna(pathological) or pathological == "n/a":
         return map_dict[robust(int)(clinical)]
@@ -160,15 +161,7 @@ def map_n_stage(entry, *_args, **_kwargs):
     Map their N-stage encoding to actual N-stage.
     """
     try:
-        return {
-            0: 0,
-            1: 1,
-            2: 2,
-            3: 2,
-            4: 2,
-            5: 2,
-            6: 3
-        }[robust(int)(entry)]
+        return {0: 0, 1: 1, 2: 2, 3: 2, 4: 2, 5: 2, 6: 3}[robust(int)(entry)]
     except KeyError:
         return None
 
@@ -233,14 +226,14 @@ def _from_pathology(entry) -> tuple[dict[str, int], bool]:
     wrote the finding in each LNL and appended a letter to the number. So, if LNL I was
     resected together with LNL II and they found in total 10 nodes, they would write
     `LNL I: 10a` and `LNL II: 10a`.
-    
+
     Additionally, if extracapsular extension was found, they would add 100 to the
     number. And if parts of an LNL were resected with another LNL, but another part of
     the LNL was investigated on its own, they would write something like `12 + 4b`.
     """
     res = {}
     # If not available, leave empty
-    if entry is None or entry == 'n/a' or pd.isna(entry):
+    if entry is None or entry == "n/a" or pd.isna(entry):
         return res, False
 
     # split entry at '+' that may be surrounded by whitespace
@@ -312,10 +305,10 @@ def num_super_from_pathology(*lnl_entries, lnl="I", side="left") -> Optional[int
         res = None
 
     for symbol in symbols:
-        symbol_nums = np.array([lnl_res.get(symbol,0) for lnl_res in lnl_results])
+        symbol_nums = np.array([lnl_res.get(symbol, 0) for lnl_res in lnl_results])
         symbol_pattern = symbol_nums > 0
         if all(symbol_pattern == SUBLVL_PATTERN[side][lnl]):
-            res = (sum(symbol_nums[SUBLVL_PATTERN[side][lnl]]) / 2.) + (res or 0)
+            res = (sum(symbol_nums[SUBLVL_PATTERN[side][lnl]]) / 2.0) + (res or 0)
 
     return res
 
@@ -336,7 +329,7 @@ def map_ece(*lnl_entries, **_kwargs):
     """
     Infer from the provided columns if the patient had LNL involvement with
     extra-capsular extension.
-    
+
     In the data, this is incoded by the value 100 being added to the number of
     positive LNLs.
     """
@@ -363,188 +356,454 @@ def get_mri_date(entry, mri_or_ct, *_args, **_kwargs):
     return robust(smpl_date)(entry)
 
 
-EXCLUDE = [
-    ("Exclusion", lambda s: s == 1)
-]
+EXCLUDE = [("Exclusion", lambda s: s == 1)]
 
 
 # dictionary indicating how to transform the columns
 COLUMN_MAP = {
     # Patient information
-    'patient': {'#':   {'id'             : {"func": str, "columns": ["Local Study ID"]},
-                        'institution'    : {"default": "Inselspital Bern"},
-                        'sex'            : {"func": lambda x, *a, **k: "female" if x == 1 else "male", "columns": ["Gender"]},
-                        'age'            : {"func": robust(int), "columns": ["Age diagnose"]},
-                        'diagnose_date'  : {"func": robust(smpl_date), "columns": ["Date of diagnosis"]},
-                        'alcohol_abuse'  : {"func": lambda x, *a, **k: False if x == 0 else True, "columns": ["Alcohol"]},
-                        'nicotine_abuse' : {"func": lambda x, *a, **k: False if x == 0 else True, "columns": ["Smoking"]},
-                        'hpv_status'     : {"func": lambda x, *a, **k: False if x == 0 else True, "columns": ["p16"]},
-                        'neck_dissection': {"func": lambda x, *a, **k: False if x == 0 else True, "columns": ["side of ND"]},
-                        'tnm_edition'    : {"func": robust(int), "columns": ["TNM Edition"]},
-                        'n_stage'        : {"func": map_n_stage, "columns": ["pN"]},
-                        'm_stage'        : {"func": lambda x, *a, **k: 2 if x == 'x' else robust(int)(x), "columns": ["M-Stage"]},
-                        'extracapsular'  : {"func": map_ece, "columns": PATHOLOGY_COLS_POSITIVE}},},
-
+    "patient": {
+        "#": {
+            "id": {"func": str, "columns": ["Local Study ID"]},
+            "institution": {"default": "Inselspital Bern"},
+            "sex": {
+                "func": lambda x, *a, **k: "female" if x == 1 else "male",
+                "columns": ["Gender"],
+            },
+            "age": {"func": robust(int), "columns": ["Age diagnose"]},
+            "diagnose_date": {
+                "func": robust(smpl_date),
+                "columns": ["Date of diagnosis"],
+            },
+            "alcohol_abuse": {
+                "func": lambda x, *a, **k: False if x == 0 else True,
+                "columns": ["Alcohol"],
+            },
+            "nicotine_abuse": {
+                "func": lambda x, *a, **k: False if x == 0 else True,
+                "columns": ["Smoking"],
+            },
+            "hpv_status": {
+                "func": lambda x, *a, **k: False if x == 0 else True,
+                "columns": ["p16"],
+            },
+            "neck_dissection": {
+                "func": lambda x, *a, **k: False if x == 0 else True,
+                "columns": ["side of ND"],
+            },
+            "tnm_edition": {"func": robust(int), "columns": ["TNM Edition"]},
+            "n_stage": {"func": map_n_stage, "columns": ["pN"]},
+            "m_stage": {
+                "func": lambda x, *a, **k: 2 if x == "x" else robust(int)(x),
+                "columns": ["M-Stage"],
+            },
+            "extracapsular": {"func": map_ece, "columns": PATHOLOGY_COLS_POSITIVE},
+        },
+    },
     # Tumor information
-    'tumor': {'1':     {'location'    : {"func": map_location, "columns": ["Primary Tumor"]},
-                        'subsite'     : {"func": get_subsite, "columns": ["ICD-O-3 code"]},
-                        'side'        : {"func": map_side, "columns": ["side"]},
-                        'central'     : {"func": lambda x, *a, **k: True if robust(int)(x) == 3 else False, "columns": ["side"]},
-                        'extension'   : {"func": lambda x, *a, **k: False if x == 0 else True, "columns": ["Extension over the mid-sagital plane"]},
-                        'volume'      : {"default": None},
-                        'stage_prefix': {"default": "p"},
-                        't_stage'     : {"func": map_t_stage, "columns": ["cT", "pT"]}},},
-
+    "tumor": {
+        "1": {
+            "location": {"func": map_location, "columns": ["Primary Tumor"]},
+            "subsite": {"func": get_subsite, "columns": ["ICD-O-3 code"]},
+            "side": {"func": map_side, "columns": ["side"]},
+            "central": {
+                "func": lambda x, *a, **k: True if robust(int)(x) == 3 else False,
+                "columns": ["side"],
+            },
+            "extension": {
+                "func": lambda x, *a, **k: False if x == 0 else True,
+                "columns": ["Extension over the mid-sagital plane"],
+            },
+            "volume": {"default": None},
+            "stage_prefix": {"default": "p"},
+            "t_stage": {"func": map_t_stage, "columns": ["cT", "pT"]},
+        },
+    },
     # CT & MRI are displayed in the same table. A diagnose is considered MRI,
     # when available and CT only if MRI is not recorded (and CT available)
-    'CT':  {'info':    {'date': {"func": get_ct_date, "columns": ["Date of preoperativ  CT Thorax", MRI_OR_CT_COL]},},
-            'left':    {'I'   : {"default": None},
-                        'Ia'  : {"func": map_ct, "columns": ["left Level Ia", MRI_OR_CT_COL]},
-                        'Ib'  : {"func": map_ct, "columns": ["left Level Ib", MRI_OR_CT_COL]},
-                        'II'  : {"default": None},
-                        'IIa' : {"func": map_ct, "columns": ["left Level IIa", MRI_OR_CT_COL]},
-                        'IIb' : {"func": map_ct, "columns": ["left Level IIb", MRI_OR_CT_COL]},
-                        'III' : {"func": map_ct, "columns": ["left Level III", MRI_OR_CT_COL]},
-                        'IV'  : {"func": map_ct, "columns": ["left Level IV", MRI_OR_CT_COL]},
-                        'V'   : {"default": None},
-                        'Va'  : {"func": map_ct, "columns": ["left Level Va", MRI_OR_CT_COL]},
-                        'Vb'  : {"func": map_ct, "columns": ["left Level Vb", MRI_OR_CT_COL]},},
-            'right':   {'I'   : {"default": None},
-                        'Ia'  : {"func": map_ct, "columns": ["right Level Ia", MRI_OR_CT_COL]},
-                        'Ib'  : {"func": map_ct, "columns": ["right Level Ib", MRI_OR_CT_COL]},
-                        'II'  : {"default": None},
-                        'IIa' : {"func": map_ct, "columns": ["right Level IIa", MRI_OR_CT_COL]},
-                        'IIb' : {"func": map_ct, "columns": ["right Level IIb", MRI_OR_CT_COL]},
-                        'III' : {"func": map_ct, "columns": ["right Level III", MRI_OR_CT_COL]},
-                        'IV'  : {"func": map_ct, "columns": ["right Level IV", MRI_OR_CT_COL]},
-                        'V'   : {"default": None},
-                        'Va'  : {"func": map_ct, "columns": ["right Level Va", MRI_OR_CT_COL]},
-                        'Vb'  : {"func": map_ct, "columns": ["right Level Vb", MRI_OR_CT_COL]},},},
-
+    "CT": {
+        "info": {
+            "date": {
+                "func": get_ct_date,
+                "columns": ["Date of preoperativ  CT Thorax", MRI_OR_CT_COL],
+            },
+        },
+        "left": {
+            "I": {"default": None},
+            "Ia": {"func": map_ct, "columns": ["left Level Ia", MRI_OR_CT_COL]},
+            "Ib": {"func": map_ct, "columns": ["left Level Ib", MRI_OR_CT_COL]},
+            "II": {"default": None},
+            "IIa": {"func": map_ct, "columns": ["left Level IIa", MRI_OR_CT_COL]},
+            "IIb": {"func": map_ct, "columns": ["left Level IIb", MRI_OR_CT_COL]},
+            "III": {"func": map_ct, "columns": ["left Level III", MRI_OR_CT_COL]},
+            "IV": {"func": map_ct, "columns": ["left Level IV", MRI_OR_CT_COL]},
+            "V": {"default": None},
+            "Va": {"func": map_ct, "columns": ["left Level Va", MRI_OR_CT_COL]},
+            "Vb": {"func": map_ct, "columns": ["left Level Vb", MRI_OR_CT_COL]},
+        },
+        "right": {
+            "I": {"default": None},
+            "Ia": {"func": map_ct, "columns": ["right Level Ia", MRI_OR_CT_COL]},
+            "Ib": {"func": map_ct, "columns": ["right Level Ib", MRI_OR_CT_COL]},
+            "II": {"default": None},
+            "IIa": {"func": map_ct, "columns": ["right Level IIa", MRI_OR_CT_COL]},
+            "IIb": {"func": map_ct, "columns": ["right Level IIb", MRI_OR_CT_COL]},
+            "III": {"func": map_ct, "columns": ["right Level III", MRI_OR_CT_COL]},
+            "IV": {"func": map_ct, "columns": ["right Level IV", MRI_OR_CT_COL]},
+            "V": {"default": None},
+            "Va": {"func": map_ct, "columns": ["right Level Va", MRI_OR_CT_COL]},
+            "Vb": {"func": map_ct, "columns": ["right Level Vb", MRI_OR_CT_COL]},
+        },
+    },
     # CT & MRI are displayed in the same table. A diagnose is considered MRI,
     # when available and CT only if MRI is not recorded (and CT available)
-    'MRI': {'info':    {'date': {"func": get_mri_date, "columns": ["Date of  preoperativ  MRI", MRI_OR_CT_COL]},},
-            'left':    {'I'   : {"default": None},
-                        'Ia'  : {"func": map_mri, "columns": ["left Level Ia", MRI_OR_CT_COL]},
-                        'Ib'  : {"func": map_mri, "columns": ["left Level Ib", MRI_OR_CT_COL]},
-                        'II'  : {"default": None},
-                        'IIa' : {"func": map_mri, "columns": ["left Level IIa", MRI_OR_CT_COL]},
-                        'IIb' : {"func": map_mri, "columns": ["left Level IIb", MRI_OR_CT_COL]},
-                        'III' : {"func": map_mri, "columns": ["left Level III", MRI_OR_CT_COL]},
-                        'IV'  : {"func": map_mri, "columns": ["left Level IV", MRI_OR_CT_COL]},
-                        'V'   : {"default": None},
-                        'Va'  : {"func": map_mri, "columns": ["left Level Va", MRI_OR_CT_COL]},
-                        'Vb'  : {"func": map_mri, "columns": ["left Level Vb", MRI_OR_CT_COL]},},
-            'right':   {'I'   : {"default": None},
-                        'Ia'  : {"func": map_mri, "columns": ["right Level Ia", MRI_OR_CT_COL]},
-                        'Ib'  : {"func": map_mri, "columns": ["right Level Ib", MRI_OR_CT_COL]},
-                        'II'  : {"default": None},
-                        'IIa' : {"func": map_mri, "columns": ["right Level IIa", MRI_OR_CT_COL]},
-                        'IIb' : {"func": map_mri, "columns": ["right Level IIb", MRI_OR_CT_COL]},
-                        'III' : {"func": map_mri, "columns": ["right Level III", MRI_OR_CT_COL]},
-                        'IV'  : {"func": map_mri, "columns": ["right Level IV", MRI_OR_CT_COL]},
-                        'V'   : {"default": None},
-                        'Va'  : {"func": map_mri, "columns": ["right Level Va", MRI_OR_CT_COL]},
-                        'Vb'  : {"func": map_mri, "columns": ["right Level Vb", MRI_OR_CT_COL]}},},
-
-    'PET': {'info':    {'date': {"func": robust(smpl_date), "columns": ["Date of preoperativ PET-CT"]},},
-            'left':    {'I'   : {"default": None},
-                        'Ia'  : {"func": robust(smpl_diagnose), "columns": ["left Level Ia.1"]},
-                        'Ib'  : {"func": robust(smpl_diagnose), "columns": ["left Level Ib.1"]},
-                        'II'  : {"default": None},
-                        'IIa' : {"func": robust(smpl_diagnose), "columns": ["left Level IIa.1"]},
-                        'IIb' : {"func": robust(smpl_diagnose), "columns": ["left Level IIb.1"]},
-                        'III' : {"func": robust(smpl_diagnose), "columns": ["left Level III.1"]},
-                        'IV'  : {"func": robust(smpl_diagnose), "columns": ["left Level IV.1"]},
-                        'V'   : {"default": None},
-                        'Va'  : {"func": robust(smpl_diagnose), "columns": ["left Level Va.1"]},
-                        'Vb'  : {"func": robust(smpl_diagnose), "columns": ["left Level Vb.1"]},},
-            'right':   {'I'   : {"default": None},
-                        'Ia'  : {"func": robust(smpl_diagnose), "columns": ["right Level Ia.1"]},
-                        'Ib'  : {"func": robust(smpl_diagnose), "columns": ["right Level Ib.1"]},
-                        'II'  : {"default": None},
-                        'IIa' : {"func": robust(smpl_diagnose), "columns": ["right Level IIa.1"]},
-                        'IIb' : {"func": robust(smpl_diagnose), "columns": ["right Level IIb.1"]},
-                        'III' : {"func": robust(smpl_diagnose), "columns": ["right Level III.1"]},
-                        'IV'  : {"func": robust(smpl_diagnose), "columns": ["right Level IV.1"]},
-                        'V'   : {"default": None},
-                        'Va'  : {"func": robust(smpl_diagnose), "columns": ["right Level Va.1"]},
-                        'Vb'  : {"func": robust(smpl_diagnose), "columns": ["right Level Vb.1"]},},},
-
+    "MRI": {
+        "info": {
+            "date": {
+                "func": get_mri_date,
+                "columns": ["Date of  preoperativ  MRI", MRI_OR_CT_COL],
+            },
+        },
+        "left": {
+            "I": {"default": None},
+            "Ia": {"func": map_mri, "columns": ["left Level Ia", MRI_OR_CT_COL]},
+            "Ib": {"func": map_mri, "columns": ["left Level Ib", MRI_OR_CT_COL]},
+            "II": {"default": None},
+            "IIa": {"func": map_mri, "columns": ["left Level IIa", MRI_OR_CT_COL]},
+            "IIb": {"func": map_mri, "columns": ["left Level IIb", MRI_OR_CT_COL]},
+            "III": {"func": map_mri, "columns": ["left Level III", MRI_OR_CT_COL]},
+            "IV": {"func": map_mri, "columns": ["left Level IV", MRI_OR_CT_COL]},
+            "V": {"default": None},
+            "Va": {"func": map_mri, "columns": ["left Level Va", MRI_OR_CT_COL]},
+            "Vb": {"func": map_mri, "columns": ["left Level Vb", MRI_OR_CT_COL]},
+        },
+        "right": {
+            "I": {"default": None},
+            "Ia": {"func": map_mri, "columns": ["right Level Ia", MRI_OR_CT_COL]},
+            "Ib": {"func": map_mri, "columns": ["right Level Ib", MRI_OR_CT_COL]},
+            "II": {"default": None},
+            "IIa": {"func": map_mri, "columns": ["right Level IIa", MRI_OR_CT_COL]},
+            "IIb": {"func": map_mri, "columns": ["right Level IIb", MRI_OR_CT_COL]},
+            "III": {"func": map_mri, "columns": ["right Level III", MRI_OR_CT_COL]},
+            "IV": {"func": map_mri, "columns": ["right Level IV", MRI_OR_CT_COL]},
+            "V": {"default": None},
+            "Va": {"func": map_mri, "columns": ["right Level Va", MRI_OR_CT_COL]},
+            "Vb": {"func": map_mri, "columns": ["right Level Vb", MRI_OR_CT_COL]},
+        },
+    },
+    "PET": {
+        "info": {
+            "date": {
+                "func": robust(smpl_date),
+                "columns": ["Date of preoperativ PET-CT"],
+            },
+        },
+        "left": {
+            "I": {"default": None},
+            "Ia": {"func": robust(smpl_diagnose), "columns": ["left Level Ia.1"]},
+            "Ib": {"func": robust(smpl_diagnose), "columns": ["left Level Ib.1"]},
+            "II": {"default": None},
+            "IIa": {"func": robust(smpl_diagnose), "columns": ["left Level IIa.1"]},
+            "IIb": {"func": robust(smpl_diagnose), "columns": ["left Level IIb.1"]},
+            "III": {"func": robust(smpl_diagnose), "columns": ["left Level III.1"]},
+            "IV": {"func": robust(smpl_diagnose), "columns": ["left Level IV.1"]},
+            "V": {"default": None},
+            "Va": {"func": robust(smpl_diagnose), "columns": ["left Level Va.1"]},
+            "Vb": {"func": robust(smpl_diagnose), "columns": ["left Level Vb.1"]},
+        },
+        "right": {
+            "I": {"default": None},
+            "Ia": {"func": robust(smpl_diagnose), "columns": ["right Level Ia.1"]},
+            "Ib": {"func": robust(smpl_diagnose), "columns": ["right Level Ib.1"]},
+            "II": {"default": None},
+            "IIa": {"func": robust(smpl_diagnose), "columns": ["right Level IIa.1"]},
+            "IIb": {"func": robust(smpl_diagnose), "columns": ["right Level IIb.1"]},
+            "III": {"func": robust(smpl_diagnose), "columns": ["right Level III.1"]},
+            "IV": {"func": robust(smpl_diagnose), "columns": ["right Level IV.1"]},
+            "V": {"default": None},
+            "Va": {"func": robust(smpl_diagnose), "columns": ["right Level Va.1"]},
+            "Vb": {"func": robust(smpl_diagnose), "columns": ["right Level Vb.1"]},
+        },
+    },
     # pathology in boolean form
-    'pathology':   {'info':    {'date': {"func": robust(smpl_date), "columns": ["Date of ND"]},},
-                    'left':    {'I'   : {"func": binary_super_from_pathology, "kwargs": {"lnl": "I", "side": "left"}, "columns": PATHOLOGY_COLS_POSITIVE},
-                                'Ia'  : {"func": binary_from_pathology, "columns": ["left Level Ia #positiv"]},
-                                'Ib'  : {"func": binary_from_pathology, "columns": ["left Level Ib #positiv"]},
-                                'II'  : {"func": binary_super_from_pathology, "kwargs": {"lnl": "II", "side": "left"}, "columns": PATHOLOGY_COLS_POSITIVE},
-                                'IIa' : {"func": binary_from_pathology, "columns": ["left Level IIa #positiv"]},
-                                'IIb' : {"func": binary_from_pathology, "columns": ["left Level IIb #positiv"]},
-                                'III' : {"func": binary_from_pathology, "columns": ["left Level III #positiv"]},
-                                'IV'  : {"func": binary_from_pathology, "columns": ["left Level IV #positiv"]},
-                                'V'   : {"func": binary_super_from_pathology, "kwargs": {"lnl": "V", "side": "left"}, "columns": PATHOLOGY_COLS_POSITIVE},
-                                'Va'  : {"func": binary_from_pathology, "columns": ["left Level Va #positiv"]},
-                                'Vb'  : {"func": binary_from_pathology, "columns": ["left Level Vb #positiv"]},},
-                    'right':   {'I'   : {"func": binary_super_from_pathology, "kwargs": {"lnl": "I", "side": "right"}, "columns": PATHOLOGY_COLS_POSITIVE},
-                                'Ia'  : {"func": binary_from_pathology, "columns": ["right Level Ia #positiv "]},
-                                'Ib'  : {"func": binary_from_pathology, "columns": ["right Level Ib #positiv"]},
-                                'II'  : {"func": binary_super_from_pathology, "kwargs": {"lnl": "II", "side": "right"}, "columns": PATHOLOGY_COLS_POSITIVE},
-                                'IIa' : {"func": binary_from_pathology, "columns": ["right Level IIa #positiv"]},
-                                'IIb' : {"func": binary_from_pathology, "columns": ["right Level IIb #positiv"]},
-                                'III' : {"func": binary_from_pathology, "columns": ["right Level III #positiv"]},
-                                'IV'  : {"func": binary_from_pathology, "columns": ["right Level IV #positiv"]},
-                                'V'   : {"func": binary_super_from_pathology, "kwargs": {"lnl": "V", "side": "right"}, "columns": PATHOLOGY_COLS_POSITIVE},
-                                'Va'  : {"func": binary_from_pathology, "columns": ["right Level Va #positiv"]},
-                                'Vb'  : {"func": binary_from_pathology, "columns": ["right Level Vb #positiv"]},},},
-
+    "pathology": {
+        "info": {
+            "date": {"func": robust(smpl_date), "columns": ["Date of ND"]},
+        },
+        "left": {
+            "I": {
+                "func": binary_super_from_pathology,
+                "kwargs": {"lnl": "I", "side": "left"},
+                "columns": PATHOLOGY_COLS_POSITIVE,
+            },
+            "Ia": {
+                "func": binary_from_pathology,
+                "columns": ["left Level Ia #positiv"],
+            },
+            "Ib": {
+                "func": binary_from_pathology,
+                "columns": ["left Level Ib #positiv"],
+            },
+            "II": {
+                "func": binary_super_from_pathology,
+                "kwargs": {"lnl": "II", "side": "left"},
+                "columns": PATHOLOGY_COLS_POSITIVE,
+            },
+            "IIa": {
+                "func": binary_from_pathology,
+                "columns": ["left Level IIa #positiv"],
+            },
+            "IIb": {
+                "func": binary_from_pathology,
+                "columns": ["left Level IIb #positiv"],
+            },
+            "III": {
+                "func": binary_from_pathology,
+                "columns": ["left Level III #positiv"],
+            },
+            "IV": {
+                "func": binary_from_pathology,
+                "columns": ["left Level IV #positiv"],
+            },
+            "V": {
+                "func": binary_super_from_pathology,
+                "kwargs": {"lnl": "V", "side": "left"},
+                "columns": PATHOLOGY_COLS_POSITIVE,
+            },
+            "Va": {
+                "func": binary_from_pathology,
+                "columns": ["left Level Va #positiv"],
+            },
+            "Vb": {
+                "func": binary_from_pathology,
+                "columns": ["left Level Vb #positiv"],
+            },
+        },
+        "right": {
+            "I": {
+                "func": binary_super_from_pathology,
+                "kwargs": {"lnl": "I", "side": "right"},
+                "columns": PATHOLOGY_COLS_POSITIVE,
+            },
+            "Ia": {
+                "func": binary_from_pathology,
+                "columns": ["right Level Ia #positiv "],
+            },
+            "Ib": {
+                "func": binary_from_pathology,
+                "columns": ["right Level Ib #positiv"],
+            },
+            "II": {
+                "func": binary_super_from_pathology,
+                "kwargs": {"lnl": "II", "side": "right"},
+                "columns": PATHOLOGY_COLS_POSITIVE,
+            },
+            "IIa": {
+                "func": binary_from_pathology,
+                "columns": ["right Level IIa #positiv"],
+            },
+            "IIb": {
+                "func": binary_from_pathology,
+                "columns": ["right Level IIb #positiv"],
+            },
+            "III": {
+                "func": binary_from_pathology,
+                "columns": ["right Level III #positiv"],
+            },
+            "IV": {
+                "func": binary_from_pathology,
+                "columns": ["right Level IV #positiv"],
+            },
+            "V": {
+                "func": binary_super_from_pathology,
+                "kwargs": {"lnl": "V", "side": "right"},
+                "columns": PATHOLOGY_COLS_POSITIVE,
+            },
+            "Va": {
+                "func": binary_from_pathology,
+                "columns": ["right Level Va #positiv"],
+            },
+            "Vb": {
+                "func": binary_from_pathology,
+                "columns": ["right Level Vb #positiv"],
+            },
+        },
+    },
     # # number of dissected nodes
-    'total_dissected': {'info':    {'date': {"func": robust(smpl_date), "columns": ["Date of ND"]},},
-                        'left':    {'I'   : {"func": num_super_from_pathology, "kwargs": {"lnl": "I", "side": "left"}, "columns": PATHOLOGY_COLS_INVESTIGATED},
-                                    'Ia'  : {"func": num_from_pathology, "columns": ["left Level Ia #investigated"]},
-                                    'Ib'  : {"func": num_from_pathology, "columns": ["left Level Ib #investigated"]},
-                                    'II'  : {"func": num_super_from_pathology, "kwargs": {"lnl": "II", "side": "left"}, "columns": PATHOLOGY_COLS_INVESTIGATED},
-                                    'IIa' : {"func": num_from_pathology, "columns": ["left Level IIa #investigated"]},
-                                    'IIb' : {"func": num_from_pathology, "columns": ["left Level IIb #investigated"]},
-                                    'III' : {"func": num_from_pathology, "columns": ["left Level III #investigated"]},
-                                    'IV'  : {"func": num_from_pathology, "columns": ["left Level IV #investigated"]},
-                                    'V'   : {"func": num_super_from_pathology, "kwargs": {"lnl": "V", "side": "left"}, "columns": PATHOLOGY_COLS_INVESTIGATED},
-                                    'Va'  : {"func": num_from_pathology, "columns": ["left Level Va #investigated"]},
-                                    'Vb'  : {"func": num_from_pathology, "columns": ["left Level Vb #investigated"]},},
-                        'right':   {'I'   : {"func": num_super_from_pathology, "kwargs": {"lnl": "I", "side": "right"}, "columns": PATHOLOGY_COLS_INVESTIGATED},
-                                    'Ia'  : {"func": num_from_pathology, "columns": ["right Level Ia #investigated "]},
-                                    'Ib'  : {"func": num_from_pathology, "columns": ["right Level Ib #investigated"]},
-                                    'II'  : {"func": num_super_from_pathology, "kwargs": {"lnl": "II", "side": "right"}, "columns": PATHOLOGY_COLS_INVESTIGATED},
-                                    'IIa' : {"func": num_from_pathology, "columns": ["right Level IIa #investigated"]},
-                                    'IIb' : {"func": num_from_pathology, "columns": ["right Level IIb #investigated"]},
-                                    'III' : {"func": num_from_pathology, "columns": ["right Level III #investigated"]},
-                                    'IV'  : {"func": num_from_pathology, "columns": ["right Level IV #investigated"]},
-                                    'V'   : {"func": num_super_from_pathology, "kwargs": {"lnl": "V", "side": "right"}, "columns": PATHOLOGY_COLS_INVESTIGATED},
-                                    'Va'  : {"func": num_from_pathology, "columns": ["right Level Va #investigated"]},
-                                    'Vb'  : {"func": num_from_pathology, "columns": ["right Level Vb #investigated"]},},},
-
+    "total_dissected": {
+        "info": {
+            "date": {"func": robust(smpl_date), "columns": ["Date of ND"]},
+        },
+        "left": {
+            "I": {
+                "func": num_super_from_pathology,
+                "kwargs": {"lnl": "I", "side": "left"},
+                "columns": PATHOLOGY_COLS_INVESTIGATED,
+            },
+            "Ia": {
+                "func": num_from_pathology,
+                "columns": ["left Level Ia #investigated"],
+            },
+            "Ib": {
+                "func": num_from_pathology,
+                "columns": ["left Level Ib #investigated"],
+            },
+            "II": {
+                "func": num_super_from_pathology,
+                "kwargs": {"lnl": "II", "side": "left"},
+                "columns": PATHOLOGY_COLS_INVESTIGATED,
+            },
+            "IIa": {
+                "func": num_from_pathology,
+                "columns": ["left Level IIa #investigated"],
+            },
+            "IIb": {
+                "func": num_from_pathology,
+                "columns": ["left Level IIb #investigated"],
+            },
+            "III": {
+                "func": num_from_pathology,
+                "columns": ["left Level III #investigated"],
+            },
+            "IV": {
+                "func": num_from_pathology,
+                "columns": ["left Level IV #investigated"],
+            },
+            "V": {
+                "func": num_super_from_pathology,
+                "kwargs": {"lnl": "V", "side": "left"},
+                "columns": PATHOLOGY_COLS_INVESTIGATED,
+            },
+            "Va": {
+                "func": num_from_pathology,
+                "columns": ["left Level Va #investigated"],
+            },
+            "Vb": {
+                "func": num_from_pathology,
+                "columns": ["left Level Vb #investigated"],
+            },
+        },
+        "right": {
+            "I": {
+                "func": num_super_from_pathology,
+                "kwargs": {"lnl": "I", "side": "right"},
+                "columns": PATHOLOGY_COLS_INVESTIGATED,
+            },
+            "Ia": {
+                "func": num_from_pathology,
+                "columns": ["right Level Ia #investigated "],
+            },
+            "Ib": {
+                "func": num_from_pathology,
+                "columns": ["right Level Ib #investigated"],
+            },
+            "II": {
+                "func": num_super_from_pathology,
+                "kwargs": {"lnl": "II", "side": "right"},
+                "columns": PATHOLOGY_COLS_INVESTIGATED,
+            },
+            "IIa": {
+                "func": num_from_pathology,
+                "columns": ["right Level IIa #investigated"],
+            },
+            "IIb": {
+                "func": num_from_pathology,
+                "columns": ["right Level IIb #investigated"],
+            },
+            "III": {
+                "func": num_from_pathology,
+                "columns": ["right Level III #investigated"],
+            },
+            "IV": {
+                "func": num_from_pathology,
+                "columns": ["right Level IV #investigated"],
+            },
+            "V": {
+                "func": num_super_from_pathology,
+                "kwargs": {"lnl": "V", "side": "right"},
+                "columns": PATHOLOGY_COLS_INVESTIGATED,
+            },
+            "Va": {
+                "func": num_from_pathology,
+                "columns": ["right Level Va #investigated"],
+            },
+            "Vb": {
+                "func": num_from_pathology,
+                "columns": ["right Level Vb #investigated"],
+            },
+        },
+    },
     # # Number of positive nodes
-    'total_positive':  {'info':    {'date'            : {"func": robust(smpl_date), "columns": ["Date of ND"]},
-                                    'largest_node_mm' : {"func": robust(float), "columns": ["Size of largest LN (mm)"]},
-                                    'largest_node_lnl': {"func": map_to_lnl, "columns": ["location of largest LN", "side"]},},
-                        'left':    {'I'               : {"func": num_super_from_pathology, "kwargs": {"lnl": "I", "side": "left"}, "columns": PATHOLOGY_COLS_POSITIVE},
-                                    'Ia'              : {"func": num_from_pathology, "columns": ["left Level Ia #positiv"]},
-                                    'Ib'              : {"func": num_from_pathology, "columns": ["left Level Ib #positiv"]},
-                                    'II'              : {"func": num_super_from_pathology, "kwargs": {"lnl": "II", "side": "left"}, "columns": PATHOLOGY_COLS_POSITIVE},
-                                    'IIa'             : {"func": num_from_pathology, "columns": ["left Level IIa #positiv"]},
-                                    'IIb'             : {"func": num_from_pathology, "columns": ["left Level IIb #positiv"]},
-                                    'III'             : {"func": num_from_pathology, "columns": ["left Level III #positiv"]},
-                                    'IV'              : {"func": num_from_pathology, "columns": ["left Level IV #positiv"]},
-                                    'V'               : {"func": num_super_from_pathology, "kwargs": {"lnl": "V", "side": "left"}, "columns": PATHOLOGY_COLS_POSITIVE},
-                                    'Va'              : {"func": num_from_pathology, "columns": ["left Level Va #positiv"]},
-                                    'Vb'              : {"func": num_from_pathology, "columns": ["left Level Vb #positiv"]},},
-                        'right':   {'I'               : {"func": num_super_from_pathology, "kwargs": {"lnl": "I", "side": "right"}, "columns": PATHOLOGY_COLS_POSITIVE},
-                                    'Ia'              : {"func": num_from_pathology, "columns": ["right Level Ia #positiv "]},
-                                    'Ib'              : {"func": num_from_pathology, "columns": ["right Level Ib #positiv"]},
-                                    'II'              : {"func": num_super_from_pathology, "kwargs": {"lnl": "II", "side": "right"}, "columns": PATHOLOGY_COLS_POSITIVE},
-                                    'IIa'             : {"func": num_from_pathology, "columns": ["right Level IIa #positiv"]},
-                                    'IIb'             : {"func": num_from_pathology, "columns": ["right Level IIb #positiv"]},
-                                    'III'             : {"func": num_from_pathology, "columns": ["right Level III #positiv"]},
-                                    'IV'              : {"func": num_from_pathology, "columns": ["right Level IV #positiv"]},
-                                    'V'               : {"func": num_super_from_pathology, "kwargs": {"lnl": "V", "side": "right"}, "columns": PATHOLOGY_COLS_POSITIVE},
-                                    'Va'              : {"func": num_from_pathology, "columns": ["right Level Va #positiv"]},
-                                    'Vb'              : {"func": num_from_pathology, "columns": ["right Level Vb #positiv"]},},},
+    "total_positive": {
+        "info": {
+            "date": {"func": robust(smpl_date), "columns": ["Date of ND"]},
+            "largest_node_mm": {
+                "func": robust(float),
+                "columns": ["Size of largest LN (mm)"],
+            },
+            "largest_node_lnl": {
+                "func": map_to_lnl,
+                "columns": ["location of largest LN", "side"],
+            },
+        },
+        "left": {
+            "I": {
+                "func": num_super_from_pathology,
+                "kwargs": {"lnl": "I", "side": "left"},
+                "columns": PATHOLOGY_COLS_POSITIVE,
+            },
+            "Ia": {"func": num_from_pathology, "columns": ["left Level Ia #positiv"]},
+            "Ib": {"func": num_from_pathology, "columns": ["left Level Ib #positiv"]},
+            "II": {
+                "func": num_super_from_pathology,
+                "kwargs": {"lnl": "II", "side": "left"},
+                "columns": PATHOLOGY_COLS_POSITIVE,
+            },
+            "IIa": {"func": num_from_pathology, "columns": ["left Level IIa #positiv"]},
+            "IIb": {"func": num_from_pathology, "columns": ["left Level IIb #positiv"]},
+            "III": {"func": num_from_pathology, "columns": ["left Level III #positiv"]},
+            "IV": {"func": num_from_pathology, "columns": ["left Level IV #positiv"]},
+            "V": {
+                "func": num_super_from_pathology,
+                "kwargs": {"lnl": "V", "side": "left"},
+                "columns": PATHOLOGY_COLS_POSITIVE,
+            },
+            "Va": {"func": num_from_pathology, "columns": ["left Level Va #positiv"]},
+            "Vb": {"func": num_from_pathology, "columns": ["left Level Vb #positiv"]},
+        },
+        "right": {
+            "I": {
+                "func": num_super_from_pathology,
+                "kwargs": {"lnl": "I", "side": "right"},
+                "columns": PATHOLOGY_COLS_POSITIVE,
+            },
+            "Ia": {"func": num_from_pathology, "columns": ["right Level Ia #positiv "]},
+            "Ib": {"func": num_from_pathology, "columns": ["right Level Ib #positiv"]},
+            "II": {
+                "func": num_super_from_pathology,
+                "kwargs": {"lnl": "II", "side": "right"},
+                "columns": PATHOLOGY_COLS_POSITIVE,
+            },
+            "IIa": {
+                "func": num_from_pathology,
+                "columns": ["right Level IIa #positiv"],
+            },
+            "IIb": {
+                "func": num_from_pathology,
+                "columns": ["right Level IIb #positiv"],
+            },
+            "III": {
+                "func": num_from_pathology,
+                "columns": ["right Level III #positiv"],
+            },
+            "IV": {"func": num_from_pathology, "columns": ["right Level IV #positiv"]},
+            "V": {
+                "func": num_super_from_pathology,
+                "kwargs": {"lnl": "V", "side": "right"},
+                "columns": PATHOLOGY_COLS_POSITIVE,
+            },
+            "Va": {"func": num_from_pathology, "columns": ["right Level Va #positiv"]},
+            "Vb": {"func": num_from_pathology, "columns": ["right Level Vb #positiv"]},
+        },
+    },
 }
