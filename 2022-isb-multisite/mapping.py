@@ -363,41 +363,78 @@ EXCLUDE = [("Exclusion", lambda s: s == 1)]
 COLUMN_MAP = {
     # Patient information
     "patient": {
+        "__doc__": "This top-level header contains general patient information.",
         "#": {
-            "id": {"func": str, "columns": ["Local Study ID"]},
-            "institution": {"default": "Inselspital Bern"},
+            "__doc__": (
+                "The second level header for the `patient` columns is only a "
+                "placeholder."
+            ),
+            "id": {
+                "__doc__": "The local study ID.",
+                "func": str,
+                "columns": ["Local Study ID"],
+            },
+            "institution": {
+                "__doc__": "The institution where the patient was treated.",
+                "default": "Inselspital Bern",
+            },
             "sex": {
+                "__doc__": "The biological sex of the patient.",
                 "func": lambda x, *a, **k: "female" if x == 1 else "male",
                 "columns": ["Gender"],
             },
-            "age": {"func": robust(int), "columns": ["Age diagnose"]},
+            "age": {
+                "__doc__": "The age of the patient at the time of diagnosis.",
+                "func": robust(int),
+                "columns": ["Age diagnose"],
+            },
             "diagnose_date": {
+                "__doc__": "The date of diagnosis.",
                 "func": robust(smpl_date),
                 "columns": ["Date of diagnosis"],
             },
             "alcohol_abuse": {
+                "__doc__": "Whether the patient was abusingly drinking alcohol at the time of diagnosis.",
                 "func": lambda x, *a, **k: False if x == 0 else True,
                 "columns": ["Alcohol"],
             },
             "nicotine_abuse": {
+                "__doc__": "Whether the patient was considered a smoker. This is set to `False`, when the patient had zero pack-years",
                 "func": lambda x, *a, **k: False if x == 0 else True,
                 "columns": ["Smoking"],
             },
             "hpv_status": {
+                "__doc__": "The HPV p16 status of the patient.",
                 "func": lambda x, *a, **k: False if x == 0 else True,
                 "columns": ["p16"],
             },
             "neck_dissection": {
+                "__doc__": (
+                    "Whether the patient underwent a neck dissection. In this dataset, "
+                    "all patients underwent a neck dissection."
+                ),
                 "func": lambda x, *a, **k: False if x == 0 else True,
                 "columns": ["side of ND"],
             },
-            "tnm_edition": {"func": robust(int), "columns": ["TNM Edition"]},
-            "n_stage": {"func": map_n_stage, "columns": ["pN"]},
+            "tnm_edition": {
+                "__doc__": "The edition of the TNM classification used.",
+                "func": robust(int),
+                "columns": ["TNM Edition"],
+            },
+            "n_stage": {
+                "__doc__": "The pN category of the patient (pathologically assessed).",
+                "func": map_n_stage,
+                "columns": ["pN"],
+            },
             "m_stage": {
+                "__doc__": "The M category of the patient.",
                 "func": lambda x, *a, **k: 2 if x == "x" else robust(int)(x),
                 "columns": ["M-Stage"],
             },
-            "extracapsular": {"func": map_ece, "columns": PATHOLOGY_COLS_POSITIVE},
+            "extracapsular": {
+                "__doc__": "Whether the patient had extracapsular spread in any LNL.",
+                "func": map_ece, "columns": PATHOLOGY_COLS_POSITIVE,
+            },
         },
     },
     # Tumor information

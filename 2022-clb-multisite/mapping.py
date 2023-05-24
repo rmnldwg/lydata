@@ -321,7 +321,7 @@ COLUMN_MAP = {
                 "columns": TNM_COLS,
             },
             "n_stage": {
-                "__doc__": "The N category of the patient.",
+                "__doc__": "The pN category of the patient (pathologically assessed).",
                 "func": get_n_category,
                 "columns": TNM_COLS,
             },
