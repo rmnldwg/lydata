@@ -37,17 +37,17 @@ stages:
       md5: 82e3a332bcfc1fe048096451e9389f18
       size: 28444
   description-and-docs:
-    cmd: "python render.py\n"
+    cmd: "python ../render.py -m mapping.py -t README.template -o README.md\n"
     deps:
+    - path: ../render.py
+      md5: 6e259b8b08d52dd5dcbd3ebfc4ffceca
+      size: 1699
     - path: README.template
       md5: 12edce3ff9fd2bb77bcbfece4a1c0886
       size: 642
     - path: mapping.py
       md5: 4c80fad76f9eda89e9352cbeee0e96d3
       size: 25193
-    - path: render.py
-      md5: c0060844604446a88a175f442786d9bd
-      size: 776
     outs:
     - path: README.md
       md5: 30c9315b7446d1f782f722e8f0f804d1

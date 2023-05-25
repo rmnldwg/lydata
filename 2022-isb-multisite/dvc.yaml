@@ -16,3 +16,19 @@ stages:
     outs:
       - data.csv:
           cache: false
+
+  description-and-docs:
+    desc:
+      Generate the description of the `data.csv` columns from the `COLUMN_MAP` inside
+      the `mapping.py` file, as well as the documentation of all the functions used
+      in the `mapping.py` module. Insert these documentations into the `README.template`
+      and create the `README.md` from it.
+    deps:
+      - README.template
+      - ../render.py
+      - mapping.py
+    outs:
+      - README.md:
+          cache: false
+    cmd: >
+      python ../render.py -m mapping.py -t README.template -o README.md

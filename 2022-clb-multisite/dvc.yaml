@@ -27,9 +27,10 @@ stages:
       and create the `README.md` from it.
     deps:
       - README.template
-      - render.py
+      - ../render.py
       - mapping.py
     outs:
-      - README.md
+      - README.md:
+          cache: false
     cmd: >
-      python render.py
+      python ../render.py -m mapping.py -t README.template -o README.md
