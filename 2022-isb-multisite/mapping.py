@@ -517,7 +517,14 @@ COLUMN_MAP = {
             "III": {"func": map_ct, "columns": ["left Level III", MRI_OR_CT_COL]},
             "IV": {"func": map_ct, "columns": ["left Level IV", MRI_OR_CT_COL]},
             "V": {"default": None},
-            "Va": {"func": map_ct, "columns": ["left Level Va", MRI_OR_CT_COL]},
+            "Va": {
+                "__doc__": (
+                    "As an example, this describes the clincal involvement of the left"
+                    " LNL Va, as observed in a CT scan."
+                ),
+                "func": map_ct,
+                "columns": ["left Level Va", MRI_OR_CT_COL],
+            },
             "Vb": {"func": map_ct, "columns": ["left Level Vb", MRI_OR_CT_COL]},
         },
         "right": {
@@ -526,7 +533,14 @@ COLUMN_MAP = {
             "Ia": {"func": map_ct, "columns": ["right Level Ia", MRI_OR_CT_COL]},
             "Ib": {"func": map_ct, "columns": ["right Level Ib", MRI_OR_CT_COL]},
             "II": {"default": None},
-            "IIa": {"func": map_ct, "columns": ["right Level IIa", MRI_OR_CT_COL]},
+            "IIa": {
+                "__doc__": (
+                    "While this describes the clincal involvement of the right LNL IIa,"
+                    " as observed in a CT scan."
+                ),
+                "func": map_ct,
+                "columns": ["right Level IIa", MRI_OR_CT_COL],
+            },
             "IIb": {"func": map_ct, "columns": ["right Level IIb", MRI_OR_CT_COL]},
             "III": {"func": map_ct, "columns": ["right Level III", MRI_OR_CT_COL]},
             "IV": {"func": map_ct, "columns": ["right Level IV", MRI_OR_CT_COL]},
@@ -555,7 +569,14 @@ COLUMN_MAP = {
         "left": {
             "__doc__": "This describes the observed involvement of the left LNLs.",
             "I": {"default": None},
-            "Ia": {"func": map_mri, "columns": ["left Level Ia", MRI_OR_CT_COL]},
+            "Ia": {
+                "__doc__": (
+                    "E.g., this describes the clincal involvement of the left LNL Ia,"
+                    " as observed in an MRI scan."
+                ),
+                "func": map_mri,
+                "columns": ["left Level Ia", MRI_OR_CT_COL],
+            },
             "Ib": {"func": map_mri, "columns": ["left Level Ib", MRI_OR_CT_COL]},
             "II": {"default": None},
             "IIa": {"func": map_mri, "columns": ["left Level IIa", MRI_OR_CT_COL]},
@@ -574,7 +595,14 @@ COLUMN_MAP = {
             "II": {"default": None},
             "IIa": {"func": map_mri, "columns": ["right Level IIa", MRI_OR_CT_COL]},
             "IIb": {"func": map_mri, "columns": ["right Level IIb", MRI_OR_CT_COL]},
-            "III": {"func": map_mri, "columns": ["right Level III", MRI_OR_CT_COL]},
+            "III": {
+                "__doc__": (
+                    "This describes the clincal involvement of the right LNL III, as"
+                    " observed in an MRI scan."
+                ),
+                "func": map_mri,
+                "columns": ["right Level III", MRI_OR_CT_COL],
+            },
             "IV": {"func": map_mri, "columns": ["right Level IV", MRI_OR_CT_COL]},
             "V": {"default": None},
             "Va": {"func": map_mri, "columns": ["right Level Va", MRI_OR_CT_COL]},
@@ -605,7 +633,14 @@ COLUMN_MAP = {
             "IIa": {"func": robust(smpl_diagnose), "columns": ["left Level IIa.1"]},
             "IIb": {"func": robust(smpl_diagnose), "columns": ["left Level IIb.1"]},
             "III": {"func": robust(smpl_diagnose), "columns": ["left Level III.1"]},
-            "IV": {"func": robust(smpl_diagnose), "columns": ["left Level IV.1"]},
+            "IV": {
+                "__doc__": (
+                    "For instance, this describes the clincal involvement of the left"
+                    " LNL IV, as observed in a PET scan."
+                ),
+                "func": robust(smpl_diagnose),
+                "columns": ["left Level IV.1"],
+            },
             "V": {"default": None},
             "Va": {"func": robust(smpl_diagnose), "columns": ["left Level Va.1"]},
             "Vb": {"func": robust(smpl_diagnose), "columns": ["left Level Vb.1"]},
@@ -618,7 +653,14 @@ COLUMN_MAP = {
             "II": {"default": None},
             "IIa": {"func": robust(smpl_diagnose), "columns": ["right Level IIa.1"]},
             "IIb": {"func": robust(smpl_diagnose), "columns": ["right Level IIb.1"]},
-            "III": {"func": robust(smpl_diagnose), "columns": ["right Level III.1"]},
+            "III": {
+                "__doc__": (
+                    "On the other side, this describes the clincal involvement of the"
+                    " right LNL III, as observed in a PET scan."
+                ),
+                "func": robust(smpl_diagnose),
+                "columns": ["right Level III.1"],
+            },
             "IV": {"func": robust(smpl_diagnose), "columns": ["right Level IV.1"]},
             "V": {"default": None},
             "Va": {"func": robust(smpl_diagnose), "columns": ["right Level Va.1"]},
@@ -645,6 +687,10 @@ COLUMN_MAP = {
         "left": {
             "__doc__": "Microscopic involvement of the left LNLs.",
             "I": {
+                "__doc__": (
+                    "This describes whether the left LNL I was pathologically involved"
+                    " or not."
+                ),
                 "func": binary_super_from_pathology,
                 "kwargs": {"lnl": "I", "side": "left"},
                 "columns": PATHOLOGY_COLS_POSITIVE,
@@ -717,6 +763,10 @@ COLUMN_MAP = {
                 "columns": ["right Level IIa #positiv"],
             },
             "IIb": {
+                "__doc__": (
+                    "This describes whether the right sub-LNL IIb was pathologically"
+                    " involved or not."
+                ),
                 "func": binary_from_pathology,
                 "columns": ["right Level IIb #positiv"],
             },
@@ -802,6 +852,7 @@ COLUMN_MAP = {
                 "columns": PATHOLOGY_COLS_INVESTIGATED,
             },
             "Va": {
+                "__doc__": "Number of dissected lymph nodes in the left sub-LNL Va.",
                 "func": num_from_pathology,
                 "columns": ["left Level Va #investigated"],
             },
@@ -826,6 +877,7 @@ COLUMN_MAP = {
                 "columns": ["right Level Ib #investigated"],
             },
             "II": {
+                "__doc__": "Total number of dissected lymph nodes in the right LNL II.",
                 "func": num_super_from_pathology,
                 "kwargs": {"lnl": "II", "side": "right"},
                 "columns": PATHOLOGY_COLS_INVESTIGATED,
@@ -915,6 +967,10 @@ COLUMN_MAP = {
             "III": {"func": num_from_pathology, "columns": ["left Level III #positiv"]},
             "IV": {"func": num_from_pathology, "columns": ["left Level IV #positiv"]},
             "V": {
+                "__doc__": (
+                    "Total number of pathologically positive lymph nodes in the left"
+                    " LNL V."
+                ),
                 "func": num_super_from_pathology,
                 "kwargs": {"lnl": "V", "side": "left"},
                 "columns": PATHOLOGY_COLS_POSITIVE,
@@ -940,6 +996,10 @@ COLUMN_MAP = {
                 "columns": PATHOLOGY_COLS_POSITIVE,
             },
             "IIa": {
+                "__doc__": (
+                    "Total number of pathologically positive lymph nodes in the right"
+                    " sub-LNL IIa."
+                ),
                 "func": num_from_pathology,
                 "columns": ["right Level IIa #positiv"],
             },

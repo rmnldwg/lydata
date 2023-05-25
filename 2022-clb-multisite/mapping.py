@@ -408,37 +408,34 @@ COLUMN_MAP = {
         "ipsi": {
             "__doc__": "This reports the involvement of the ipsilateral LNLs.",
             "Ia": {
-                "__doc__": "The involvement of the ipsilateral LNL Ia.",
                 "func": parse_pathology,
                 "columns": [("25_lvl_0", "25_lvl_1", "+")],
             },
             "Ib": {
-                "__doc__": "The involvement of the ipsilateral LNL Ib.",
                 "func": parse_pathology,
                 "columns": [("27_lvl_0", "27_lvl_1", "+")],
             },
             "II": {
-                "__doc__": "The involvement of the ipsilateral LNL II.",
                 "func": parse_pathology,
                 "columns": [("29_lvl_0", "29_lvl_1", "+")],
             },
             "III": {
-                "__doc__": "The involvement of the ipsilateral LNL III.",
+                "__doc__": (
+                    "For example, this column reports the involvement of the"
+                    " ipsilateral LNL III."
+                ),
                 "func": parse_pathology,
                 "columns": [("31_lvl_0", "31_lvl_1", "+")],
             },
             "IV": {
-                "__doc__": "The involvement of the ipsilateral LNL IV.",
                 "func": parse_pathology,
                 "columns": [("33_lvl_0", "33_lvl_1", "+")],
             },
             "V": {
-                "__doc__": "The involvement of the ipsilateral LNL V.",
                 "func": parse_pathology,
                 "columns": [("35_lvl_0", "35_lvl_1", "+")],
             },
             "VII": {
-                "__doc__": "The involvement of the ipsilateral LNL VII.",
                 "func": parse_pathology,
                 "columns": [("37_lvl_0", "37_lvl_1", "+")],
             },
@@ -446,37 +443,34 @@ COLUMN_MAP = {
         "contra": {
             "__doc__": "This reports the involvement of the contralateral LNLs.",
             "Ia": {
-                "__doc__": "The involvement of the contralateral LNL Ia.",
                 "func": parse_pathology,
                 "columns": [("39_lvl_0", "39_lvl_1", "+")],
             },
             "Ib": {
-                "__doc__": "The involvement of the contralateral LNL Ib.",
                 "func": parse_pathology,
                 "columns": [("41_lvl_0", "41_lvl_1", "+")],
             },
             "II": {
-                "__doc__": "The involvement of the contralateral LNL II.",
                 "func": parse_pathology,
                 "columns": [("43_lvl_0", "43_lvl_1", "+")],
             },
             "III": {
-                "__doc__": "The involvement of the contralateral LNL III.",
                 "func": parse_pathology,
                 "columns": [("45_lvl_0", "45_lvl_1", "+")],
             },
             "IV": {
-                "__doc__": "The involvement of the contralateral LNL IV.",
                 "func": parse_pathology,
                 "columns": [("47_lvl_0", "47_lvl_1", "+")],
             },
             "V": {
-                "__doc__": "The involvement of the contralateral LNL V.",
+                "__doc__": (
+                    "This column reports the pathologic involvement of the"
+                    " contralateral LNL V."
+                ),
                 "func": parse_pathology,
                 "columns": [("49_lvl_0", "49_lvl_1", "+")],
             },
             "VII": {
-                "__doc__": "The involvement of the contralateral LNL VII.",
                 "func": parse_pathology,
                 "columns": [("51_lvl_0", "51_lvl_1", "+")],
             },
@@ -500,32 +494,30 @@ COLUMN_MAP = {
         "ipsi": {
             "__doc__": "This reports the diagnostic consensus of the ipsilateral LNLs.",
             "Ia": {
-                "__doc__": "The diagnostic consensus of the ipsilateral LNL Ia.",
                 "func": set_diagnostic_consensus,
                 "columns": [("25_lvl_0", "25_lvl_1", "+")],
             },
             "Ib": {
-                "__doc__": "The diagnostic consensus of the ipsilateral LNL Ib.",
+                "__doc__": (
+                    "E.g., this column reports the diagnostic consensus of the"
+                    " ipsilateral LNL Ib."
+                ),
                 "func": set_diagnostic_consensus,
                 "columns": [("27_lvl_0", "27_lvl_1", "+")],
             },
             "II": {
-                "__doc__": "The diagnostic consensus of the ipsilateral LNL II.",
                 "func": set_diagnostic_consensus,
                 "columns": [("29_lvl_0", "29_lvl_1", "+")],
             },
             "III": {
-                "__doc__": "The diagnostic consensus of the ipsilateral LNL III.",
                 "func": set_diagnostic_consensus,
                 "columns": [("31_lvl_0", "31_lvl_1", "+")],
             },
             "IV": {
-                "__doc__": "The diagnostic consensus of the ipsilateral LNL IV.",
                 "func": set_diagnostic_consensus,
                 "columns": [("33_lvl_0", "33_lvl_1", "+")],
             },
             "V": {
-                "__doc__": "The diagnostic consensus of the ipsilateral LNL V.",
                 "func": set_diagnostic_consensus,
                 "columns": [("35_lvl_0", "35_lvl_1", "+")],
             },
@@ -535,32 +527,30 @@ COLUMN_MAP = {
                 "This reports the diagnostic consensus of the contralateral LNLs."
             ),
             "Ia": {
-                "__doc__": "The diagnostic consensus of the contralateral LNL Ia.",
                 "func": set_diagnostic_consensus,
                 "columns": [("39_lvl_0", "39_lvl_1", "+")],
             },
             "Ib": {
-                "__doc__": "The diagnostic consensus of the contralateral LNL Ib.",
                 "func": set_diagnostic_consensus,
                 "columns": [("41_lvl_0", "41_lvl_1", "+")],
             },
             "II": {
-                "__doc__": "The diagnostic consensus of the contralateral LNL II.",
                 "func": set_diagnostic_consensus,
                 "columns": [("43_lvl_0", "43_lvl_1", "+")],
             },
             "III": {
-                "__doc__": "The diagnostic consensus of the contralateral LNL III.",
+                "__doc__": (
+                    "Under this column, we report the diagnostic consensus of the"
+                    " contralateral LNL III."
+                ),
                 "func": set_diagnostic_consensus,
                 "columns": [("45_lvl_0", "45_lvl_1", "+")],
             },
             "IV": {
-                "__doc__": "The diagnostic consensus of the contralateral LNL IV.",
                 "func": set_diagnostic_consensus,
                 "columns": [("47_lvl_0", "47_lvl_1", "+")],
             },
             "V": {
-                "__doc__": "The diagnostic consensus of the contralateral LNL V.",
                 "func": set_diagnostic_consensus,
                 "columns": [("49_lvl_0", "49_lvl_1", "+")],
             },
@@ -586,51 +576,34 @@ COLUMN_MAP = {
                 "ipsilateral LNL."
             ),
             "Ia": {
-                "__doc__": (
-                    "Total number of dissected lymph nodes in ipsilateral LNL Ia."
-                ),
                 "func": robust(int),
                 "columns": [("Homolateral neck node infiltration", "LIa", "tot")],
             },
             "Ib": {
-                "__doc__": (
-                    "Total number of dissected lymph nodes in ipsilateral LNL Ib."
-                ),
                 "func": robust(int),
                 "columns": [("26_lvl_0", "LIb", "tot")],
             },
             "II": {
                 "__doc__": (
-                    "Total number of dissected lymph nodes in ipsilateral LNL II."
+                    "For instance, this column reports the total number of "
+                    "dissected lymph nodes in ipsilateral LNL II."
                 ),
                 "func": robust(int),
                 "columns": [("28_lvl_0", "LII", "tot")],
             },
             "III": {
-                "__doc__": (
-                    "Total number of dissected lymph nodes in ipsilateral LNL III."
-                ),
                 "func": robust(int),
                 "columns": [("30_lvl_0", "LIII", "tot")],
             },
             "IV": {
-                "__doc__": (
-                    "Total number of dissected lymph nodes in ipsilateral LNL IV."
-                ),
                 "func": robust(int),
                 "columns": [("32_lvl_0", "LIV", "tot")],
             },
             "V": {
-                "__doc__": (
-                    "Total number of dissected lymph nodes in ipsilateral LNL V."
-                ),
                 "func": robust(int),
                 "columns": [("34_lvl_0", "LV", "tot")],
             },
             "VII": {
-                "__doc__": (
-                    "Total number of dissected lymph nodes in ipsilateral LNL VII."
-                ),
                 "func": robust(int),
                 "columns": [("36_lvl_0", "LVII", "tot")],
             },
@@ -641,50 +614,33 @@ COLUMN_MAP = {
                 "contralateral LNL."
             ),
             "Ia": {
-                "__doc__": (
-                    "Total number of dissected lymph nodes in contralateral LNL Ia."
-                ),
                 "func": robust(int),
                 "columns": [("Heterolateral neck node infiltration", "LIa", "tot")],
             },
             "Ib": {
-                "__doc__": (
-                    "Total number of dissected lymph nodes in contralateral LNL Ib."
-                ),
                 "func": robust(int),
                 "columns": [("40_lvl_0", "LIb", "tot")],
             },
             "II": {
-                "__doc__": (
-                    "Total number of dissected lymph nodes in contralateral LNL II."
-                ),
                 "func": robust(int),
                 "columns": [("42_lvl_0", "LII", "tot")],
             },
             "III": {
-                "__doc__": (
-                    "Total number of dissected lymph nodes in contralateral LNL III."
-                ),
                 "func": robust(int),
                 "columns": [("44_lvl_0", "LIII", "tot")],
             },
             "IV": {
-                "__doc__": (
-                    "Total number of dissected lymph nodes in contralateral LNL IV."
-                ),
                 "func": robust(int),
                 "columns": [("46_lvl_0", "LIV", "tot")],
             },
             "V": {
-                "__doc__": (
-                    "Total number of dissected lymph nodes in contralateral LNL V."
-                ),
                 "func": robust(int),
                 "columns": [("48_lvl_0", "LV", "tot")],
             },
             "VII": {
                 "__doc__": (
-                    "Total number of dissected lymph nodes in contralateral LNL VII."
+                    "While this column reports the total number of dissected "
+                    "lymph nodes in contralateral LNL VII."
                 ),
                 "func": robust(int),
                 "columns": [("50_lvl_0", "LVII", "tot")],
@@ -712,37 +668,34 @@ COLUMN_MAP = {
                 "LNL that were pathologically found to be positive."
             ),
             "Ia": {
-                "__doc__": "Number of metastatic lymph nodes in ipsilateral LNL Ia.",
                 "func": robust(int),
                 "columns": [("25_lvl_0", "25_lvl_1", "+")],
             },
             "Ib": {
-                "__doc__": "Number of metastatic lymph nodes in ipsilateral LNL Ib.",
                 "func": robust(int),
                 "columns": [("27_lvl_0", "27_lvl_1", "+")],
             },
             "II": {
-                "__doc__": "Number of metastatic lymph nodes in ipsilateral LNL II.",
                 "func": robust(int),
                 "columns": [("29_lvl_0", "29_lvl_1", "+")],
             },
             "III": {
-                "__doc__": "Number of metastatic lymph nodes in ipsilateral LNL III.",
                 "func": robust(int),
                 "columns": [("31_lvl_0", "31_lvl_1", "+")],
             },
             "IV": {
-                "__doc__": "Number of metastatic lymph nodes in ipsilateral LNL IV.",
+                "__doc__": (
+                    "Here, we report the number of metastatic lymph nodes in"
+                    " ipsilateral LNL IV."
+                ),
                 "func": robust(int),
                 "columns": [("33_lvl_0", "33_lvl_1", "+")],
             },
             "V": {
-                "__doc__": "Number of metastatic lymph nodes in ipsilateral LNL V.",
                 "func": robust(int),
                 "columns": [("35_lvl_0", "35_lvl_1", "+")],
             },
             "VII": {
-                "__doc__": "Number of metastatic lymph nodes in ipsilateral LNL VII.",
                 "func": robust(int),
                 "columns": [("37_lvl_0", "37_lvl_1", "+")],
             },
@@ -753,37 +706,34 @@ COLUMN_MAP = {
                 "LNL that were pathologically found to be positive."
             ),
             "Ia": {
-                "__doc__": "Number of metastatic lymph nodes in contralateral LNL Ia.",
+                "__doc__": (
+                    "And this column reports the number of metastatic lymph nodes in"
+                    " contralateral LNL Ia."
+                ),
                 "func": robust(int),
                 "columns": [("39_lvl_0", "39_lvl_1", "+")],
             },
             "Ib": {
-                "__doc__": "Number of metastatic lymph nodes in contralateral LNL Ib.",
                 "func": robust(int),
                 "columns": [("41_lvl_0", "41_lvl_1", "+")],
             },
             "II": {
-                "__doc__": "Number of metastatic lymph nodes in contralateral LNL II.",
                 "func": robust(int),
                 "columns": [("43_lvl_0", "43_lvl_1", "+")],
             },
             "III": {
-                "__doc__": "Number of metastatic lymph nodes in contralateral LNL III.",
                 "func": robust(int),
                 "columns": [("45_lvl_0", "45_lvl_1", "+")],
             },
             "IV": {
-                "__doc__": "Number of metastatic lymph nodes in contralateral LNL IV.",
                 "func": robust(int),
                 "columns": [("47_lvl_0", "47_lvl_1", "+")],
             },
             "V": {
-                "__doc__": "Number of metastatic lymph nodes in contralateral LNL V.",
                 "func": robust(int),
                 "columns": [("49_lvl_0", "49_lvl_1", "+")],
             },
             "VII": {
-                "__doc__": "Number of metastatic lymph nodes in contralateral LNL VII.",
                 "func": robust(int),
                 "columns": [("51_lvl_0", "51_lvl_1", "+")],
             },
