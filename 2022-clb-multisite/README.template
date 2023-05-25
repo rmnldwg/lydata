@@ -17,7 +17,9 @@ TODO: Find out about that soon
 
 ## Description
 
-{{ description }}
+{{ column_description }}
 
 
 ## Documentation
+
+{{ mapping_docs }}

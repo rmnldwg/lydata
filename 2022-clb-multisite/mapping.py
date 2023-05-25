@@ -12,7 +12,7 @@ They are described in more detail below:
 
 ---
 
-## <kbd>global</kbd> `EXCLUDE`
+### <kbd>global</kbd> `EXCLUDE`
 
 List of tuples specifying which function to run for which columns to find out if
 patients/rows should be excluded in the lyproxified `data.csv`.
@@ -36,7 +36,7 @@ of the `lyproxify` function.
 
 ---
 
-## <kbd>global</kbd> `COLUMN_MAP`
+### <kbd>global</kbd> `COLUMN_MAP`
 
 This is the actual mapping dictionary that describes how to transform the `raw.csv`
 table into the `data.csv` table that can be fed into and understood by
