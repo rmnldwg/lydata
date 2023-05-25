@@ -39,15 +39,15 @@ stages:
       md5: c671575581a2296a530e608762fce5c6
       size: 1536
     - path: 2023-isb-multisite/mapping.py
-      md5: c450defa7b4445f5ee4ec3efa7f26220
-      size: 39803
+      md5: fb27e611d10a84c3800593b66687bf4a
+      size: 40258
     - path: render.py
       md5: 6e259b8b08d52dd5dcbd3ebfc4ffceca
       size: 1699
     outs:
     - path: 2023-isb-multisite/README.md
-      md5: b2a8cc81cfb107bbc25afaa71cb9ae5c
-      size: 14138
+      md5: 002c4f80217300dea2c9f4d6537959ee
+      size: 14522
   lyproxify@0:
     cmd: "lyscripts data lyproxify -i 2021-clb-oropharynx/raw.csv -o 2021-clb-oropharynx/data.csv\
       \ -m 2021-clb-oropharynx/mapping.py -r 0\n"
@@ -67,14 +67,14 @@ stages:
       \ -m 2023-isb-multisite/mapping.py -r 0\n"
     deps:
     - path: 2023-isb-multisite/mapping.py
-      md5: c450defa7b4445f5ee4ec3efa7f26220
-      size: 39803
+      md5: fb27e611d10a84c3800593b66687bf4a
+      size: 40258
     - path: 2023-isb-multisite/raw.csv
       md5: 5a3d19b6e9b14978155698d0198f90c9
       size: 167140
     outs:
     - path: 2023-isb-multisite/data.csv
-      md5: afe08de0b0a6d348b24c3855d4ea6016
+      md5: 8c482844201ea636d956acf397a2a73e
       size: 184432
   description-and-docs@2021-clb-oropharynx:
     cmd: ".venv/bin/python render.py -m 2021-clb-oropharynx/mapping.py -t 2021-clb-oropharynx/README.template\

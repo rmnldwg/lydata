@@ -189,6 +189,13 @@ def map_to_lnl(entry, tumor_side, *_args, **_kwargs) -> list[str] | None:
     return "&".join(res)
 
 
+def has_pathological_t(entry, *_args, **_kwargs) -> bool:
+    """
+    Check whether the pathological T-stage is available.
+    """
+    return entry != "n/a" and not pd.isna(entry)
+
+
 def map_t_stage(clinical, pathological, *_args, **_kwargs) -> int | None:
     """
     Map their T-stage encoding to actual T-stages.
@@ -204,10 +211,19 @@ def map_t_stage(clinical, pathological, *_args, **_kwargs) -> int | None:
         6: 4,
         None: None,  # robust(int) returns None if an exception is thrown
     }
-    if pd.isna(pathological) or pathological == "n/a":
-        return map_dict[robust(int)(clinical)]
+    if has_pathological_t(pathological):
+        return map_dict[robust(int)(pathological)]
 
-    return map_dict[robust(int)(pathological)]
+    return map_dict[robust(int)(clinical)]
+
+
+def map_t_stage_prefix(pathological, *_args, **_kwargs) -> str | None:
+    """
+    Determine whether T category was assessed clinically or pathologically.
+    """
+    if has_pathological_t(pathological):
+        return "p"
+    return "c"
 
 
 def map_n_stage(entry, *_args, **_kwargs) -> int | None:
@@ -534,7 +550,8 @@ COLUMN_MAP = {
             "volume": {"__doc__": "The volume of the tumor in cm^3.", "default": None},
             "stage_prefix": {
                 "__doc__": "The prefix of the T category.",
-                "default": "p",
+                "func": map_t_stage_prefix,
+                "columns": ["pT"],
             },
             "t_stage": {
                 "__doc__": "The T category of the tumor.",

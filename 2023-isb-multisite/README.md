@@ -213,6 +213,17 @@ Map integers representing the location of the largest LN to the correct LNL.
 
 ---
 
+### <kbd>function</kbd> `has_pathological_t`
+
+```python
+has_pathological_t(entry, *_args, **_kwargs) → bool
+```
+
+Check whether the pathological T-stage is available. 
+
+
+---
+
 ### <kbd>function</kbd> `map_t_stage`
 
 ```python
@@ -222,6 +233,17 @@ map_t_stage(clinical, pathological, *_args, **_kwargs) → int | None
 Map their T-stage encoding to actual T-stages. 
 
 The clinical stage is only used if the pathological stage is not available. 
+
+
+---
+
+### <kbd>function</kbd> `map_t_stage_prefix`
+
+```python
+map_t_stage_prefix(pathological, *_args, **_kwargs) → str | None
+```
+
+Determine whether T category was assessed clinically or pathologically. 
 
 
 ---
