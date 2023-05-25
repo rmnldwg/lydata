@@ -19,7 +19,7 @@ stages:
       \ -o 2023-clb-multisite/README.md\n"
     deps:
     - path: 2023-clb-multisite/README.template
-      md5: 12edce3ff9fd2bb77bcbfece4a1c0886
+      md5: 3c5f2b547ca8092e539ecbbd845bf856
       size: 642
     - path: 2023-clb-multisite/mapping.py
       md5: 4c80fad76f9eda89e9352cbeee0e96d3
@@ -29,15 +29,15 @@ stages:
       size: 1699
     outs:
     - path: 2023-clb-multisite/README.md
-      md5: 30c9315b7446d1f782f722e8f0f804d1
+      md5: db6a3634d0b31e788b97b53ffd4c40fc
       size: 10625
   description-and-docs@2023-isb-multisite:
     cmd: ".venv/bin/python render.py -m 2023-isb-multisite/mapping.py -t 2023-isb-multisite/README.template\
       \ -o 2023-isb-multisite/README.md\n"
     deps:
     - path: 2023-isb-multisite/README.template
-      md5: cba170721420df22997327966d905a1d
-      size: 436
+      md5: 5541d1679004fdd86bbbdc8756fab77c
+      size: 435
     - path: 2023-isb-multisite/mapping.py
       md5: bf8127423a03261288c58d2826df20bd
       size: 39803
@@ -46,8 +46,8 @@ stages:
       size: 1699
     outs:
     - path: 2023-isb-multisite/README.md
-      md5: b0c8b1a3bcdf56f8216b2dd006b134de
-      size: 13038
+      md5: 4c32cffe9650ffb53232eb03798214b1
+      size: 13037
   lyproxify@0:
     cmd: "lyscripts data lyproxify -i 2023-clb-multisite/raw.csv -o 2023-clb-multisite/data.csv\
       \ -m 2023-clb-multisite/mapping.py -r 0 1 2 --drop-rows 439 --add-index\n"
