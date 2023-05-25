@@ -32,6 +32,14 @@ The first dataset we are able to share consists of 287 patients with a primary t
 
 We have published a paper about it in *Radiotherapy & Oncology* [[9]](#9) (a preprint is also available on *medRxiv* [[10]](#10)). The dataset is described in detail and can be freely used and cited as a *Data in Brief* paper [[11]](#11).
 
+### 2021 CLB Oropharynx
+
+[![Green Journal](https://img.shields.io/badge/Rad%20Onc-j.radonc.2021.01.028-3e6e0e)](https://doi.org/10.1016/j.radonc.2021.01.028)
+
+We are glad and thankful that the research group around Prof. Vincent Grégoire joined our effort to create a database of lymphatic patterns of progression by providing us with the data underlying their publication [[6]](#6). If you use this data, don't forget to cite either said publication or use the `CITATION.cff` file inside the `2021-clb-oropharynx` folder, where the `data.csv` also resides and a description of the data named `README.md`.
+
+> :warning: Note that this dataset on its own has not yet been published in a peer-reviewed journal like *Data in Brief*. This will hopefully happen soon, but until then we might still make changes e.g. add or remove certain columns in the data or correct preprocessing bugs we haven't spotted yet.
+
 ### stay tuned for more...
 
 We are in the process of collecting more data of patients with primary tumors in other locations.
