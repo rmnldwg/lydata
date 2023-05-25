@@ -41,7 +41,7 @@ stages:
         - ${item}/README.md:
             cache: false
       cmd: >
-        python /render.py
+        .venv/bin/python render.py
         -m ${item}/mapping.py
         -t ${item}/README.template
         -o ${item}/README.md
