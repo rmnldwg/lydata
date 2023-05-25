@@ -57,6 +57,7 @@ respective column is about. This is used to generate the documentation for the
 ---
 """
 import re
+from typing import Any, Callable
 
 import icd10
 import numpy as np
@@ -92,7 +93,7 @@ def smpl_diagnose(entry: str | int, *_args, **_kwargs) -> bool:
     }[robust(int)(entry)]
 
 
-def robust(func: callable):
+def robust(func: Callable) -> Any | None:
     """
     Wrapper that makes any type-conversion function 'robust' by simply returning
     `None` whenever any exception is thrown.
@@ -740,11 +741,3 @@ COLUMN_MAP = {
         },
     },
 }
-"""
-This is the actual mapping dictionary that describes how to transform the `raw.csv`
-table into the `data.csv` table that can be fed into and understood by
-[LyProX](https://lyprox.org).
-
-See [here](https://rmnldwg.github.io/lyscripts/lyscripts/data/lyproxify.html#transform_to_lyprox)
-for details on how this dictionary is used by the `lyproxify` script.
-"""

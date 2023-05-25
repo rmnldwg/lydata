@@ -5,8 +5,8 @@ stages:
       \ 439 --add-index\n"
     deps:
     - path: mapping.py
-      md5: b11fbf60e09273e33c4f8933560b765c
-      size: 25508
+      md5: 4c80fad76f9eda89e9352cbeee0e96d3
+      size: 25193
     - path: raw.csv
       md5: 4df7c504c92c369c2f891b0d170041bb
       size: 215489
@@ -43,15 +43,15 @@ stages:
       md5: 12edce3ff9fd2bb77bcbfece4a1c0886
       size: 642
     - path: mapping.py
-      md5: b11fbf60e09273e33c4f8933560b765c
-      size: 25508
+      md5: 4c80fad76f9eda89e9352cbeee0e96d3
+      size: 25193
     - path: render.py
       md5: c0060844604446a88a175f442786d9bd
       size: 776
     outs:
     - path: README.md
-      md5: 2419877110baf8af7841e29f3174a669
-      size: 10627
+      md5: 30c9315b7446d1f782f722e8f0f804d1
+      size: 10625
   test:
     cmd:
     - ../.venv/bin/lazydocs --output-path=. mapping.py

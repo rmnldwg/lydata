@@ -1,9 +1,63 @@
 """
-This module contains frequently used functions as well as instructions on how
-to parse and process the raw data from different institutions
+Map the `raw.csv` data from the 2022-isb-multisite cohort to the `data.csv` file.
+
+This module defines how the command `lyscripts data lyproxify` (see
+[here](rmnldwg.github.io/lyscripts) for the documentation of the `lyscripts` module)
+should handle the `raw.csv` data that was extracted at the Inselspital Bern in order
+to transform it into a [LyProX](https://lyprox.org)-compatible `data.csv` file.
+
+The most important definitions in here are the list `EXCLUDE` and the dictionary
+`COLUMN_MAP` that defines how to construct the new columns based on the `raw.csv` data.
+They are described in more detail below:
+
+---
+
+### <kbd>global</kbd> `EXCLUDE`
+
+List of tuples specifying which function to run for which columns to find out if
+patients/rows should be excluded in the lyproxified `data.csv`.
+
+The first element of each tuple is the flattened multi-index column name, the second
+element is the function to run on the column to determine if a patient/row should be
+excluded:
+
+```python
+EXCLUDE = [
+    (column_name, check_function),
+]
+```
+
+Essentially, a row is excluded, if for that row `check_function(raw_data[column_name])`
+evaluates to `True`.
+
+More information can be found in the
+[documentation](https://rmnldwg.github.io/lyscripts/lyscripts/data/lyproxify.html#exclude_patients)
+of the `lyproxify` function.
+
+---
+
+### <kbd>global</kbd> `COLUMN_MAP`
+
+This is the actual mapping dictionary that describes how to transform the `raw.csv`
+table into the `data.csv` table that can be fed into and understood by
+[LyProX](https://lyprox.org).
+
+See [here](https://rmnldwg.github.io/lyscripts/lyscripts/data/lyproxify.html#transform_to_lyprox)
+for details on how this dictionary is used by the `lyproxify` script.
+
+It contains a tree-like structure that is human-readable and mimics the tree of
+multi-level headers in the final `data.csv` file. For every column in the final
+`data.csv` file, the dictionary describes from which columns in the `raw.csv` file the
+data should be extracted and what function should be applied to it.
+
+It also contains a `__doc__` key for every sub-dictionary that describes what the
+respective column is about. This is used to generate the documentation for the
+`README.md` file of this data.
+
+---
 """
 import re
-from typing import Dict, List, Optional
+from typing import Any, Callable
 
 import icd10
 import numpy as np
@@ -79,7 +133,7 @@ def smpl_diagnose(entry, *_args, **_kwargs):
     }[robust(int)(entry)]
 
 
-def robust(func):
+def robust(func: Callable) -> Any | None:
     """
     Wrapper that makes any type-conversion function 'robust' by simply returning
     `None` whenever any exception is thrown.
@@ -95,7 +149,7 @@ def robust(func):
     return wrapper
 
 
-def get_subsite(entry, *_args, **_kwargs):
+def get_subsite(entry, *_args, **_kwargs) -> str | None:
     """
     Get human-readable subsite from ICD-10 code.
     """
@@ -109,7 +163,7 @@ def get_subsite(entry, *_args, **_kwargs):
     return None
 
 
-def map_to_lnl(entry, tumor_side, *_args, **_kwargs) -> Optional[List[str]]:
+def map_to_lnl(entry, tumor_side, *_args, **_kwargs) -> list[str] | None:
     """
     Map integers representing the location of the largest LN to the correct LNL.
     """
@@ -135,7 +189,7 @@ def map_to_lnl(entry, tumor_side, *_args, **_kwargs) -> Optional[List[str]]:
     return "&".join(res)
 
 
-def map_t_stage(clinical, pathological, *_args, **_kwargs):
+def map_t_stage(clinical, pathological, *_args, **_kwargs) -> int | None:
     """
     Map their T-stage encoding to actual T-stages.
 
@@ -156,7 +210,7 @@ def map_t_stage(clinical, pathological, *_args, **_kwargs):
     return map_dict[robust(int)(pathological)]
 
 
-def map_n_stage(entry, *_args, **_kwargs):
+def map_n_stage(entry, *_args, **_kwargs) -> int | None:
     """
     Map their N-stage encoding to actual N-stage.
     """
@@ -166,7 +220,7 @@ def map_n_stage(entry, *_args, **_kwargs):
         return None
 
 
-def map_location(entry, *_args, **_kwargs):
+def map_location(entry, *_args, **_kwargs) -> str | None:
     """
     Map their location encoding to the semantic locations.
     """
@@ -181,7 +235,7 @@ def map_location(entry, *_args, **_kwargs):
         return None
 
 
-def map_side(entry, *_args, **_kwargs):
+def map_side(entry, *_args, **_kwargs) -> str | None:
     """
     Map their side encoding to the semantic side.
     """
@@ -195,7 +249,7 @@ def map_side(entry, *_args, **_kwargs):
         return None
 
 
-def map_ct(entry, mri_or_ct, *_args, **_kwargs):
+def map_ct(entry, mri_or_ct, *_args, **_kwargs) -> bool | None:
     """
     Call `robust(smpl_diagnose)` if the patient has a CT diagnose.
     """
@@ -205,7 +259,7 @@ def map_ct(entry, mri_or_ct, *_args, **_kwargs):
     return robust(smpl_diagnose)(entry)
 
 
-def map_mri(entry, mri_or_ct, *_args, **_kwargs):
+def map_mri(entry, mri_or_ct, *_args, **_kwargs) -> bool | None:
     """
     Call `robust(smpl_diagnose)` if the patient has an MRI diagnose.
     """
@@ -215,7 +269,7 @@ def map_mri(entry, mri_or_ct, *_args, **_kwargs):
     return robust(smpl_diagnose)(entry)
 
 
-def _from_pathology(entry) -> tuple[dict[str, int], bool]:
+def from_pathology(entry) -> tuple[dict[str, int], bool]:
     """
     Infer how many nodes in an LNL where investigated/positive per resection. And if the
     LNL showed signs of extracapsular extension (ECE).
@@ -257,11 +311,11 @@ def _from_pathology(entry) -> tuple[dict[str, int], bool]:
     return res, has_ece
 
 
-def num_from_pathology(entry, *_args, **_kwargs) -> Optional[int]:
+def num_from_pathology(entry, *_args, **_kwargs) -> int | None:
     """
     Infer number of involved nodes in LNL from pathology report.
     """
-    res, _ = _from_pathology(entry)
+    res, _ = from_pathology(entry)
 
     if len(res) == 0:
         return None
@@ -275,7 +329,7 @@ def num_from_pathology(entry, *_args, **_kwargs) -> Optional[int]:
     return None
 
 
-def binary_from_pathology(entry, *_args, **_kwargs) -> Optional[bool]:
+def binary_from_pathology(entry, *_args, **_kwargs) -> bool | None:
     """
     Infer binary involvement from pathology report.
     """
@@ -287,7 +341,7 @@ def binary_from_pathology(entry, *_args, **_kwargs) -> Optional[bool]:
     return num > 0
 
 
-def num_super_from_pathology(*lnl_entries, lnl="I", side="left") -> Optional[int]:
+def num_super_from_pathology(*lnl_entries, lnl="I", side="left") -> int | None:
     """
     Infer number of involved lymph nodes in super LNL (e.g. I, II and V) from pathology.
 
@@ -295,7 +349,7 @@ def num_super_from_pathology(*lnl_entries, lnl="I", side="left") -> Optional[int
     In that case, we do not know if the LNL in question was involved or if it was only
     one of the co-resected LNLs.
     """
-    lnl_results = [_from_pathology(e)[0] for e in lnl_entries]
+    lnl_results = [from_pathology(e)[0] for e in lnl_entries]
     symbols = {s for lnl_res in lnl_results for s in lnl_res.keys() if s != "this"}
 
     known_lnl_invs = np.array([lnl_res.get("this") for lnl_res in lnl_results])
@@ -313,7 +367,7 @@ def num_super_from_pathology(*lnl_entries, lnl="I", side="left") -> Optional[int
     return res
 
 
-def binary_super_from_pathology(*lnl_entries, lnl="I", side="left") -> Optional[bool]:
+def binary_super_from_pathology(*lnl_entries, lnl="I", side="left") -> bool | None:
     """
     Infer if super LNL is involved from pathology.
     """
@@ -330,10 +384,10 @@ def map_ece(*lnl_entries, **_kwargs):
     Infer from the provided columns if the patient had LNL involvement with
     extra-capsular extension.
 
-    In the data, this is incoded by the value 100 being added to the number of
+    In the data, this is encoded by the value 100 being added to the number of
     positive LNLs.
     """
-    return any(_from_pathology(e)[1] for e in lnl_entries)
+    return any(from_pathology(e)[1] for e in lnl_entries)
 
 
 def get_ct_date(entry, mri_or_ct, *_args, **_kwargs):
