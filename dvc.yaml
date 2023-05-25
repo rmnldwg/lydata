@@ -1,6 +1,8 @@
 stages:
   lyproxify:
     foreach:
+      - folder: 2021-clb-oropharynx
+        args: "-r 0"
       - folder: 2023-clb-multisite
         args: "-r 0 1 2 --drop-rows 439 --add-index"
       - folder: 2023-isb-multisite
@@ -25,6 +27,7 @@ stages:
 
   description-and-docs:
     foreach:
+      - 2021-clb-oropharynx
       - 2023-clb-multisite
       - 2023-isb-multisite
     do:

@@ -8,12 +8,22 @@ This folder contains data about clinically and pathologically diagnosed lymphati
 [Inselspital Bern]: https://www.insel.ch/de/
 
 
+## Online Interface
+
+We provide a user-friendly and intuitive graphical user interface to view the dataset, which is available at https://lyprox.org/. The GUI has two main functionalities: the patient list and the dashboard. The patient list allows for viewing the characteristics of a patient, corresponding to one row of the csv file, in a visually appealing and intuitive way. The dashboard allows for filtering of the dataset. For example, the user may select all patients with primary tumors extending over the mid-sagittal plane with involvement of ipsilateral level III. The dashboard will then display the number or percentage of patients with metastases in each of the other LNLs.
+
+
 ## Curation
 
 TODO: needs to be written
 
 
 ## Description
+
+The data is provided as a CSV-table containing one row for each of the 287 patients. The table has a header with three levels that describe the columns. Below we explain each column in the form of a list with three levels. So, for example, list entry 1.i.g refers to a column with the three-level header `patient | # | nicotine_abuse` and this column reports about the patient's smoking status.
+
+
+## Columns
 
 1. **`patient`**: This top-level header contains general patient information.
    1. **`#`**: The second level header for the `patient` columns is only a placeholder.
@@ -91,7 +101,7 @@ TODO: needs to be written
 
 
 ## <kbd>module</kbd> `mapping`
-Map the `raw.csv` data from the 2022-isb-multisite cohort to the `data.csv` file. 
+Map the `raw.csv` data from the 2023-isb-multisite cohort to the `data.csv` file. 
 
 This module defines how the command `lyscripts data lyproxify` (see [here](rmnldwg.github.io/lyscripts) for the documentation of the `lyscripts` module) should handle the `raw.csv` data that was extracted at the Inselspital Bern in order to transform it into a [LyProX](https://lyprox.org)-compatible `data.csv` file. 
 

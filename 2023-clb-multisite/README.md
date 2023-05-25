@@ -15,7 +15,17 @@ The `raw.csv` data does contain patients which are duplicates of the patient rec
 TODO: Find out about that soon
 
 
+## Online Interface
+
+We provide a user-friendly and intuitive graphical user interface to view the dataset, which is available at https://lyprox.org/. The GUI has two main functionalities: the patient list and the dashboard. The patient list allows for viewing the characteristics of a patient, corresponding to one row of the csv file, in a visually appealing and intuitive way. The dashboard allows for filtering of the dataset. For example, the user may select all patients with primary tumors extending over the mid-sagittal plane with involvement of ipsilateral level III. The dashboard will then display the number or percentage of patients with metastases in each of the other LNLs.
+
+
 ## Description
+
+The data is provided as a CSV-table containing one row for each patient. The table has a header with three levels that describe the columns. Below we explain each column in the form of a list with three levels. So, for example, list entry 1.i.g refers to a column with the three-level header `patient | # | alcohol_abuse` and underneath it we report each patient's history of alcohol abuse.
+
+
+## Columns
 
 1. **`patient`**: This top-level header contains general patient information.
    1. **`#`**: The second level header for the `patient` columns is only a placeholder.
@@ -35,7 +45,7 @@ TODO: Find out about that soon
       14. **`extracapsular`**: Whether the patient had extracapsular spread. In this dataset, this information is only globally available, not for each individual lymph node level.
 2. **`tumor`**: This top-level header contains general tumor information.
    1. **`1`**: The second level header enumerates sychronous tumors.
-      1. **`location`**: The location of the tumor.
+      1. **`location`**: The location of the tumor. This is empty for all patients, because we can later infer it from the subsite's ICD-O-3 code.
       2. **`subsite`**: The subsite of the tumor, specified by ICD-O-3 code.
       3. **`central`**: Whether the tumor is located centrally w.r.t. the mid-sagittal plane.
       4. **`extension`**: Whether the tumor extended over the mid-sagittal line.
@@ -77,7 +87,7 @@ TODO: Find out about that soon
 
 
 ## <kbd>module</kbd> `mapping`
-Map the `raw.csv` data from the 2022-clb-multisite cohort to the `data.csv` file. 
+Map the `raw.csv` data from the 2023-clb-multisite cohort to the `data.csv` file. 
 
 This module defines how the command `lyscripts data lyproxify` (see [here](rmnldwg.github.io/lyscripts) for the documentation of the `lyscripts` module) should handle the `raw.csv` data that was extracted at the Centre Léon Bérard in order to transform it into a [LyProX](https://lyprox.org)-compatible `data.csv` file. 
 

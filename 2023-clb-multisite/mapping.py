@@ -1,5 +1,5 @@
 """
-Map the `raw.csv` data from the 2022-clb-multisite cohort to the `data.csv` file.
+Map the `raw.csv` data from the 2023-clb-multisite cohort to the `data.csv` file.
 
 This module defines how the command `lyscripts data lyproxify` (see
 [here](rmnldwg.github.io/lyscripts) for the documentation of the `lyscripts` module)
@@ -357,7 +357,7 @@ COLUMN_MAP = {
         "1": {
             "__doc__": "The second level header enumerates sychronous tumors.",
             "location": {
-                "__doc__": "The location of the tumor.",
+                "__doc__": "The location of the tumor. This is empty for all patients, because we can later infer it from the subsite's ICD-O-3 code.",
                 "default": None,
             },
             "subsite": {

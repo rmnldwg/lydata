@@ -1,5 +1,5 @@
 """
-Map the `raw.csv` data from the 2022-isb-multisite cohort to the `data.csv` file.
+Map the `raw.csv` data from the 2023-isb-multisite cohort to the `data.csv` file.
 
 This module defines how the command `lyscripts data lyproxify` (see
 [here](rmnldwg.github.io/lyscripts) for the documentation of the `lyscripts` module)
