@@ -66,7 +66,7 @@ from dateutil.parser import parse
 
 # columns that contain TNM info
 TNM_COLS = [
-    ("cT 7th"   , "10_lvl_1", "10_lvl_2"),
+    ("cT 7th", "10_lvl_1", "10_lvl_2"),
     ("cN 7th ed", "12_lvl_1", "12_lvl_2"),
     ("pT 7th ed", "16_lvl_1", "16_lvl_2"),
     ("pN 7th ed", "19_lvl_1", "19_lvl_2"),
@@ -211,7 +211,12 @@ def get_tnm_info(ct7, cn7, pt7, pn7, ct8, cn8, pt8, pn8) -> tuple[int, int, int,
 
 def get_t_category(*args, **_kwargs) -> int:
     """Extract the T-category."""
-    t_cat, _, _, _, = get_tnm_info(*args)
+    (
+        t_cat,
+        _,
+        _,
+        _,
+    ) = get_tnm_info(*args)
     return t_cat
 
 
@@ -294,12 +299,17 @@ COLUMN_MAP = {
                 "columns": [("Date of", "surgery", "90_lvl_2")],
             },
             "alcohol_abuse": {
-                "__doc__": "Whether the patient was abusingly drinking alcohol at the time of diagnosis.",
+                "__doc__": (
+                    "Whether the patient was abusingly drinking alcohol at the time of"
+                    " diagnosis."
+                ),
                 "func": lambda x, *a, **k: False if x == 0 else True,
                 "columns": [("alcool 0=n", "1=y;2=<6m", "5_lvl_2")],
             },
             "nicotine_abuse": {
-                "__doc__": "Whether the patient was smoking nicotine at the time of diagnosis.",
+                "__doc__": (
+                    "Whether the patient was smoking nicotine at the time of diagnosis."
+                ),
                 "func": lambda x, *a, **k: False if x == 0 else True,
                 "columns": [("Tobacco 0=n", "1=y;2=>6m", "4_lvl_2")],
             },
@@ -521,7 +531,9 @@ COLUMN_MAP = {
             },
         },
         "contra": {
-            "__doc__": "This reports the diagnostic consensus of the contralateral LNLs.",
+            "__doc__": (
+                "This reports the diagnostic consensus of the contralateral LNLs."
+            ),
             "Ia": {
                 "__doc__": "The diagnostic consensus of the contralateral LNL Ia.",
                 "func": set_diagnostic_consensus,
@@ -574,37 +586,51 @@ COLUMN_MAP = {
                 "ipsilateral LNL."
             ),
             "Ia": {
-                "__doc__": "Total number of dissected lymph nodes in ipsilateral LNL Ia.",
+                "__doc__": (
+                    "Total number of dissected lymph nodes in ipsilateral LNL Ia."
+                ),
                 "func": robust(int),
                 "columns": [("Homolateral neck node infiltration", "LIa", "tot")],
             },
             "Ib": {
-                "__doc__": "Total number of dissected lymph nodes in ipsilateral LNL Ib.",
+                "__doc__": (
+                    "Total number of dissected lymph nodes in ipsilateral LNL Ib."
+                ),
                 "func": robust(int),
                 "columns": [("26_lvl_0", "LIb", "tot")],
             },
             "II": {
-                "__doc__": "Total number of dissected lymph nodes in ipsilateral LNL II.",
+                "__doc__": (
+                    "Total number of dissected lymph nodes in ipsilateral LNL II."
+                ),
                 "func": robust(int),
                 "columns": [("28_lvl_0", "LII", "tot")],
             },
             "III": {
-                "__doc__": "Total number of dissected lymph nodes in ipsilateral LNL III.",
+                "__doc__": (
+                    "Total number of dissected lymph nodes in ipsilateral LNL III."
+                ),
                 "func": robust(int),
                 "columns": [("30_lvl_0", "LIII", "tot")],
             },
             "IV": {
-                "__doc__": "Total number of dissected lymph nodes in ipsilateral LNL IV.",
+                "__doc__": (
+                    "Total number of dissected lymph nodes in ipsilateral LNL IV."
+                ),
                 "func": robust(int),
                 "columns": [("32_lvl_0", "LIV", "tot")],
             },
             "V": {
-                "__doc__": "Total number of dissected lymph nodes in ipsilateral LNL V.",
+                "__doc__": (
+                    "Total number of dissected lymph nodes in ipsilateral LNL V."
+                ),
                 "func": robust(int),
                 "columns": [("34_lvl_0", "LV", "tot")],
             },
             "VII": {
-                "__doc__": "Total number of dissected lymph nodes in ipsilateral LNL VII.",
+                "__doc__": (
+                    "Total number of dissected lymph nodes in ipsilateral LNL VII."
+                ),
                 "func": robust(int),
                 "columns": [("36_lvl_0", "LVII", "tot")],
             },
@@ -615,37 +641,51 @@ COLUMN_MAP = {
                 "contralateral LNL."
             ),
             "Ia": {
-                "__doc__": "Total number of dissected lymph nodes in contralateral LNL Ia.",
+                "__doc__": (
+                    "Total number of dissected lymph nodes in contralateral LNL Ia."
+                ),
                 "func": robust(int),
                 "columns": [("Heterolateral neck node infiltration", "LIa", "tot")],
             },
             "Ib": {
-                "__doc__": "Total number of dissected lymph nodes in contralateral LNL Ib.",
+                "__doc__": (
+                    "Total number of dissected lymph nodes in contralateral LNL Ib."
+                ),
                 "func": robust(int),
                 "columns": [("40_lvl_0", "LIb", "tot")],
             },
             "II": {
-                "__doc__": "Total number of dissected lymph nodes in contralateral LNL II.",
+                "__doc__": (
+                    "Total number of dissected lymph nodes in contralateral LNL II."
+                ),
                 "func": robust(int),
                 "columns": [("42_lvl_0", "LII", "tot")],
             },
             "III": {
-                "__doc__": "Total number of dissected lymph nodes in contralateral LNL III.",
+                "__doc__": (
+                    "Total number of dissected lymph nodes in contralateral LNL III."
+                ),
                 "func": robust(int),
                 "columns": [("44_lvl_0", "LIII", "tot")],
             },
             "IV": {
-                "__doc__": "Total number of dissected lymph nodes in contralateral LNL IV.",
+                "__doc__": (
+                    "Total number of dissected lymph nodes in contralateral LNL IV."
+                ),
                 "func": robust(int),
                 "columns": [("46_lvl_0", "LIV", "tot")],
             },
             "V": {
-                "__doc__": "Total number of dissected lymph nodes in contralateral LNL V.",
+                "__doc__": (
+                    "Total number of dissected lymph nodes in contralateral LNL V."
+                ),
                 "func": robust(int),
                 "columns": [("48_lvl_0", "LV", "tot")],
             },
             "VII": {
-                "__doc__": "Total number of dissected lymph nodes in contralateral LNL VII.",
+                "__doc__": (
+                    "Total number of dissected lymph nodes in contralateral LNL VII."
+                ),
                 "func": robust(int),
                 "columns": [("50_lvl_0", "LVII", "tot")],
             },

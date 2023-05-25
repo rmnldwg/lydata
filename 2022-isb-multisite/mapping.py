@@ -394,12 +394,18 @@ COLUMN_MAP = {
                 "columns": ["Date of diagnosis"],
             },
             "alcohol_abuse": {
-                "__doc__": "Whether the patient was abusingly drinking alcohol at the time of diagnosis.",
+                "__doc__": (
+                    "Whether the patient was abusingly drinking alcohol at the time of"
+                    " diagnosis."
+                ),
                 "func": lambda x, *a, **k: False if x == 0 else True,
                 "columns": ["Alcohol"],
             },
             "nicotine_abuse": {
-                "__doc__": "Whether the patient was considered a smoker. This is set to `False`, when the patient had zero pack-years",
+                "__doc__": (
+                    "Whether the patient was considered a smoker. This is set to"
+                    " `False`, when the patient had zero pack-years"
+                ),
                 "func": lambda x, *a, **k: False if x == 0 else True,
                 "columns": ["Smoking"],
             },
@@ -454,7 +460,10 @@ COLUMN_MAP = {
                 "columns": ["ICD-O-3 code"],
             },
             "side": {
-                "__doc__": "Whether the tumor occured on the right or left side of the mid-sagittal plane.",
+                "__doc__": (
+                    "Whether the tumor occured on the right or left side of the"
+                    " mid-sagittal plane."
+                ),
                 "func": map_side,
                 "columns": ["side"],
             },
@@ -483,9 +492,14 @@ COLUMN_MAP = {
     # CT & MRI are displayed in the same table. A diagnose is considered MRI,
     # when available and CT only if MRI is not recorded (and CT available)
     "CT": {
-        "__doc__": "This top-level header contains involvement information from the CT scan.",
+        "__doc__": (
+            "This top-level header contains involvement information from the CT scan."
+        ),
         "info": {
-            "__doc__": "This second-level header contains general information about the CT scan.",
+            "__doc__": (
+                "This second-level header contains general information about the CT"
+                " scan."
+            ),
             "date": {
                 "__doc__": "The date of the CT scan.",
                 "func": get_ct_date,
@@ -524,9 +538,14 @@ COLUMN_MAP = {
     # CT & MRI are displayed in the same table. A diagnose is considered MRI,
     # when available and CT only if MRI is not recorded (and CT available)
     "MRI": {
-        "__doc__": "This top-level header contains involvement information from the MRI scan.",
+        "__doc__": (
+            "This top-level header contains involvement information from the MRI scan."
+        ),
         "info": {
-            "__doc__": "This second-level header contains general information about the MRI scan.",
+            "__doc__": (
+                "This second-level header contains general information about the MRI"
+                " scan."
+            ),
             "date": {
                 "__doc__": "The date of the MRI scan.",
                 "func": get_mri_date,
@@ -563,9 +582,14 @@ COLUMN_MAP = {
         },
     },
     "PET": {
-        "__doc__": "This top-level header contains involvement information from the PET scan.",
+        "__doc__": (
+            "This top-level header contains involvement information from the PET scan."
+        ),
         "info": {
-            "__doc__": "This second-level header contains general information about the PET scan.",
+            "__doc__": (
+                "This second-level header contains general information about the PET"
+                " scan."
+            ),
             "date": {
                 "__doc__": "The date of the PET scan.",
                 "func": robust(smpl_date),
@@ -603,9 +627,15 @@ COLUMN_MAP = {
     },
     # pathology in boolean form
     "pathology": {
-        "__doc__": "This top-level header contains involvement information from the pathology report.",
+        "__doc__": (
+            "This top-level header contains involvement information from the pathology"
+            " report."
+        ),
         "info": {
-            "__doc__": "This second-level header contains general information about the pathology report.",
+            "__doc__": (
+                "This second-level header contains general information about the"
+                " pathology report."
+            ),
             "date": {
                 "__doc__": "Date of the neck dissection.",
                 "func": robust(smpl_date),
@@ -715,9 +745,15 @@ COLUMN_MAP = {
     },
     # # number of dissected nodes
     "total_dissected": {
-        "__doc__": "This top-level header contains information about the number of lymph nodes dissected in each LNL.",
+        "__doc__": (
+            "This top-level header contains information about the number of lymph nodes"
+            " dissected in each LNL."
+        ),
         "info": {
-            "__doc__": "This second-level header contains general information about the pathology report.",
+            "__doc__": (
+                "This second-level header contains general information about the"
+                " pathology report."
+            ),
             "date": {
                 "__doc__": "Date of the neck dissection.",
                 "func": robust(smpl_date),
@@ -827,27 +863,41 @@ COLUMN_MAP = {
     },
     # # Number of positive nodes
     "total_positive": {
-        "__doc__": "This top-level header contains information about the number of pathologically positive lymph nodes in each LNL.",
+        "__doc__": (
+            "This top-level header contains information about the number of"
+            " pathologically positive lymph nodes in each LNL."
+        ),
         "info": {
-            "__doc__": "This second-level header contains general information about the findings of metastasis by the pathologist.",
+            "__doc__": (
+                "This second-level header contains general information about the"
+                " findings of metastasis by the pathologist."
+            ),
             "date": {
                 "__doc__": "Date of the neck dissection.",
                 "func": robust(smpl_date),
                 "columns": ["Date of ND"],
             },
             "largest_node_mm": {
-                "__doc__": "Size of the largest lymph node in the neck dissection in mm.",
+                "__doc__": (
+                    "Size of the largest lymph node in the neck dissection in mm."
+                ),
                 "func": robust(float),
                 "columns": ["Size of largest LN (mm)"],
             },
             "largest_node_lnl": {
-                "__doc__": "LNL where the largest pathological lymph node metastasis was found.",
+                "__doc__": (
+                    "LNL where the largest pathological lymph node metastasis was"
+                    " found."
+                ),
                 "func": map_to_lnl,
                 "columns": ["location of largest LN", "side"],
             },
         },
         "left": {
-            "__doc__": "Number of pathologically positive lymph nodes per LNL on the left side.",
+            "__doc__": (
+                "Number of pathologically positive lymph nodes per LNL on the left"
+                " side."
+            ),
             "I": {
                 "func": num_super_from_pathology,
                 "kwargs": {"lnl": "I", "side": "left"},
@@ -873,7 +923,10 @@ COLUMN_MAP = {
             "Vb": {"func": num_from_pathology, "columns": ["left Level Vb #positiv"]},
         },
         "right": {
-            "__doc__": "Number of pathologically positive lymph nodes per LNL on the right side.",
+            "__doc__": (
+                "Number of pathologically positive lymph nodes per LNL on the right"
+                " side."
+            ),
             "I": {
                 "func": num_super_from_pathology,
                 "kwargs": {"lnl": "I", "side": "right"},
