@@ -433,39 +433,67 @@ COLUMN_MAP = {
             },
             "extracapsular": {
                 "__doc__": "Whether the patient had extracapsular spread in any LNL.",
-                "func": map_ece, "columns": PATHOLOGY_COLS_POSITIVE,
+                "func": map_ece,
+                "columns": PATHOLOGY_COLS_POSITIVE,
             },
         },
     },
     # Tumor information
     "tumor": {
+        "__doc__": "This top-level header contains general tumor information.",
         "1": {
-            "location": {"func": map_location, "columns": ["Primary Tumor"]},
-            "subsite": {"func": get_subsite, "columns": ["ICD-O-3 code"]},
-            "side": {"func": map_side, "columns": ["side"]},
+            "__doc__": "This second-level header enumerates synchronous tumors.",
+            "location": {
+                "__doc__": "The location of the tumor.",
+                "func": map_location,
+                "columns": ["Primary Tumor"],
+            },
+            "subsite": {
+                "__doc__": "The subsite of the tumor, specified by ICD-O-3 code.",
+                "func": get_subsite,
+                "columns": ["ICD-O-3 code"],
+            },
+            "side": {
+                "__doc__": "Whether the tumor occured on the right or left side of the mid-sagittal plane.",
+                "func": map_side,
+                "columns": ["side"],
+            },
             "central": {
+                "__doc__": "Whether the tumor was located centrally or not.",
                 "func": lambda x, *a, **k: True if robust(int)(x) == 3 else False,
                 "columns": ["side"],
             },
             "extension": {
+                "__doc__": "Whether the tumor extended over the mid-sagittal line.",
                 "func": lambda x, *a, **k: False if x == 0 else True,
                 "columns": ["Extension over the mid-sagital plane"],
             },
-            "volume": {"default": None},
-            "stage_prefix": {"default": "p"},
-            "t_stage": {"func": map_t_stage, "columns": ["cT", "pT"]},
+            "volume": {"__doc__": "The volume of the tumor in cm^3.", "default": None},
+            "stage_prefix": {
+                "__doc__": "The prefix of the T category.",
+                "default": "p",
+            },
+            "t_stage": {
+                "__doc__": "The T category of the tumor.",
+                "func": map_t_stage,
+                "columns": ["cT", "pT"],
+            },
         },
     },
     # CT & MRI are displayed in the same table. A diagnose is considered MRI,
     # when available and CT only if MRI is not recorded (and CT available)
     "CT": {
+        "__doc__": "This top-level header contains involvement information from the CT scan.",
         "info": {
+            "__doc__": "This second-level header contains general information about the CT scan.",
             "date": {
+                "__doc__": "The date of the CT scan.",
                 "func": get_ct_date,
                 "columns": ["Date of preoperativ  CT Thorax", MRI_OR_CT_COL],
             },
         },
         "left": {
+            "__doc__": "This describes the observed involvement of the left LNLs.",
             "I": {"default": None},
             "Ia": {"func": map_ct, "columns": ["left Level Ia", MRI_OR_CT_COL]},
             "Ib": {"func": map_ct, "columns": ["left Level Ib", MRI_OR_CT_COL]},
@@ -479,6 +507,7 @@ COLUMN_MAP = {
             "Vb": {"func": map_ct, "columns": ["left Level Vb", MRI_OR_CT_COL]},
         },
         "right": {
+            "__doc__": "This describes the observed involvement of the right LNLs.",
             "I": {"default": None},
             "Ia": {"func": map_ct, "columns": ["right Level Ia", MRI_OR_CT_COL]},
             "Ib": {"func": map_ct, "columns": ["right Level Ib", MRI_OR_CT_COL]},
@@ -495,13 +524,17 @@ COLUMN_MAP = {
     # CT & MRI are displayed in the same table. A diagnose is considered MRI,
     # when available and CT only if MRI is not recorded (and CT available)
     "MRI": {
+        "__doc__": "This top-level header contains involvement information from the MRI scan.",
         "info": {
+            "__doc__": "This second-level header contains general information about the MRI scan.",
             "date": {
+                "__doc__": "The date of the MRI scan.",
                 "func": get_mri_date,
                 "columns": ["Date of  preoperativ  MRI", MRI_OR_CT_COL],
             },
         },
         "left": {
+            "__doc__": "This describes the observed involvement of the left LNLs.",
             "I": {"default": None},
             "Ia": {"func": map_mri, "columns": ["left Level Ia", MRI_OR_CT_COL]},
             "Ib": {"func": map_mri, "columns": ["left Level Ib", MRI_OR_CT_COL]},
@@ -515,6 +548,7 @@ COLUMN_MAP = {
             "Vb": {"func": map_mri, "columns": ["left Level Vb", MRI_OR_CT_COL]},
         },
         "right": {
+            "__doc__": "This describes the observed involvement of the right LNLs.",
             "I": {"default": None},
             "Ia": {"func": map_mri, "columns": ["right Level Ia", MRI_OR_CT_COL]},
             "Ib": {"func": map_mri, "columns": ["right Level Ib", MRI_OR_CT_COL]},
@@ -529,13 +563,17 @@ COLUMN_MAP = {
         },
     },
     "PET": {
+        "__doc__": "This top-level header contains involvement information from the PET scan.",
         "info": {
+            "__doc__": "This second-level header contains general information about the PET scan.",
             "date": {
+                "__doc__": "The date of the PET scan.",
                 "func": robust(smpl_date),
                 "columns": ["Date of preoperativ PET-CT"],
             },
         },
         "left": {
+            "__doc__": "This describes the observed involvement of the left LNLs.",
             "I": {"default": None},
             "Ia": {"func": robust(smpl_diagnose), "columns": ["left Level Ia.1"]},
             "Ib": {"func": robust(smpl_diagnose), "columns": ["left Level Ib.1"]},
@@ -549,6 +587,7 @@ COLUMN_MAP = {
             "Vb": {"func": robust(smpl_diagnose), "columns": ["left Level Vb.1"]},
         },
         "right": {
+            "__doc__": "This describes the observed involvement of the right LNLs.",
             "I": {"default": None},
             "Ia": {"func": robust(smpl_diagnose), "columns": ["right Level Ia.1"]},
             "Ib": {"func": robust(smpl_diagnose), "columns": ["right Level Ib.1"]},
@@ -564,10 +603,17 @@ COLUMN_MAP = {
     },
     # pathology in boolean form
     "pathology": {
+        "__doc__": "This top-level header contains involvement information from the pathology report.",
         "info": {
-            "date": {"func": robust(smpl_date), "columns": ["Date of ND"]},
+            "__doc__": "This second-level header contains general information about the pathology report.",
+            "date": {
+                "__doc__": "Date of the neck dissection.",
+                "func": robust(smpl_date),
+                "columns": ["Date of ND"],
+            },
         },
         "left": {
+            "__doc__": "Microscopic involvement of the left LNLs.",
             "I": {
                 "func": binary_super_from_pathology,
                 "kwargs": {"lnl": "I", "side": "left"},
@@ -617,6 +663,7 @@ COLUMN_MAP = {
             },
         },
         "right": {
+            "__doc__": "Microscopic involvement of the right LNLs.",
             "I": {
                 "func": binary_super_from_pathology,
                 "kwargs": {"lnl": "I", "side": "right"},
@@ -668,10 +715,17 @@ COLUMN_MAP = {
     },
     # # number of dissected nodes
     "total_dissected": {
+        "__doc__": "This top-level header contains information about the number of lymph nodes dissected in each LNL.",
         "info": {
-            "date": {"func": robust(smpl_date), "columns": ["Date of ND"]},
+            "__doc__": "This second-level header contains general information about the pathology report.",
+            "date": {
+                "__doc__": "Date of the neck dissection.",
+                "func": robust(smpl_date),
+                "columns": ["Date of ND"],
+            },
         },
         "left": {
+            "__doc__": "Number of dissected lymph nodes per LNL on the left side.",
             "I": {
                 "func": num_super_from_pathology,
                 "kwargs": {"lnl": "I", "side": "left"},
@@ -721,6 +775,7 @@ COLUMN_MAP = {
             },
         },
         "right": {
+            "__doc__": "Number of dissected lymph nodes per LNL on the right side.",
             "I": {
                 "func": num_super_from_pathology,
                 "kwargs": {"lnl": "I", "side": "right"},
@@ -772,18 +827,27 @@ COLUMN_MAP = {
     },
     # # Number of positive nodes
     "total_positive": {
+        "__doc__": "This top-level header contains information about the number of pathologically positive lymph nodes in each LNL.",
         "info": {
-            "date": {"func": robust(smpl_date), "columns": ["Date of ND"]},
+            "__doc__": "This second-level header contains general information about the findings of metastasis by the pathologist.",
+            "date": {
+                "__doc__": "Date of the neck dissection.",
+                "func": robust(smpl_date),
+                "columns": ["Date of ND"],
+            },
             "largest_node_mm": {
+                "__doc__": "Size of the largest lymph node in the neck dissection in mm.",
                 "func": robust(float),
                 "columns": ["Size of largest LN (mm)"],
             },
             "largest_node_lnl": {
+                "__doc__": "LNL where the largest pathological lymph node metastasis was found.",
                 "func": map_to_lnl,
                 "columns": ["location of largest LN", "side"],
             },
         },
         "left": {
+            "__doc__": "Number of pathologically positive lymph nodes per LNL on the left side.",
             "I": {
                 "func": num_super_from_pathology,
                 "kwargs": {"lnl": "I", "side": "left"},
@@ -809,6 +873,7 @@ COLUMN_MAP = {
             "Vb": {"func": num_from_pathology, "columns": ["left Level Vb #positiv"]},
         },
         "right": {
+            "__doc__": "Number of pathologically positive lymph nodes per LNL on the right side.",
             "I": {
                 "func": num_super_from_pathology,
                 "kwargs": {"lnl": "I", "side": "right"},
