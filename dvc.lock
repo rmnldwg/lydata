@@ -45,15 +45,15 @@ stages:
       md5: 8c482844201ea636d956acf397a2a73e
       size: 184432
     - path: 2023-isb-multisite/mapping.py
-      md5: fb27e611d10a84c3800593b66687bf4a
-      size: 40258
+      md5: 2a1c32bf48bb7362b85e466841f74d00
+      size: 40264
     - path: render.py
       md5: 6d41cb47a8c326a558958693b08004f1
       size: 2005
     outs:
     - path: 2023-isb-multisite/README.md
-      md5: 4c5501f27d0fa7ebd87e5f6d3919f45c
-      size: 14522
+      md5: 5d510f3c388da63b1a2fe8fd5e63a056
+      size: 14528
   lyproxify@0:
     cmd: "lyscripts data lyproxify -i 2021-clb-oropharynx/raw.csv -o 2021-clb-oropharynx/data.csv\
       \ -m 2021-clb-oropharynx/mapping.py -r 0\n"
@@ -73,8 +73,8 @@ stages:
       \ -m 2023-isb-multisite/mapping.py -r 0\n"
     deps:
     - path: 2023-isb-multisite/mapping.py
-      md5: fb27e611d10a84c3800593b66687bf4a
-      size: 40258
+      md5: 2a1c32bf48bb7362b85e466841f74d00
+      size: 40264
     - path: 2023-isb-multisite/raw.csv
       md5: 5a3d19b6e9b14978155698d0198f90c9
       size: 167140

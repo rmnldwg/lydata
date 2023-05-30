@@ -590,7 +590,7 @@ COLUMN_MAP = {
             "V": {"default": None},
             "Va": {
                 "__doc__": (
-                    "As an example, this describes the clincal involvement of the left"
+                    "As an example, this describes the clinical involvement of the left"
                     " LNL Va, as observed in a CT scan."
                 ),
                 "func": map_ct,
@@ -606,7 +606,7 @@ COLUMN_MAP = {
             "II": {"default": None},
             "IIa": {
                 "__doc__": (
-                    "While this describes the clincal involvement of the right LNL IIa,"
+                    "While this describes the clinical involvement of the right LNL IIa,"
                     " as observed in a CT scan."
                 ),
                 "func": map_ct,
@@ -642,7 +642,7 @@ COLUMN_MAP = {
             "I": {"default": None},
             "Ia": {
                 "__doc__": (
-                    "E.g., this describes the clincal involvement of the left LNL Ia,"
+                    "E.g., this describes the clinical involvement of the left LNL Ia,"
                     " as observed in an MRI scan."
                 ),
                 "func": map_mri,
@@ -668,7 +668,7 @@ COLUMN_MAP = {
             "IIb": {"func": map_mri, "columns": ["right Level IIb", MRI_OR_CT_COL]},
             "III": {
                 "__doc__": (
-                    "This describes the clincal involvement of the right LNL III, as"
+                    "This describes the clinical involvement of the right LNL III, as"
                     " observed in an MRI scan."
                 ),
                 "func": map_mri,
@@ -706,7 +706,7 @@ COLUMN_MAP = {
             "III": {"func": robust(smpl_diagnose), "columns": ["left Level III.1"]},
             "IV": {
                 "__doc__": (
-                    "For instance, this describes the clincal involvement of the left"
+                    "For instance, this describes the clinical involvement of the left"
                     " LNL IV, as observed in a PET scan."
                 ),
                 "func": robust(smpl_diagnose),
@@ -726,7 +726,7 @@ COLUMN_MAP = {
             "IIb": {"func": robust(smpl_diagnose), "columns": ["right Level IIb.1"]},
             "III": {
                 "__doc__": (
-                    "On the other side, this describes the clincal involvement of the"
+                    "On the other side, this describes the clinical involvement of the"
                     " right LNL III, as observed in a PET scan."
                 ),
                 "func": robust(smpl_diagnose),
