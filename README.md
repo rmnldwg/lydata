@@ -69,7 +69,9 @@ Completing the "2021 CLB Oropharynx" data table, these patient records detaul ly
 
 ### stay tuned for more...
 
-We are in the process of collecting more data of patients with primary tumors in other locations.
+We are in the process of collecting more data that we might publish soon. If you would like to contribute to our effort, feel free to contact us: [roman.ludwig@usz.ch]
+
+[roman.ludwig@usz.ch]: mailto:roman.ludwig@usz.ch
 
 
 ## Attribution
