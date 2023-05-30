@@ -531,7 +531,7 @@ COLUMN_MAP = {
             },
             "side": {
                 "__doc__": (
-                    "Whether the tumor occured on the right or left side of the"
+                    "Whether the tumor occurred on the right or left side of the"
                     " mid-sagittal plane."
                 ),
                 "func": map_side,

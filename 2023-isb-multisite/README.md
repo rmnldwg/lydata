@@ -44,7 +44,7 @@ The data is provided as a CSV-table containing one row for each of the 333 patie
    1. **`1`**: This second-level header enumerates synchronous tumors.
       1. **`location`**: The location of the tumor.
       2. **`subsite`**: The subsite of the tumor, specified by ICD-O-3 code.
-      3. **`side`**: Whether the tumor occured on the right or left side of the mid-sagittal plane.
+      3. **`side`**: Whether the tumor occurred on the right or left side of the mid-sagittal plane.
       4. **`central`**: Whether the tumor was located centrally or not.
       5. **`extension`**: Whether the tumor extended over the mid-sagittal line.
       6. **`volume`**: The volume of the tumor in cm^3.
