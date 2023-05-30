@@ -19,7 +19,7 @@ We provide a user-friendly and intuitive graphical user interface to view the da
 
 ## Description
 
-The data is provided as a CSV-table containing one row for each of the 287 patients. The table has a header with three levels that describe the columns. Below we explain each column in the form of a list with three levels. So, for example, list entry 1.i.g refers to a column with the three-level header `patient | # | hpv_status` and underneath it tha patients' HPV status is listed.
+The data is provided as a CSV-table containing one row for each of the {{ num_patients }} patients. The table has a header with three levels that describe the columns. Below we explain each column in the form of a list with three levels. So, for example, list entry 1.i.g refers to a column with the three-level header `patient | # | hpv_status` and underneath it tha patients' HPV status is listed.
 
 
 ## Columns

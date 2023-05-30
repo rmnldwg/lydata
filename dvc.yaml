@@ -40,11 +40,13 @@ stages:
         - render.py
         - ${item}/README.template
         - ${item}/mapping.py
+        - ${item}/data.csv
       outs:
         - ${item}/README.md:
             cache: false
       cmd: >
         .venv/bin/python render.py
         -m ${item}/mapping.py
+        -d ${item}/data.csv
         -t ${item}/README.template
         -o ${item}/README.md

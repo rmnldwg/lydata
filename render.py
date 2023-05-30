@@ -10,6 +10,7 @@ from jinja2 import Environment, FileSystemLoader
 from lazydocs import MarkdownGenerator
 
 from lyscripts.data.lyproxify import generate_markdown_docs
+import pandas as pd
 
 
 if __name__ == "__main__":
@@ -29,7 +30,15 @@ if __name__ == "__main__":
         "-o", "--output", type=Path, default="README.md",
         help="Path to the output file.",
     )
+    parser.add_argument(
+        "-d", "--data", type=Path, default="data.csv",
+        help="Path to the data file.",
+    )
     args = parser.parse_args()
+
+    # get number of patients from data file
+    data = pd.read_csv(args.data, header=[0, 1, 2])
+    num_patients = len(data)
 
     # dynamically load mapping module
     spec = importlib.util.spec_from_file_location("mapping", args.mapping)
@@ -45,6 +54,7 @@ if __name__ == "__main__":
     env = Environment(loader=FileSystemLoader(args.template.parent))
     template = env.get_template(args.template.name)
     result = template.render(
+        num_patients=num_patients,
         column_description=generate_markdown_docs(mapping.COLUMN_MAP),
         mapping_docs=generator.import2md(mapping, depth=2),
     )
