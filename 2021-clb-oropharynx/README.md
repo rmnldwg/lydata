@@ -8,9 +8,20 @@
 This folder contains the detailed patterns of lymphatic progression of 263 patients with squamous cell carcinomas (SCCs) in the oropharynx, treated at the Centre Léon Bérard (CLB) between 2014 and 2018.
 
 
+## Table of Contents
+
+- [Curation](#curation)
+- [Online Interface](#online-interface)
+- [Data Description](#data-description)
+- [Documentation of Columns](#documentation-of-columns)
+- [Raw Data](#raw-data)
+- [Mapping Documentation](#mapping)
+- [References](#references)
+
+
 ## Curation
 
-This is detailed in their publication [[1]](#1) and a we are planning to submit a manuscript describing the data the *Data in Brief* journal.
+This is detailed in their publication [[1]](#1) and a we are planning to submit a manuscript describing to the data the *Data in Brief* journal.
 
 
 ## Online Interface
@@ -18,12 +29,12 @@ This is detailed in their publication [[1]](#1) and a we are planning to submit 
 We provide a user-friendly and intuitive graphical user interface to view the dataset, which is available at https://lyprox.org/. The GUI has two main functionalities: the patient list and the dashboard. The patient list allows for viewing the characteristics of a patient, corresponding to one row of the csv file, in a visually appealing and intuitive way. The dashboard allows for filtering of the dataset. For example, the user may select all patients with primary tumors extending over the mid-sagittal plane with involvement of ipsilateral level III. The dashboard will then display the number or percentage of patients with metastases in each of the other LNLs.
 
 
-## Description
+## Data Description
 
 The data is provided as a CSV-table containing one row for each of the 263 patients. The table has a header with three levels that describe the columns. Below we explain each column in the form of a list with three levels. So, for example, list entry 1.i.g refers to a column with the three-level header `patient | # | hpv_status` and underneath it tha patients' HPV status is listed.
 
 
-## Columns
+## Documentation of Columns
 
 1. **`patient`**: General information about the patient’s condition can be found under this top-level header.
    1. **`#`**: The second level under patient has no meaning and exists solely as a filler.
@@ -154,6 +165,7 @@ We also provide the raw data as a CSV file that was used to collect the data in 
 
 ---
 
+<a id="mapping"></a>
 
 ## <kbd>module</kbd> `mapping`
 Map the `raw.csv` data from the 2021-clb-oropharynx cohort to the `data.csv` file. 

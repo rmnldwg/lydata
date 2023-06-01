@@ -19,8 +19,8 @@ stages:
       \ -t 2023-clb-multisite/README.template -o 2023-clb-multisite/README.md\n"
     deps:
     - path: 2023-clb-multisite/README.template
-      md5: 724dc6bf680529f1c9ecefa198423874
-      size: 1752
+      md5: 056e22a45094b91c85b2074f5a8605e3
+      size: 2015
     - path: 2023-clb-multisite/data.csv
       md5: c314b7b65b23b6dd5c0ac4e51b3646ca
       size: 120291
@@ -32,15 +32,15 @@ stages:
       size: 2005
     outs:
     - path: 2023-clb-multisite/README.md
-      md5: bbddd4d3cd7c753533bf463924df0d3e
-      size: 11815
+      md5: 9bb15de132fdb125866ca4ab9aafbcf4
+      size: 12078
   description-and-docs@2023-isb-multisite:
     cmd: ".venv/bin/python render.py -m 2023-isb-multisite/mapping.py -d 2023-isb-multisite/data.csv\
       \ -t 2023-isb-multisite/README.template -o 2023-isb-multisite/README.md\n"
     deps:
     - path: 2023-isb-multisite/README.template
-      md5: 617fd75078c6bc84473a4440fc8fe485
-      size: 1537
+      md5: 75e10e5e7ee4a909ebee7ecff86e748d
+      size: 1800
     - path: 2023-isb-multisite/data.csv
       md5: 8c482844201ea636d956acf397a2a73e
       size: 184432
@@ -52,8 +52,8 @@ stages:
       size: 2005
     outs:
     - path: 2023-isb-multisite/README.md
-      md5: c2ec9865e39633d1978ddce96cfb470a
-      size: 14515
+      md5: b6da9e415c61d4f9d7b6d5c9e4462167
+      size: 14778
   lyproxify@0:
     cmd: "lyscripts data lyproxify -i 2021-clb-oropharynx/raw.csv -o 2021-clb-oropharynx/data.csv\
       \ -m 2021-clb-oropharynx/mapping.py -r 0\n"
@@ -87,8 +87,8 @@ stages:
       \ -t 2021-clb-oropharynx/README.template -o 2021-clb-oropharynx/README.md\n"
     deps:
     - path: 2021-clb-oropharynx/README.template
-      md5: 1b6078db5311795909fa5ccd6fcb2252
-      size: 15202
+      md5: b5e39ce7ff7306ab6a92211f3adc2133
+      size: 15520
     - path: 2021-clb-oropharynx/data.csv
       md5: d40c0a1ae967a6983d60a0a809cf3972
       size: 92742
@@ -100,5 +100,5 @@ stages:
       size: 2005
     outs:
     - path: 2021-clb-oropharynx/README.md
-      md5: f846ca8e0607316c0cf5196d9c3f281c
-      size: 23929
+      md5: f0ec7b542820fc363b43aa635bfe430c
+      size: 24247

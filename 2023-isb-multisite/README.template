@@ -8,6 +8,15 @@ This folder contains data about clinically and pathologically diagnosed lymphati
 [Inselspital Bern]: https://www.insel.ch/de/
 
 
+## Table of Contents
+
+- [Online Interface](#online-interface)
+- [Curation](#curation)
+- [Data Description](#data-description)
+- [Documentation of Columns](#documentation-of-columns)
+- [Mapping Documentation](#mapping)
+
+
 ## Online Interface
 
 We provide a user-friendly and intuitive graphical user interface to view the dataset, which is available at https://lyprox.org/. The GUI has two main functionalities: the patient list and the dashboard. The patient list allows for viewing the characteristics of a patient, corresponding to one row of the csv file, in a visually appealing and intuitive way. The dashboard allows for filtering of the dataset. For example, the user may select all patients with primary tumors extending over the mid-sagittal plane with involvement of ipsilateral level III. The dashboard will then display the number or percentage of patients with metastases in each of the other LNLs.
@@ -18,15 +27,16 @@ We provide a user-friendly and intuitive graphical user interface to view the da
 TODO: needs to be written
 
 
-## Description
+## Data Description
 
 The data is provided as a CSV-table containing one row for each of the {{ num_patients }} patients. The table has a header with three levels that describe the columns. Below we explain each column in the form of a list with three levels. So, for example, list entry 1.i.g refers to a column with the three-level header `patient | # | nicotine_abuse` and this column reports about the patient's smoking status.
 
 
-## Columns
+## Documentation of Columns
 
 {{ column_description }}
 
 ---
 
+<a id="mapping"></a>
 {{ mapping_docs }}
