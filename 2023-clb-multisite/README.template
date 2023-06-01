@@ -29,7 +29,6 @@ The data is provided as a CSV-table containing one row for each of the {{ num_pa
 
 {{ column_description }}
 
-
-## Documentation
+---
 
 {{ mapping_docs }}

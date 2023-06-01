@@ -82,8 +82,7 @@ The data is provided as a CSV-table containing one row for each of the 373 patie
       1. **`Ia`**: And this column reports the number of metastatic lymph nodes in contralateral LNL Ia.
 
 
-
-## Documentation
+---
 
 
 ## <kbd>module</kbd> `mapping`

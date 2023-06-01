@@ -96,8 +96,7 @@ The data is provided as a CSV-table containing one row for each of the 333 patie
       1. **`IIa`**: Total number of pathologically positive lymph nodes in the right sub-LNL IIa.
 
 
-
-## Documentation
+---
 
 
 ## <kbd>module</kbd> `mapping`

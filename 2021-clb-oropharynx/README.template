@@ -7,6 +7,7 @@
 
 This folder contains the detailed patterns of lymphatic progression of 263 patients with squamous cell carcinomas (SCCs) in the oropharynx, treated at the Centre Léon Bérard (CLB) between 2014 and 2018.
 
+
 ## Curation
 
 This is detailed in their publication [[1]](#1) and a we are planning to submit a manuscript describing the data the *Data in Brief* journal.
@@ -27,7 +28,75 @@ The data is provided as a CSV-table containing one row for each of the {{ num_pa
 {{ column_description }}
 
 
-## Documentation
+## Raw Data
+
+We also provide the raw data as a CSV file that was used to collect the data in the first place. Because this dataset was collected in France, the columns in the raw data file are in French. Therefore, we provide a legend on some of the columns in the `raw.csv` table:
+
+| Column Name                   | Explanation                                                                                                                                                     |
+| :---------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Num patient                   | ID of patient                                                                                                                                                   |
+| DDN                           | date of birth: dd/mm/aaaa. :warning: _This column has been deleted for privacy reasons._                                                                        |
+| date d'origine                | date of diagnosis: dd/mm/aaaa                                                                                                                                   |
+| age                           | age at diagnosis in years                                                                                                                                       |
+| sexe                          | sex: 0 (male), 1 (female)                                                                                                                                       |
+| PS au diagnostic              | performance status at diagnosis                                                                                                                                 |
+| tabagisme                     | smoking status: 0 (never), 1 (former), 2 (active)                                                                                                               |
+| tabagisme_PA                  | tabagism in numer of pack years                                                                                                                                 |
+| consom.éthylique              | alcohol consumption : 0 (never), 1 (former), 2 (active)                                                                                                         |
+| atcd de cancer ORL=>EXCLUSION | history of head and neck cancer: 0 (no), 1 (yes)                                                                                                                |
+| atcd de K non ORL             | history of cancer except head and neck                                                                                                                          |
+| atcd=                         | localization of past cancer                                                                                                                                     |
+| locT_code ICD O3              | diagnosis                                                                                                                                                       |
+| latéralité                    | laterality of primary tumor: 0 (lateralized), 1 (median or bilateral)                                                                                           |
+| type histo                    | pathological type: 0 (SCC), 1 (basaloid SCC), 2 (sarcomatoid carcinoma)                                                                                         |
+| p16                           | p16 status: 0 (-), 1 (+)                                                                                                                                        |
+| detailp16                     | how p16 status was determined : 0 (surgery), 1 (biopsy)                                                                                                         |
+| risque                        | risk : neg (p16-negative, not concerned), hr (high-risk p16-positive), br (low-risk p16-positive)                                                               |
+| traitement T                  | treatment of primary tumor: 0 (no treatment), 1 (surgery), 2 (primary RT), 3 (primary RCT), 4 (surgery and postoperative RT), 5 (surgery and postoperative RCT) |
+| traitement N                  | treatment of the neck: 0 (no treatment), 1 (surgery), 2 (primary RT), 3 (primary RCT), 4 (surgery and postoperative RT), 5 (surgery and postoperative RCT)      |
+| cT_TNM7                       | clinical T-category according to 7th TNM edition                                                                                                                |
+| cN_TNM7                       | clinical N-category according to 7th TNM edition                                                                                                                |
+| cT_TNM8                       | clinical T-category according to 8th TNM edition                                                                                                                |
+| cN_TNM8                       | clinical N-category according to 8th TNM edition                                                                                                                |
+| cM                            | clinical M-category                                                                                                                                             |
+| HL_cN+_aireIa                 | is the ipsilateral level Ia clinically or radiologically invaded: 0 (no), 1 (yes)                                                                               |
+| HL_cN+_aireIb                 | same for level Ib                                                                                                                                               |
+| cN.CL                         | is the contralateral neck clinically or radiologically invaded:  0 (no), 1 (yes)                                                                                |
+| CL_cN+_aireIa                 | is the contralateral level Ia clinically or radiologically invaded: 0 (no), 1 (yes)                                                                             |
+| curage_coté                   | side of lymph node dissection (LND): 0 (no LND), 1 (ipsilatéral), 2 (bilateral)                                                                                 |
+| CUR_type                      | Robins type of LND: 0 (hyperselective), 1 (selective), 2 (modified radical), 3 (radical), 4 (extended radical)                                                  |
+| CUR_obj                       | purpose of LND: 1 (preventive), 2 (curative)                                                                                                                    |
+| HL_Ia_analysés                | number of node dissected in ipsilateral level Ia                                                                                                                |
+| HL_Ia_(+)                     | number of node pathologically invaded in ipsilateral level Ia                                                                                                   |
+| total gg analysés HL          | number of node dissected in ipsilateral neck                                                                                                                    |
+| total gg (+) HL               | number of node invaded in ipsilateral neck                                                                                                                      |
+| RC+                           | extracapsular extension: 0 (no), 1 (yes)                                                                                                                        |
+| taille N max                  | maximal size of invaded node in ipsilateral neck in mm                                                                                                          |
+| CUR_type2                     | type of LND in contralateral neck                                                                                                                               |
+| CUR_obj3                      | cf ipsilateral neck                                                                                                                                             |
+| taille N max5                 | #                                                                                                                                                               |
+| total gg analysés             | number of nodes dissected in total (ipsi- and contralateral neck)                                                                                               |
+| total gg (+)                  | number of nodes found to be metastatic in total (ipsi- and contralateral)                                                                                       |
+| RC+6                          | #                                                                                                                                                               |
+| taille N max7                 | #                                                                                                                                                               |
+| pT_TNM7                       | pathological T-category according to 7th TNM edition                                                                                                            |
+| pN_TNM7                       | pathological N-category according to 7th TNM edition                                                                                                            |
+| pT_TNM8                       | pathological T-category according to 8th TNM edition                                                                                                            |
+| pN_TNM8                       | pathological N-category according to 8th TNM edition                                                                                                            |
+| date de sortie                | date of last information about the patient                                                                                                                      |
+| follow up                     | follow up in months                                                                                                                                             |
+| récidive                      | recurrence: 0 (no), 1 (yes)                                                                                                                                     |
+| 2e loc VADS                   | second cancer in head and neck : 0 (no), 1 (yes)                                                                                                                |
+| récidive/prog_T               | recurrence or progression on the T: 0 (no), 1 (no)                                                                                                              |
+| récidive_N                    | nodal recurrence or progression: 0 (no), 1 (no)                                                                                                                 |
+| récidive_M                    | metastatic recurrence or progression: 0 (no), 1 (no)                                                                                                            |
+| vie / mort                    | 0 (alive), 1 (dead) at last information                                                                                                                         |
+| décès                         | if dead: related (1), or not (0) to the oropharyngeal cancer                                                                                                    |
+| REC_date                      | date of recurrence if concerned                                                                                                                                 |
+| REC_delai                     | time to recurrence if concerned, in months                                                                                                                      |
+| infield/outfield RTE          | localization of recurrence: 0 (out-field), 1 (in-field of radiotherapy), 2 (other)                                                                              |
+
+---
 
 {{ mapping_docs }}
 
