@@ -284,7 +284,7 @@ COLUMN_MAP = {
             "age": {
                 "__doc__": "The age of the patient at the time of diagnosis.",
                 "func": robust(int),
-                "columns": [("Age at", "diagnosis", "92_lvl_2")],
+                "columns": [("Age at", "diagnosis", "91_lvl_2")],
             },
             "weight": {
                 "__doc__": "The weight of the patient at the time of diagnosis.",
@@ -297,7 +297,7 @@ COLUMN_MAP = {
                     "date of diagnosis."
                 ),
                 "func": robust(smpl_date),
-                "columns": [("Date of", "surgery", "90_lvl_2")],
+                "columns": [("Date of", "surgery", "89_lvl_2")],
             },
             "alcohol_abuse": {
                 "__doc__": (
@@ -403,7 +403,7 @@ COLUMN_MAP = {
             "date": {
                 "__doc__": "The date of the pathology report (same as surgery).",
                 "func": robust(smpl_date),
-                "columns": [("Date of", "surgery", "90_lvl_2")],
+                "columns": [("Date of", "surgery", "89_lvl_2")],
             },
         },
         "ipsi": {
@@ -489,7 +489,7 @@ COLUMN_MAP = {
             "date": {
                 "__doc__": "The date of the diagnostic consensus (same as surgery).",
                 "func": robust(smpl_date),
-                "columns": [("Date of", "surgery", "90_lvl_2")],
+                "columns": [("Date of", "surgery", "89_lvl_2")],
             },
         },
         "ipsi": {
@@ -568,7 +568,7 @@ COLUMN_MAP = {
             "date": {
                 "__doc__": "The date of the neck dissection.",
                 "func": robust(smpl_date),
-                "columns": [("Date of", "surgery", "90_lvl_2")],
+                "columns": [("Date of", "surgery", "89_lvl_2")],
             },
         },
         "ipsi": {
@@ -660,7 +660,7 @@ COLUMN_MAP = {
             "date": {
                 "__doc__": "The date of the neck dissection.",
                 "func": robust(smpl_date),
-                "columns": [("Date of", "surgery", "90_lvl_2")],
+                "columns": [("Date of", "surgery", "89_lvl_2")],
             },
         },
         "ipsi": {

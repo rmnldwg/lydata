@@ -5,11 +5,11 @@ stages:
       \ -m 2023-clb-multisite/mapping.py -r 0 1 2 --drop-rows 439 --add-index\n"
     deps:
     - path: 2023-clb-multisite/mapping.py
-      md5: 2dfbf543581e84e1fe5b19521f9dead1
+      md5: 7b32851f422369894cc56189810ad23d
       size: 25288
     - path: 2023-clb-multisite/raw.csv
-      md5: 4df7c504c92c369c2f891b0d170041bb
-      size: 215489
+      md5: 07fb62f160142252fe11e1738de6331f
+      size: 211635
     outs:
     - path: 2023-clb-multisite/data.csv
       md5: c314b7b65b23b6dd5c0ac4e51b3646ca
@@ -25,7 +25,7 @@ stages:
       md5: c314b7b65b23b6dd5c0ac4e51b3646ca
       size: 120291
     - path: 2023-clb-multisite/mapping.py
-      md5: 2dfbf543581e84e1fe5b19521f9dead1
+      md5: 7b32851f422369894cc56189810ad23d
       size: 25288
     - path: render.py
       md5: 6d41cb47a8c326a558958693b08004f1
@@ -62,8 +62,8 @@ stages:
       md5: 6792dc7eb2f00f1f02ea3de417a37fb8
       size: 21378
     - path: 2021-clb-oropharynx/raw.csv
-      md5: 98c4150858d3818eb094de8703a8d0ba
-      size: 99682
+      md5: 033e1bf167972d5209fa4a74fefcdfe3
+      size: 96789
     outs:
     - path: 2021-clb-oropharynx/data.csv
       md5: d40c0a1ae967a6983d60a0a809cf3972
