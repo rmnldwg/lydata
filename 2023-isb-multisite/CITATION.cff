@@ -13,5 +13,5 @@ authors:
     email: roland.giger@insel.ch
     affiliation: Inselspital Bern
     orcid: 'https://orcid.org/0000-0002-5574-3210'
-repository-code: 'https://github.com/rmnldwg/lyDATA'
+repository-code: 'https://github.com/rmnldwg/lyDATA/tree/main/2023-isb-multisite'
 license: MIT
