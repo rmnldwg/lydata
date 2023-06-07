@@ -21,7 +21,7 @@ In this repository we aim to provide data on the detailed lymphatic progression 
 
 ## Available datasets
 
-### 2021 USZ Oropharynx
+###  [:open_file_folder: 2021 USZ Oropharynx]
 
 [![radonc badge](https://img.shields.io/badge/Rad%20Onc-j.radonc.2022.01.035-3e6e0e)](https://doi.org/10.1016/j.radonc.2022.01.035)
 [![medRxiv badge](https://img.shields.io/badge/medR%CF%87iv-2021.12.01.21267001-0e4c92)](https://doi.org/10.1101/2021.12.01.21267001)
@@ -32,9 +32,46 @@ The first dataset we are able to share consists of 287 patients with a primary t
 
 We have published a paper about it in *Radiotherapy & Oncology* [[9]](#9) (a preprint is also available on *medRxiv* [[10]](#10)). The dataset is described in detail and can be freely used and cited as a *Data in Brief* paper [[11]](#11).
 
+[:open_file_folder: 2021 USZ Oropharynx]: https://github.com/rmnldwg/lyDATA/tree/main/2021-usz-oropharynx
+
+
+### [:open_file_folder: 2021 CLB Oropharynx]
+
+[![Green Journal](https://img.shields.io/badge/Rad%20Onc-j.radonc.2021.01.028-3e6e0e)](https://doi.org/10.1016/j.radonc.2021.01.028)
+
+We are glad and thankful that the research group around Prof. Vincent Grégoire from the [Centre Léon Bérard] in Lyon (France) have joined our effort to create a database of lymphatic patterns of progression by providing us with the data underlying their publication [[6]](#6). If you use this data, don't forget to cite either said publication or use the `CITATION.cff` file inside the `2021-clb-oropharynx` folder, where the `data.csv` also resides and a description of the data named `README.md`.
+
+> :warning: Note that this dataset on its own has not yet been published in a peer-reviewed journal like *Data in Brief*. This will hopefully happen soon, but until then we might still make changes e.g. add or remove certain columns in the data or correct preprocessing bugs we haven't spotted yet.
+
+[:open_file_folder: 2021 CLB Oropharynx]: https://github.com/rmnldwg/lyDATA/tree/main/2021-clb-oropharynx
+[Centre Léon Bérard]: https://www.centreleonberard.fr/en
+
+
+### [:open_file_folder: 2023 ISB Multisite]
+
+As part of a collaboration with researchers from the [Inselspital Bern] (Switzerland) around Prof. Roland Giger, we are thankful and glad to be able to publish a large and exceptionally detailed dataset on lymphatic progression of HNSCC patients, assessed by pathology. In contrast to earlier datasets, this includes not only patients with oropharyngeal tumors, but also oral cavity, hypopharynx and larynx.
+
+> :warning: This data is described in its own _Data in Brief_ publication and parts of it are analyzed in another work. Both papers are currently under review and will be linked here as soon as they are publicly available. Up to this point, the dataset may be subject to change.
+
+[:open_file_folder: 2023 ISB Multisite]: https://github.com/rmnldwg/lyDATA/tree/main/2023-isb-multisite
+[Inselspital Bern]: https://www.insel.ch/de/
+
+
+### [:open_file_folder: 2023 CLB Multisite]
+
+Completing the "2021 CLB Oropharynx" data table, these patient records detaul lymphatic involvement patterns in HNSCC patients with primary tumors beyond the oropharynx. Again, they are thankfully provided by researchers in Prof. Vincent Grégoire's group and the data was extracted at the [Centre Léon Bérard].
+
+> :warning: Like the "2023 ISB Multisite" dataset, the patients of this release are described in a _Data in Brief_ paper and a subset of them are analyzed in a separate publication on oral cavity SCC. Until these two works are reviewed and published, the data is still subject to change.
+
+[:open_file_folder: 2023 CLB Multisite]: https://github.com/rmnldwg/lyDATA/tree/main/2023-clb-multisite
+[Centre Léon Bérard]: https://www.centreleonberard.fr/en
+
+
 ### stay tuned for more...
 
-We are in the process of collecting more data of patients with primary tumors in other locations.
+We are in the process of collecting more data that we might publish soon. If you would like to contribute to our effort, feel free to contact us: [roman.ludwig@usz.ch]
+
+[roman.ludwig@usz.ch]: mailto:roman.ludwig@usz.ch
 
 
 ## Attribution

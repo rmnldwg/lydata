@@ -54,7 +54,6 @@ authors:
 identifiers:
   - type: doi
     value: '10.5281/zenodo.5833835'
-repository-code: 'https://github.com/rmnldwg/lydata/tree/main/2021-usz-oropharynx'
-url: 'https://lyprox.org'
+url: 'https://github.com/rmnldwg/lydata/tree/main/2021-usz-oropharynx'
 license: MIT
 date-released: '2021-11-24'

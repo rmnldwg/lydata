@@ -1,7 +1,7 @@
-numpy
-pandas
-matplotlib
+numpy ~= 1.24
+pandas ~= 2.0
+matplotlib ~= 3.7
 jupyter
 jupyter-contrib-nbextensions
-icd10-cm
-lyscripts==0.6.6
+icd10-cm == 0.0.5
+lyscripts == 0.6.8

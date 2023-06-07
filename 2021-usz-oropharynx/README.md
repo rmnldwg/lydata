@@ -1,31 +1,29 @@
 # 2021 USZ Oropharynx
 
-[![Greeen Journal](https://img.shields.io/badge/Rad%20Onc-j.radonc.2022.01.035-3e6e0e)](https://doi.org/10.1016/j.radonc.2022.01.035)
-[![medRxiv](https://img.shields.io/badge/medR%CF%87iv-2021.12.01.21267001-0e4c92)](https://doi.org/10.1101/2021.12.01.21267001)
-[![Zenodo DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.5833835-informational)](https://doi.org/10.5281/zenodo.5833835)
+[![Greeen Journal](https://img.shields.io/badge/Rad%20Onc-j.radonc.2022.01.035-3e6e0e)][Radiotherapy & Oncology]
+[![medRxiv](https://img.shields.io/badge/medR%CF%87iv-2021.12.01.21267001-0e4c92)][medRxiv]
+[![Data in Brief](https://img.shields.io/badge/DiB-10.1016%2Fj.dib.2022.108345-orange)][Data in Brief]
+[![Zenodo DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.5833835-informational)][zenodo]
 
 This folder contains the detailed patterns of lymphatic progression of 287 patients with squamous cell carcinomas (SCCs) in the oropharynx, treated at the University Hospital Zurich (USZ) between 2013 and 2019.
 
 You can find here
 
 * the data itself as `data.csv`
-* a citation file `CITATION.cff` that should be used to cite his dataset as long as the main publication in *Data in Brief* is not published
+* a citation file `CITATION.cff` that can be used to cite this dataset. But it is also possible to cite the [Data in Brief] paper or the [zenodo] identifier.
 * a jupyter notebook `figures.ipynb` for rendering figures visualizing different aspects of the data
 * the folder `figures` containing the already rendered figures which we also used in our publication for *Radiation & Oncology* [[1]](#1).
 
-## Curation
 
 ## Curation
 
 We have detailed inclusion criteria and what was considered lymphatic involvement in our paper that has been published in the journal of [Radiotherapy & Oncology] (a preprint is also available on [medRxiv]). The data of this repository is also - and in somewhat more detail - described and provided in its own publication in [Data in Brief], enabling anyone to reuse and cite our dataset.
 
-[Radiotherapy & Oncology]: https://www.thegreenjournal.com
-[Data in Brief]: https://journals.elsevier.com/data-in-brief
-[medRxiv]: https://medrxiv.org
 
-[![Greeen Journal](https://img.shields.io/badge/Rad%20Onc-j.radonc.2022.01.035-3e6e0e)](https://doi.org/10.1016/j.radonc.2022.01.035)
-[![Data in Brief](https://img.shields.io/badge/DiB-10.1016%2Fj.dib.2022.108345-orange)](https://doi.org/10.1016/j.dib.2022.108345)
-[![medRxiv](https://img.shields.io/badge/medR%CF%87iv-2021.12.01.21267001-0e4c92)](https://doi.org/10.1101/2021.12.01.21267001)
+## Online Interface
+
+We provide a user-friendly and intuitive graphical user interface to view the dataset, which is available at https://2021-oropharynx.lyprox.org/. The GUI has two main functionalities: the patient list and the dashboard. The patient list allows for viewing the characteristics of a patient, corresponding to one row of the csv file, in a visually appealing and intuitive way. The dashboard allows for filtering of the dataset. For example, the user may select all patients with primary tumors extending over the mid-sagittal plane with involvement of ipsilateral level III. The dashboard will then display the number or percentage of patients with metastases in each of the other LNLs.
+
 
 ## Description
 
@@ -37,26 +35,27 @@ The data is provided as a CSV-table containing one row for each of the 287 patie
 1. **`patient:`** General information about the patient’s condition can be found under this top-level header.
     1. **`#:`** The second level under patient has no meaning and exists solely as a filler.
         1. **`id:`** Enumeration of the patients
-        1. **`sex:`** Sex of the patient
-        1. **`age:`** Patient’s age at diagnosis
-        1. **`diagnose_date:`** Date of diagnosis (format `YYYY-mm-dd`) defined as the date of first histological confirmation of HNSCC.
-        1. **`alcohol_abuse:`** `true` for patients who stated that they consume alcohol regularly, `false` otherwise
-        1. **`nicotine_abuse:`** `true` for patients who have been regular smokers (> 10 pack years)
-        1. **`hpv_status:`** `true` for patients with human papilloma virus associated tumors (as defined by p16 immunohistochemistry)
-        1. **`neck_dissection:`** Indicates whether the patient has received a neck dissection as part of the treatment.
-        1. **`tnm_edition:`** The edition of the TNM classification used to classify the patient [[2]](#2)
-        1. **`n_stage:`** Degree of spread to regional lymph nodes
-        1. **`m_stage:`** Presence of distant metastases
+        2. **`institution:`** The clinic at which the patient were treated and recorded. This holds the value "University Hospital Zurich" for all patients in this dataset.
+        3. **`sex:`** Sex of the patient
+        4. **`age:`** Patient’s age at diagnosis
+        5. **`diagnose_date:`** Date of diagnosis (format `YYYY-mm-dd`) defined as the date of first histological confirmation of HNSCC.
+        6. **`alcohol_abuse:`** `true` for patients who stated that they consume alcohol regularly, `false` otherwise
+        7. **`nicotine_abuse:`** `true` for patients who have been regular smokers (> 10 pack years)
+        8. **`hpv_status:`** `true` for patients with human papilloma virus associated tumors (as defined by p16 immunohistochemistry)
+        9. **`neck_dissection:`** Indicates whether the patient has received a neck dissection as part of the treatment.
+        10. **`tnm_edition:`** The edition of the TNM classification used to classify the patient [[2]](#2)
+        11. **`n_stage:`** Degree of spread to regional lymph nodes
+        12. **`m_stage:`** Presence of distant metastases
 2. **`tumor:`** Information about tumors is stored under this top-level header
     1. **`<number>:`** The second level enumerates the synchronous tumors. In our database, no patient has had a second tumor, but this structure of the file allows us to include such patients in the future. The third-level headers are the same for each tumor.
         1. **`location:`** Anatomic location of the tumor
-        1. **`subsite:`** ICD-O-3 code associated with a tumor at the particular location according to the world health organization [[3]](#3), [[4]](#4)
-        1. **`side:`** Lateralization of the tumor. Can be `“left”` or `“right”` for tumors that have their center of mass clearly on the respective side of the mid-sagittal line and `“central”` for patients with a tumor on the mid-sagittal line.
-        2. **`central:`** Whether the tumor is centralized or not.
-        3. **`extension:`** True if part of the tumor extends over the mid-sagittal line
-        4. **`volume:`** Volume of the tumor in cm3
-        5. **`stage_prefix:`** Prefix modifier of the T-category. Can be `“c”` or `“p”`
-        6. **`t_stage:`** T-category of the tumor, according to TNM staging
+        2. **`subsite:`** ICD-O-3 code associated with a tumor at the particular location according to the world health organization [[3]](#3), [[4]](#4)
+        3. **`side:`** Lateralization of the tumor. Can be `“left”` or `“right”` for tumors that have their center of mass clearly on the respective side of the mid-sagittal line and `“central”` for patients with a tumor on the mid-sagittal line.
+        4. **`central:`** Whether the tumor is centralized or not.
+        5. **`extension:`** True if part of the tumor extends over the mid-sagittal line
+        6. **`volume:`** Volume of the tumor in cm3
+        7. **`stage_prefix:`** Prefix modifier of the T-category. Can be `“c”` or `“p”`
+        8. **`t_stage:`** T-category of the tumor, according to TNM staging
 3. **`<diagnostic modality>:`** Each recorded diagnostic modality is indicated by its own top-level header. In this file FNA, CT, MRI, PET, pathology and pCT (planning CT) are provided
     1. **`info:`** 
         1. **`date:`** Day on which a diagnose with the respective modality was performed
@@ -66,17 +65,12 @@ The data is provided as a CSV-table containing one row for each of the 287 patie
         1. **`<LNL>:`** same as under 3.ii.a
 
 
-## Online Interface
-
-We provide a user-friendly and intuitive graphical user interface to view the dataset, which is available at https://2021-oropharynx.lyprox.org/. The GUI has two main functionalities: the patient list and the dashboard. The patient list allows for viewing the characteristics of a patient, corresponding to one row of the csv file, in a visually appealing and intuitive way. The dashboard allows for filtering of the dataset. For example, the user may select all patients with primary tumors extending over the mid-sagittal plane with involvement of ipsilateral level III. The dashboard will then display the number or percentage of patients with metastases in each of the other LNLs.
-
-
 ## References
 
 <a id="1">[1]</a>
 R. Ludwig, B. Pouymayou, J.-M. Hoffmann *et al*, 
 "Detailed patient-individual reporting of lymph node involvement in oropharyngeal squamous cell carcinoma with an online interface." 
-Radiotherapy & Oncology, 2021, DOI: [10.1016/j.radonc.2022.01.035](https://doi.org/10.1016/j.radonc.2022.01.035)
+Radiotherapy & Oncology, 2021, DOI: [10.1016/j.radonc.2022.01.035][Radiotherapy & Oncology]
 
 <a id="2">[2]</a>
 J. D. Brierley, M. K. Gospodarowicz, and C. Wittekind, 
@@ -92,3 +86,9 @@ Geneva: World Health Organization, 2004.
 A. G. Fritz, Ed., 
 "International classification of diseases for oncology: ICD-O, 3rd ed." 
 Geneva: World Health Organization, 2000.
+
+
+[Radiotherapy & Oncology]: https://doi.org/10.1016/j.radonc.2022.01.035
+[Data in Brief]: https://doi.org/10.1016/j.dib.2022.108345
+[medRxiv]: https://doi.org/10.1101/2021.12.01.21267001
+[zenodo]: https://doi.org/10.5281/zenodo.5833835

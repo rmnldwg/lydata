@@ -1,0 +1,16 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: 2023 CLB Multisite
+message: >-
+  If you use this dataset, please cite it using the metadata
+  from this file.
+type: dataset
+authors:
+  - given-names: Vincent
+    family-names: Grégoire
+    email: vincent.gregoire@lyon.unicancer.fr
+    affiliation: Centre Léon Bérard
+url: 'https://github.com/rmnldwg/lyDATA/tree/main/2023-clb-multisite'
+license: MIT

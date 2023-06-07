@@ -1,0 +1,104 @@
+schema: '2.0'
+stages:
+  lyproxify@1:
+    cmd: "lyscripts data lyproxify -i 2023-clb-multisite/raw.csv -o 2023-clb-multisite/data.csv\
+      \ -m 2023-clb-multisite/mapping.py -r 0 1 2 --drop-rows 439 --add-index\n"
+    deps:
+    - path: 2023-clb-multisite/mapping.py
+      md5: 7b32851f422369894cc56189810ad23d
+      size: 25288
+    - path: 2023-clb-multisite/raw.csv
+      md5: 07fb62f160142252fe11e1738de6331f
+      size: 211635
+    outs:
+    - path: 2023-clb-multisite/data.csv
+      md5: c314b7b65b23b6dd5c0ac4e51b3646ca
+      size: 120291
+  description-and-docs@2023-clb-multisite:
+    cmd: ".venv/bin/python render.py -m 2023-clb-multisite/mapping.py -d 2023-clb-multisite/data.csv\
+      \ -t 2023-clb-multisite/README.template -o 2023-clb-multisite/README.md\n"
+    deps:
+    - path: 2023-clb-multisite/README.template
+      md5: 056e22a45094b91c85b2074f5a8605e3
+      size: 2015
+    - path: 2023-clb-multisite/data.csv
+      md5: c314b7b65b23b6dd5c0ac4e51b3646ca
+      size: 120291
+    - path: 2023-clb-multisite/mapping.py
+      md5: 7b32851f422369894cc56189810ad23d
+      size: 25288
+    - path: render.py
+      md5: 6d41cb47a8c326a558958693b08004f1
+      size: 2005
+    outs:
+    - path: 2023-clb-multisite/README.md
+      md5: 9bb15de132fdb125866ca4ab9aafbcf4
+      size: 12078
+  description-and-docs@2023-isb-multisite:
+    cmd: ".venv/bin/python render.py -m 2023-isb-multisite/mapping.py -d 2023-isb-multisite/data.csv\
+      \ -t 2023-isb-multisite/README.template -o 2023-isb-multisite/README.md\n"
+    deps:
+    - path: 2023-isb-multisite/README.template
+      md5: 75e10e5e7ee4a909ebee7ecff86e748d
+      size: 1800
+    - path: 2023-isb-multisite/data.csv
+      md5: 8c482844201ea636d956acf397a2a73e
+      size: 184432
+    - path: 2023-isb-multisite/mapping.py
+      md5: e8738035ba1d9314c3a56b669ae5da4f
+      size: 40265
+    - path: render.py
+      md5: 6d41cb47a8c326a558958693b08004f1
+      size: 2005
+    outs:
+    - path: 2023-isb-multisite/README.md
+      md5: b6da9e415c61d4f9d7b6d5c9e4462167
+      size: 14778
+  lyproxify@0:
+    cmd: "lyscripts data lyproxify -i 2021-clb-oropharynx/raw.csv -o 2021-clb-oropharynx/data.csv\
+      \ -m 2021-clb-oropharynx/mapping.py -r 0\n"
+    deps:
+    - path: 2021-clb-oropharynx/mapping.py
+      md5: 6792dc7eb2f00f1f02ea3de417a37fb8
+      size: 21378
+    - path: 2021-clb-oropharynx/raw.csv
+      md5: 033e1bf167972d5209fa4a74fefcdfe3
+      size: 96789
+    outs:
+    - path: 2021-clb-oropharynx/data.csv
+      md5: d40c0a1ae967a6983d60a0a809cf3972
+      size: 92742
+  lyproxify@2:
+    cmd: "lyscripts data lyproxify -i 2023-isb-multisite/raw.csv -o 2023-isb-multisite/data.csv\
+      \ -m 2023-isb-multisite/mapping.py -r 0\n"
+    deps:
+    - path: 2023-isb-multisite/mapping.py
+      md5: e8738035ba1d9314c3a56b669ae5da4f
+      size: 40265
+    - path: 2023-isb-multisite/raw.csv
+      md5: 5a3d19b6e9b14978155698d0198f90c9
+      size: 167140
+    outs:
+    - path: 2023-isb-multisite/data.csv
+      md5: 8c482844201ea636d956acf397a2a73e
+      size: 184432
+  description-and-docs@2021-clb-oropharynx:
+    cmd: ".venv/bin/python render.py -m 2021-clb-oropharynx/mapping.py -d 2021-clb-oropharynx/data.csv\
+      \ -t 2021-clb-oropharynx/README.template -o 2021-clb-oropharynx/README.md\n"
+    deps:
+    - path: 2021-clb-oropharynx/README.template
+      md5: b5e39ce7ff7306ab6a92211f3adc2133
+      size: 15520
+    - path: 2021-clb-oropharynx/data.csv
+      md5: d40c0a1ae967a6983d60a0a809cf3972
+      size: 92742
+    - path: 2021-clb-oropharynx/mapping.py
+      md5: 6792dc7eb2f00f1f02ea3de417a37fb8
+      size: 21378
+    - path: render.py
+      md5: 6d41cb47a8c326a558958693b08004f1
+      size: 2005
+    outs:
+    - path: 2021-clb-oropharynx/README.md
+      md5: f0ec7b542820fc363b43aa635bfe430c
+      size: 24247
