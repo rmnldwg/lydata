@@ -984,8 +984,8 @@ COLUMN_MAP = {
             },
         },
     },
-    # # Number of positive nodes
-    "total_positive": {
+    # Number of positive nodes
+    "positive_dissected": {
         "__doc__": (
             "This top-level header contains information about the number of"
             " pathologically positive lymph nodes in each LNL."
