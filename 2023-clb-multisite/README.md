@@ -80,15 +80,19 @@ The data is provided as a CSV-table containing one row for each of the 373 patie
       1. **`date`**: The date of the neck dissection.
    2. **`ipsi`**: This reports the total number of dissected lymph nodes per ipsilateral LNL.
       1. **`II`**: For instance, this column reports the total number of dissected lymph nodes in ipsilateral LNL II.
+      2. **`Ib_to_III`**: This column reports the total number of dissected lymph nodes in ipsilateral LNL Ib to III. This column exists for convenience, because we created a figure based on this.
    3. **`contra`**: This reports the total number of dissected lymph nodes per contralateral LNL.
       1. **`VII`**: While this column reports the total number of dissected lymph nodes in contralateral LNL VII.
+      2. **`Ib_to_III`**: This column reports the total number of dissected lymph nodes in contralateral LNL Ib to III. This column exists for convenience, because we created a figure based on this.
 6. **`positive_dissected`**: This top-level header contains information about the number of dissected lymph nodes per LNL that were pathologically found to be positive.
    1. **`info`**: This second-level header contains general information.
       1. **`date`**: The date of the neck dissection.
    2. **`ipsi`**: This reports the number of dissected lymph nodes per ipsilateral LNL that were pathologically found to be positive.
       1. **`IV`**: Here, we report the number of metastatic lymph nodes in ipsilateral LNL IV.
+      2. **`Ib_to_III`**: This column reports the number of metastatic dissected lymph nodes in ipsilateral LNL Ib to III. This column exists for convenience, because we created a figure based on this.
    3. **`contra`**: This reports the number of dissected lymph nodes per contralateral LNL that were pathologically found to be positive.
       1. **`Ia`**: And this column reports the number of metastatic lymph nodes in contralateral LNL Ia.
+      2. **`Ib_to_III`**: This column reports the number of metastatic dissected lymph nodes in contralateral LNL Ib to III. This column exists for convenience, because we created a figure based on this.
 
 
 ---
@@ -140,6 +144,7 @@ It also contains a `__doc__` key for every sub-dictionary that describes what th
 **Global Variables**
 ---------------
 - **TNM_COLS**
+- **IB_TO_III_DISSECTED**
 - **EXCLUDE**
 - **COLUMN_MAP**
 
@@ -310,5 +315,16 @@ check_excluded(column: pandas.core.series.Series) → Index
 Check if a patient/row is excluded based on the content of a `column`. 
 
 For the 2022 CLB multisite dataset this is the case when the first column with the three-level header `("Bauwens", "Database", "0_lvl_2")` is not empty or does not contain the character `'n'`. 
+
+
+---
+
+### <kbd>function</kbd> `sum_columns`
+
+```python
+sum_columns(*columns, **_kwargs) → int
+```
+
+Sum the values of multiple columns. 
 
 

@@ -77,6 +77,34 @@ TNM_COLS = [
     ("pN 8th ed", "20_lvl_1", "20_lvl_2"),
 ]
 
+# columns that detail how many nodes were resected/positive in the LNLs Ib through III
+IB_TO_III_DISSECTED = {
+    "total": {
+        "ipsi": [
+            ("26_lvl_0", "LIb", "tot"),
+            ("28_lvl_0", "LII", "tot"),
+            ("30_lvl_0", "LIII", "tot"),
+        ],
+        "contra": [
+            ("40_lvl_0", "LIb", "tot"),
+            ("42_lvl_0", "LII", "tot"),
+            ("44_lvl_0", "LIII", "tot"),
+        ],
+    },
+    "positive": {
+        "ipsi": [
+            ("27_lvl_0", "27_lvl_1", "+"),
+            ("29_lvl_0", "29_lvl_1", "+"),
+            ("31_lvl_0", "31_lvl_1", "+"),
+        ],
+        "contra": [
+            ("41_lvl_0", "41_lvl_1", "+"),
+            ("43_lvl_0", "43_lvl_1", "+"),
+            ("45_lvl_0", "45_lvl_1", "+"),
+        ],
+    },
+}
+
 
 def smpl_date(entry: str) -> str:
     """Parse date from string."""
@@ -251,6 +279,18 @@ def check_excluded(column: pd.Series) -> pd.Index:
     contains_n = column == "n"
     is_excluded = np.all([~is_empty, ~contains_n], axis=0)
     return pd.Index(is_excluded)
+
+
+def sum_columns(*columns, **_kwargs) -> int:
+    """
+    Sum the values of multiple columns.
+    """
+    res = 0
+    for column in columns:
+        add = robust(int)(column)
+        res += add if add is not None else 0
+
+    return res
 
 
 # Find the documentation for the variable below in the module-level docstring.
@@ -608,6 +648,15 @@ COLUMN_MAP = {
                 "func": robust(int),
                 "columns": [("36_lvl_0", "LVII", "tot")],
             },
+            "Ib_to_III": {
+                "__doc__": (
+                    "This column reports the total number of dissected lymph "
+                    "nodes in ipsilateral LNL Ib to III. This column exists "
+                    "for convenience, because we created a figure based on this."
+                ),
+                "func": sum_columns,
+                "columns": IB_TO_III_DISSECTED["total"]["ipsi"],
+            },
         },
         "contra": {
             "__doc__": (
@@ -645,6 +694,15 @@ COLUMN_MAP = {
                 ),
                 "func": robust(int),
                 "columns": [("50_lvl_0", "LVII", "tot")],
+            },
+            "Ib_to_III": {
+                "__doc__": (
+                    "This column reports the total number of dissected lymph "
+                    "nodes in contralateral LNL Ib to III. This column exists "
+                    "for convenience, because we created a figure based on this."
+                ),
+                "func": sum_columns,
+                "columns": IB_TO_III_DISSECTED["total"]["contra"],
             },
         },
     },
@@ -700,6 +758,15 @@ COLUMN_MAP = {
                 "func": robust(int),
                 "columns": [("37_lvl_0", "37_lvl_1", "+")],
             },
+            "Ib_to_III": {
+                "__doc__": (
+                    "This column reports the number of metastatic dissected lymph "
+                    "nodes in ipsilateral LNL Ib to III. This column exists "
+                    "for convenience, because we created a figure based on this."
+                ),
+                "func": sum_columns,
+                "columns": IB_TO_III_DISSECTED["positive"]["ipsi"],
+            },
         },
         "contra": {
             "__doc__": (
@@ -737,6 +804,15 @@ COLUMN_MAP = {
             "VII": {
                 "func": robust(int),
                 "columns": [("51_lvl_0", "51_lvl_1", "+")],
+            },
+            "Ib_to_III": {
+                "__doc__": (
+                    "This column reports the number of metastatic dissected lymph "
+                    "nodes in contralateral LNL Ib to III. This column exists "
+                    "for convenience, because we created a figure based on this."
+                ),
+                "func": sum_columns,
+                "columns": IB_TO_III_DISSECTED["positive"]["contra"],
             },
         },
     },
