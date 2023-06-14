@@ -106,17 +106,23 @@ PATHOLOGY_COLS_INVESTIGATED = [
 ALL_FALSE = [False] * 8
 SUBLVL_PATTERN = {
     "left": {
-        #      right side  Ia     Ib     IIa    IIb    III    IV     Va     Vb
+        #     right side  Ia    Ib    IIa    IIb    III    IV     Va     Vb
         "I": [*ALL_FALSE, True, True, False, False, False, False, False, False],
         "II": [*ALL_FALSE, False, False, True, True, False, False, False, False],
         "V": [*ALL_FALSE, False, False, False, False, False, False, True, True],
     },
     "right": {
-        #      Ia     Ib     IIa    IIb    III    IV     Va     Vb     left side
+        #     Ia    Ib    IIa    IIb    III    IV     Va     Vb     left side
         "I": [True, True, False, False, False, False, False, False, *ALL_FALSE],
         "II": [False, False, True, True, False, False, False, False, *ALL_FALSE],
         "V": [False, False, False, False, False, False, True, True, *ALL_FALSE],
     },
+}
+IB_TO_III_PATTERN = {
+    #        right side  Ia     Ib    IIa   IIb   III   IV     Va     Vb
+    "left": [*ALL_FALSE, False, True, True, True, True, False, False, False],
+    #         Ia     Ib    IIa   IIb   III   IV     Va     Vb     left side
+    "right": [False, True, True, True, True, False, False, False, *ALL_FALSE],
 }
 
 
@@ -381,6 +387,43 @@ def num_super_from_pathology(*lnl_entries, lnl="I", side="left") -> int | None:
             res = (sum(symbol_nums[SUBLVL_PATTERN[side][lnl]]) / 2.0) + (res or 0)
 
     return res
+
+
+def get_index(side: str, lnl: str) -> int:
+    """
+    For a side of the neck and an LNL, return the index of the LNL
+    in the `PATHOLOGY_COLS_INVESTIGATED` array.
+    """
+    for i, entry in enumerate(PATHOLOGY_COLS_INVESTIGATED):
+        if side in entry and lnl in entry:
+            return i
+
+
+def num_Ib_to_III_from_pathology(*lnl_entries, side="left") -> int | None:
+    """
+    Infer number of involved lymph nodes in LNL Ib to III from pathology.
+    """
+    lnl_results = [from_pathology(e)[0] for e in lnl_entries]
+    nums_by_symbol = {s: res.get(s, None) for res in lnl_results for s in res.keys()}
+    symbols = list(nums_by_symbol.keys())
+    
+    if "this" in symbols:
+        symbols.remove("this")
+
+    known_lnl_invs = np.array([lnl_res.get("this") for lnl_res in lnl_results])
+
+    res = -1
+    for lnl in ["Ib", "IIa", "IIb", "III"]:
+        lnl_idx = get_index(side, lnl)
+        if known_lnl_invs[lnl_idx] is not None:
+            res += known_lnl_invs[lnl_idx]
+
+    for symbol in symbols:
+        symbol_pattern = np.array([_.get(symbol, 0) > 0 for _ in lnl_results])
+        if all(symbol_pattern <= IB_TO_III_PATTERN[side]):
+            res += nums_by_symbol[symbol]
+
+    return res + 1 if res >= 0 else None
 
 
 def binary_super_from_pathology(*lnl_entries, lnl="I", side="left") -> bool | None:
@@ -931,6 +974,16 @@ COLUMN_MAP = {
                 "func": num_from_pathology,
                 "columns": ["left Level Vb #investigated"],
             },
+            "Ib_to_III": {
+                "__doc__": (
+                    "Total number of dissected lymph nodes in the left LNLs Ib-III. "
+                    "This information is gathered for a particular figure in our "
+                    "publication."
+                ),
+                "func": num_Ib_to_III_from_pathology,
+                "columns": PATHOLOGY_COLS_INVESTIGATED,
+                "kwargs": {"side": "left"},
+            }
         },
         "right": {
             "__doc__": "Number of dissected lymph nodes per LNL on the right side.",
@@ -982,6 +1035,16 @@ COLUMN_MAP = {
                 "func": num_from_pathology,
                 "columns": ["right Level Vb #investigated"],
             },
+            "Ib_to_III": {
+                "__doc__": (
+                    "Total number of dissected lymph nodes in the right LNLs Ib-III. "
+                    "This information is gathered for a particular figure in our "
+                    "publication."
+                ),
+                "func": num_Ib_to_III_from_pathology,
+                "columns": PATHOLOGY_COLS_INVESTIGATED,
+                "kwargs": {"side": "right"},
+            }
         },
     },
     # Number of positive nodes
@@ -1048,6 +1111,16 @@ COLUMN_MAP = {
             },
             "Va": {"func": num_from_pathology, "columns": ["left Level Va #positiv"]},
             "Vb": {"func": num_from_pathology, "columns": ["left Level Vb #positiv"]},
+            "Ib_to_III": {
+                "__doc__": (
+                    "Total number of dissected lymph nodes found to harbor metastases "
+                    "in the left LNLs Ib-III. This information is gathered for a "
+                    "particular figure in our publication."
+                ),
+                "func": num_Ib_to_III_from_pathology,
+                "columns": PATHOLOGY_COLS_POSITIVE,
+                "kwargs": {"side": "left"},
+            }
         },
         "right": {
             "__doc__": (
@@ -1090,6 +1163,16 @@ COLUMN_MAP = {
             },
             "Va": {"func": num_from_pathology, "columns": ["right Level Va #positiv"]},
             "Vb": {"func": num_from_pathology, "columns": ["right Level Vb #positiv"]},
+            "Ib_to_III": {
+                "__doc__": (
+                    "Total number of dissected lymph nodes found to harbor metastases "
+                    "in the right LNLs Ib-III. This information is gathered for a "
+                    "particular figure in our publication."
+                ),
+                "func": num_Ib_to_III_from_pathology,
+                "columns": PATHOLOGY_COLS_POSITIVE,
+                "kwargs": {"side": "right"},
+            }
         },
     },
 }

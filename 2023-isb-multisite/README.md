@@ -92,17 +92,21 @@ The data is provided as a CSV-table containing one row for each of the 333 patie
       1. **`date`**: Date of the neck dissection.
    2. **`left`**: Number of dissected lymph nodes per LNL on the left side.
       1. **`Va`**: Number of dissected lymph nodes in the left sub-LNL Va.
+      2. **`Ib_to_III`**: Total number of dissected lymph nodes in the left LNLs Ib-III. This information is gathered for a particular figure in our publication.
    3. **`right`**: Number of dissected lymph nodes per LNL on the right side.
       1. **`II`**: Total number of dissected lymph nodes in the right LNL II.
-8. **`total_positive`**: This top-level header contains information about the number of pathologically positive lymph nodes in each LNL.
+      2. **`Ib_to_III`**: Total number of dissected lymph nodes in the right LNLs Ib-III. This information is gathered for a particular figure in our publication.
+8. **`positive_dissected`**: This top-level header contains information about the number of pathologically positive lymph nodes in each LNL.
    1. **`info`**: This second-level header contains general information about the findings of metastasis by the pathologist.
       1. **`date`**: Date of the neck dissection.
       2. **`largest_node_mm`**: Size of the largest lymph node in the neck dissection in mm.
       3. **`largest_node_lnl`**: LNL where the largest pathological lymph node metastasis was found.
    2. **`left`**: Number of pathologically positive lymph nodes per LNL on the left side.
       1. **`V`**: Total number of pathologically positive lymph nodes in the left LNL V.
+      2. **`Ib_to_III`**: Total number of dissected lymph nodes found to harbor metastases in the left LNLs Ib-III. This information is gathered for a particular figure in our publication.
    3. **`right`**: Number of pathologically positive lymph nodes per LNL on the right side.
       1. **`IIa`**: Total number of pathologically positive lymph nodes in the right sub-LNL IIa.
+      2. **`Ib_to_III`**: Total number of dissected lymph nodes found to harbor metastases in the right LNLs Ib-III. This information is gathered for a particular figure in our publication.
 
 
 ---
@@ -158,6 +162,7 @@ It also contains a `__doc__` key for every sub-dictionary that describes what th
 - **PATHOLOGY_COLS_INVESTIGATED**
 - **ALL_FALSE**
 - **SUBLVL_PATTERN**
+- **IB_TO_III_PATTERN**
 - **EXCLUDE**
 - **COLUMN_MAP**
 
@@ -358,6 +363,28 @@ num_super_from_pathology(*lnl_entries, lnl='I', side='left') → int | None
 Infer number of involved lymph nodes in super LNL (e.g. I, II and V) from pathology. 
 
 This involves checking if other LNLs have been resected with the LNL in question. In that case, we do not know if the LNL in question was involved or if it was only one of the co-resected LNLs. 
+
+
+---
+
+### <kbd>function</kbd> `get_index`
+
+```python
+get_index(side: str, lnl: str) → int
+```
+
+For a side of the neck and an LNL, return the index of the LNL in the `PATHOLOGY_COLS_INVESTIGATED` array. 
+
+
+---
+
+### <kbd>function</kbd> `num_Ib_to_III_from_pathology`
+
+```python
+num_Ib_to_III_from_pathology(*lnl_entries, side='left') → int | None
+```
+
+Infer number of involved lymph nodes in LNL Ib to III from pathology. 
 
 
 ---
