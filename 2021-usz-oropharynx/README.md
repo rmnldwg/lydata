@@ -15,6 +15,20 @@ You can find here
 * the folder `figures` containing the already rendered figures which we also used in our publication for *Radiation & Oncology* [[1]](#1).
 
 
+## Cohort Characteristics
+
+Below we show some figures that aim to coarsely characterize the patient cohort in this directory.
+
+| ![age distribution](./figures/age_and_sex.png)                               |
+| ---------------------------------------------------------------------------- |
+| **Figure 1:** _Distribution over age, stratified by sex and smoking status._ |
+
+
+| ![T-category distribution](./figures/t_category.png)                         | ![subsite distribution](./figures/subsite.png)           |
+| ---------------------------------------------------------------------------- | -------------------------------------------------------- |
+| **Figure 2:** _Distribution over age, stratified by sex and smoking status._ | **Figure 3:** _Distribution over primary tumor subsite._ |
+
+
 ## Curation
 
 We have detailed inclusion criteria and what was considered lymphatic involvement in our paper that has been published in the journal of [Radiotherapy & Oncology] (a preprint is also available on [medRxiv]). The data of this repository is also - and in somewhat more detail - described and provided in its own publication in [Data in Brief], enabling anyone to reuse and cite our dataset.

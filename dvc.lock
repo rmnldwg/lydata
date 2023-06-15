@@ -19,8 +19,8 @@ stages:
       \ -t 2023-clb-multisite/README.template -o 2023-clb-multisite/README.md\n"
     deps:
     - path: 2023-clb-multisite/README.template
-      md5: 056e22a45094b91c85b2074f5a8605e3
-      size: 2015
+      md5: 8a52762b0e10724747de3056bae2f1ce
+      size: 2861
     - path: 2023-clb-multisite/data.csv
       md5: 5de121d6d64e39c251a860f47a153e75
       size: 123834
@@ -32,15 +32,15 @@ stages:
       size: 2005
     outs:
     - path: 2023-clb-multisite/README.md
-      md5: 888dbe1c58a4905392fe9a415304773f
-      size: 13244
+      md5: 163889dd0c3fa68636662ae46231ff4d
+      size: 14090
   description-and-docs@2023-isb-multisite:
     cmd: "python scripts/render.py -m 2023-isb-multisite/mapping.py -d 2023-isb-multisite/data.csv\
       \ -t 2023-isb-multisite/README.template -o 2023-isb-multisite/README.md\n"
     deps:
     - path: 2023-isb-multisite/README.template
-      md5: 75e10e5e7ee4a909ebee7ecff86e748d
-      size: 1800
+      md5: 8b0bf29495a3dd67efec47465bc10f36
+      size: 2646
     - path: 2023-isb-multisite/data.csv
       md5: 79dd72d92f6a1817f98fbc406d139ae9
       size: 188268
@@ -52,8 +52,8 @@ stages:
       size: 2005
     outs:
     - path: 2023-isb-multisite/README.md
-      md5: 096e9e276f2d1ecdfe03f962bdc0ea34
-      size: 16767
+      md5: f8e9e73045bfc7c7b06f7e06591ff4ca
+      size: 17613
   lyproxify@0:
     cmd: "lyscripts data lyproxify -i 2021-clb-oropharynx/raw.csv -o 2021-clb-oropharynx/data.csv\
       \ -m 2021-clb-oropharynx/mapping.py -r 0\n"
@@ -87,8 +87,8 @@ stages:
       \ -t 2021-clb-oropharynx/README.template -o 2021-clb-oropharynx/README.md\n"
     deps:
     - path: 2021-clb-oropharynx/README.template
-      md5: b5e39ce7ff7306ab6a92211f3adc2133
-      size: 15520
+      md5: da2806a4ec831173e0ac3104c4b13f92
+      size: 16366
     - path: 2021-clb-oropharynx/data.csv
       md5: d40c0a1ae967a6983d60a0a809cf3972
       size: 92742
@@ -100,8 +100,8 @@ stages:
       size: 2005
     outs:
     - path: 2021-clb-oropharynx/README.md
-      md5: 2a2634970d7fce9685820e8beed03ede
-      size: 24246
+      md5: 9f4bafb55b566fffb92c3dd614493528
+      size: 25092
   convert-to-docx@2021-clb-oropharynx:
     cmd: "pandoc -o ../2021-clb-oropharynx.docx 2021-clb-oropharynx/README.md\n"
     deps:

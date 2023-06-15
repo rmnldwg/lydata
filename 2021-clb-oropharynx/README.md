@@ -10,6 +10,7 @@ This folder contains the detailed patterns of lymphatic progression of 263 patie
 
 ## Table of Contents
 
+- [Cohort Characteristics](#cohort-characteristics)
 - [Curation](#curation)
 - [Online Interface](#online-interface)
 - [Data Description](#data-description)
@@ -17,6 +18,20 @@ This folder contains the detailed patterns of lymphatic progression of 263 patie
 - [Raw Data](#raw-data)
 - [Mapping Documentation](#mapping)
 - [References](#references)
+
+
+## Cohort Characteristics
+
+Below we show some figures that aim to coarsely characterize the patient cohort in this directory.
+
+| ![age distribution](./figures/age_and_sex.png)                               |
+| ---------------------------------------------------------------------------- |
+| **Figure 1:** _Distribution over age, stratified by sex and smoking status._ |
+
+
+| ![T-category distribution](./figures/t_category.png)                         | ![subsite distribution](./figures/subsite.png)           |
+| ---------------------------------------------------------------------------- | -------------------------------------------------------- |
+| **Figure 2:** _Distribution over age, stratified by sex and smoking status._ | **Figure 3:** _Distribution over primary tumor subsite._ |
 
 
 ## Curation

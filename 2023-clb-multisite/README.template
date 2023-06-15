@@ -12,11 +12,26 @@ The `raw.csv` data does contain patients which are duplicates of the patient rec
 
 ## Table of Contents
 
+- [Cohort Characteristics](#cohort-characteristics)
 - [Curation](#curation)
 - [Online Interface](#online-interface)
 - [Data Description](#data-description)
 - [Documentation of Columns](#documentation-of-columns)
 - [Mapping Documentation](#mapping)
+
+
+## Cohort Characteristics
+
+Below we show some figures that aim to coarsely characterize the patient cohort in this directory.
+
+| ![age distribution](./figures/age_and_sex.png)                               |
+| ---------------------------------------------------------------------------- |
+| **Figure 1:** _Distribution over age, stratified by sex and smoking status._ |
+
+
+| ![T-category distribution](./figures/t_category.png)                         | ![subsite distribution](./figures/subsite.png)           |
+| ---------------------------------------------------------------------------- | -------------------------------------------------------- |
+| **Figure 2:** _Distribution over age, stratified by sex and smoking status._ | **Figure 3:** _Distribution over primary tumor subsite._ |
 
 
 ## Curation
