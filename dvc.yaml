@@ -37,7 +37,7 @@ stages:
         in the `mapping.py` module. Insert these documentations into the
         `README.template` and create the `README.md` from it.
       deps:
-        - render.py
+        - scripts/render.py
         - ${item}/README.template
         - ${item}/mapping.py
         - ${item}/data.csv
@@ -45,8 +45,53 @@ stages:
         - ${item}/README.md:
             cache: false
       cmd: >
-        .venv/bin/python render.py
+        python scripts/render.py
         -m ${item}/mapping.py
         -d ${item}/data.csv
         -t ${item}/README.template
         -o ${item}/README.md
+
+  plot-t-category:
+    foreach:
+      - 2021-usz-oropharynx
+      - 2021-clb-oropharynx
+      - 2023-clb-multisite
+      - 2023-isb-multisite
+    do:
+      deps:
+        - scripts/t_category.py
+        - ${item}/data.csv
+      cmd: >
+        python scripts/t_category.py ${item}/data.csv
+      outs:
+        - ${item}/figures/t_category.png
+
+  plot-age-and-sex:
+    foreach:
+      - 2021-usz-oropharynx
+      - 2021-clb-oropharynx
+      - 2023-clb-multisite
+      - 2023-isb-multisite
+    do:
+      deps:
+        - scripts/age_and_sex.py
+        - ${item}/data.csv
+      cmd: >
+        python scripts/age_and_sex.py ${item}/data.csv
+      outs:
+        - ${item}/figures/age_and_sex.png
+
+  plot-subsite:
+    foreach:
+      - 2021-usz-oropharynx
+      - 2021-clb-oropharynx
+      - 2023-clb-multisite
+      - 2023-isb-multisite
+    do:
+      deps:
+        - scripts/subsite.py
+        - ${item}/data.csv
+      cmd: >
+        python scripts/subsite.py ${item}/data.csv
+      outs:
+        - ${item}/figures/subsite.png
