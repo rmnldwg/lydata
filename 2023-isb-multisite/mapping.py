@@ -978,7 +978,10 @@ COLUMN_MAP = {
                 "__doc__": (
                     "Total number of dissected lymph nodes in the left LNLs Ib-III. "
                     "This information is gathered for a particular figure in our "
-                    "publication."
+                    "publication. Note that this is not just the sum of the dissected "
+                    "nodes in the LNLs Ib to III, because some levels were resected "
+                    "en-bloc. Those are included in this column, but could not be "
+                    "resolved for the individual LNLs."
                 ),
                 "func": num_Ib_to_III_from_pathology,
                 "columns": PATHOLOGY_COLS_INVESTIGATED,
@@ -1039,7 +1042,10 @@ COLUMN_MAP = {
                 "__doc__": (
                     "Total number of dissected lymph nodes in the right LNLs Ib-III. "
                     "This information is gathered for a particular figure in our "
-                    "publication."
+                    "publication. Note that this is not just the sum of the dissected "
+                    "nodes in the LNLs Ib to III, because some levels were resected "
+                    "en-bloc. Those are included in this column, but could not be "
+                    "resolved for the individual LNLs."
                 ),
                 "func": num_Ib_to_III_from_pathology,
                 "columns": PATHOLOGY_COLS_INVESTIGATED,
@@ -1115,7 +1121,10 @@ COLUMN_MAP = {
                 "__doc__": (
                     "Total number of dissected lymph nodes found to harbor metastases "
                     "in the left LNLs Ib-III. This information is gathered for a "
-                    "particular figure in our publication."
+                    "particular figure in our publication. Note that this is not just "
+                    "the sum of the dissected nodes in the LNLs Ib to III, because "
+                    "some levels were resected en-bloc. Those are included in this "
+                    "column, but could not be resolved for the individual LNLs."
                 ),
                 "func": num_Ib_to_III_from_pathology,
                 "columns": PATHOLOGY_COLS_POSITIVE,
@@ -1124,8 +1133,8 @@ COLUMN_MAP = {
         },
         "right": {
             "__doc__": (
-                "Number of pathologically positive lymph nodes per LNL on the right"
-                " side."
+                "Number of pathologically positive lymph nodes per LNL on the right "
+                "side."
             ),
             "I": {
                 "func": num_super_from_pathology,
@@ -1141,8 +1150,8 @@ COLUMN_MAP = {
             },
             "IIa": {
                 "__doc__": (
-                    "Total number of pathologically positive lymph nodes in the right"
-                    " sub-LNL IIa."
+                    "Total number of pathologically positive lymph nodes in the right "
+                    "sub-LNL IIa."
                 ),
                 "func": num_from_pathology,
                 "columns": ["right Level IIa #positiv"],
@@ -1167,7 +1176,10 @@ COLUMN_MAP = {
                 "__doc__": (
                     "Total number of dissected lymph nodes found to harbor metastases "
                     "in the right LNLs Ib-III. This information is gathered for a "
-                    "particular figure in our publication."
+                    "particular figure in our publication. Note that this is not just "
+                    "the sum of the dissected nodes in the LNLs Ib to III, because "
+                    "some levels were resected en-bloc. Those are included in this "
+                    "column, but could not be resolved for the individual LNLs."
                 ),
                 "func": num_Ib_to_III_from_pathology,
                 "columns": PATHOLOGY_COLS_POSITIVE,
