@@ -141,10 +141,6 @@ stages:
     - path: scripts/age_and_sex.py
       md5: acd161580d93b39eda4c46e5fb54a79d
       size: 3214
-    outs:
-    - path: 2023-clb-multisite/figures/age_and_sex.png
-      md5: dead348dd8fd65e9d579dba6f9c33b3b
-      size: 50447
   plot-t-category@2023-clb-multisite:
     cmd: "python scripts/t_category.py 2023-clb-multisite/data.csv\n"
     deps:
@@ -154,10 +150,6 @@ stages:
     - path: scripts/t_category.py
       md5: 525ea786589ede53c4b9bb7e5f9d8d42
       size: 1648
-    outs:
-    - path: 2023-clb-multisite/figures/t_category.png
-      md5: a8fcf75be575f33f08f8d8de94af547b
-      size: 28441
   plot-t-category@2023-isb-multisite:
     cmd: "python scripts/t_category.py 2023-isb-multisite/data.csv\n"
     deps:
@@ -167,10 +159,6 @@ stages:
     - path: scripts/t_category.py
       md5: 525ea786589ede53c4b9bb7e5f9d8d42
       size: 1648
-    outs:
-    - path: 2023-isb-multisite/figures/t_category.png
-      md5: 5c7535481daacf8887c3e5d4d4de419c
-      size: 28827
   plot-age-and-sex@2021-clb-oropharynx:
     cmd: "python scripts/age_and_sex.py 2021-clb-oropharynx/data.csv\n"
     deps:
@@ -180,10 +168,6 @@ stages:
     - path: scripts/age_and_sex.py
       md5: acd161580d93b39eda4c46e5fb54a79d
       size: 3214
-    outs:
-    - path: 2021-clb-oropharynx/figures/age_and_sex.png
-      md5: e891e34f4e6e390dcd3e401f87acd38a
-      size: 46965
   plot-age-and-sex@2023-isb-multisite:
     cmd: "python scripts/age_and_sex.py 2023-isb-multisite/data.csv\n"
     deps:
@@ -193,10 +177,6 @@ stages:
     - path: scripts/age_and_sex.py
       md5: acd161580d93b39eda4c46e5fb54a79d
       size: 3214
-    outs:
-    - path: 2023-isb-multisite/figures/age_and_sex.png
-      md5: ff85ba137238abd8fd7ce51793710146
-      size: 49137
   plot-t-category@2021-clb-oropharynx:
     cmd: "python scripts/t_category.py 2021-clb-oropharynx/data.csv\n"
     deps:
@@ -206,10 +186,6 @@ stages:
     - path: scripts/t_category.py
       md5: 525ea786589ede53c4b9bb7e5f9d8d42
       size: 1648
-    outs:
-    - path: 2021-clb-oropharynx/figures/t_category.png
-      md5: 7cf37908af3347e192be687b10c09502
-      size: 30975
   plot-t-category@2021-usz-oropharynx:
     cmd: "python scripts/t_category.py 2021-usz-oropharynx/data.csv\n"
     deps:
@@ -219,10 +195,6 @@ stages:
     - path: scripts/t_category.py
       md5: 525ea786589ede53c4b9bb7e5f9d8d42
       size: 1648
-    outs:
-    - path: 2021-usz-oropharynx/figures/t_category.png
-      md5: 787c3e5dac210211c3db2b028cdc2638
-      size: 27173
   plot-age-and-sex@2021-usz-oropharynx:
     cmd: "python scripts/age_and_sex.py 2021-usz-oropharynx/data.csv\n"
     deps:
@@ -232,10 +204,6 @@ stages:
     - path: scripts/age_and_sex.py
       md5: acd161580d93b39eda4c46e5fb54a79d
       size: 3214
-    outs:
-    - path: 2021-usz-oropharynx/figures/age_and_sex.png
-      md5: 6549439da561d27ccdf1bcc8355df006
-      size: 48048
   plot-subsite@2021-usz-oropharynx:
     cmd: "python scripts/subsite.py 2021-usz-oropharynx/data.csv\n"
     deps:
@@ -245,10 +213,6 @@ stages:
     - path: scripts/subsite.py
       md5: 96c9cad5c95aee7198ee07b5ecb05167
       size: 2226
-    outs:
-    - path: 2021-usz-oropharynx/figures/subsite.png
-      md5: 24fa26220615aa188ae2706b4b0407bb
-      size: 23046
   plot-subsite@2021-clb-oropharynx:
     cmd: "python scripts/subsite.py 2021-clb-oropharynx/data.csv\n"
     deps:
@@ -258,10 +222,6 @@ stages:
     - path: scripts/subsite.py
       md5: 96c9cad5c95aee7198ee07b5ecb05167
       size: 2226
-    outs:
-    - path: 2021-clb-oropharynx/figures/subsite.png
-      md5: 5c3cc0b3167f767b014a122e70b8a847
-      size: 25302
   plot-subsite@2023-isb-multisite:
     cmd: "python scripts/subsite.py 2023-isb-multisite/data.csv\n"
     deps:
@@ -271,10 +231,6 @@ stages:
     - path: scripts/subsite.py
       md5: 96c9cad5c95aee7198ee07b5ecb05167
       size: 2226
-    outs:
-    - path: 2023-isb-multisite/figures/subsite.png
-      md5: b568a223261503e0745bc8693e340112
-      size: 55816
   plot-subsite@2023-clb-multisite:
     cmd: "python scripts/subsite.py 2023-clb-multisite/data.csv\n"
     deps:
@@ -284,7 +240,3 @@ stages:
     - path: scripts/subsite.py
       md5: 96c9cad5c95aee7198ee07b5ecb05167
       size: 2226
-    outs:
-    - path: 2023-clb-multisite/figures/subsite.png
-      md5: 3b75858c51c7e8325519bff24a8cdce1
-      size: 44358

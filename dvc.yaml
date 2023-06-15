@@ -63,8 +63,6 @@ stages:
         - ${item}/data.csv
       cmd: >
         python scripts/t_category.py ${item}/data.csv
-      outs:
-        - ${item}/figures/t_category.png
 
   plot-age-and-sex:
     foreach:
@@ -78,8 +76,6 @@ stages:
         - ${item}/data.csv
       cmd: >
         python scripts/age_and_sex.py ${item}/data.csv
-      outs:
-        - ${item}/figures/age_and_sex.png
 
   plot-subsite:
     foreach:
@@ -93,5 +89,3 @@ stages:
         - ${item}/data.csv
       cmd: >
         python scripts/subsite.py ${item}/data.csv
-      outs:
-        - ${item}/figures/subsite.png
