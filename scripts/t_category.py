@@ -6,8 +6,9 @@ import argparse
 
 import pandas as pd
 import matplotlib.pyplot as plt
+from tueplots import figsizes, fontsizes
 
-from lyscripts.plot.utils import get_size, COLORS
+from lyscripts.plot.utils import COLORS
 
 
 def create_label(percent):
@@ -37,7 +38,9 @@ if __name__ == "__main__":
     output_dir.mkdir(exist_ok=True)
 
     plt.style.use(MPLSTYLE)
-    fig, ax = plt.subplots(figsize=get_size())
+    plt.rcParams.update(figsizes.icml2022_half())
+    plt.rcParams.update(fontsizes.icml2022())
+    fig, ax = plt.subplots()
 
     t_stage_labels = ["T1", "T2", "T3", "T4"]
     colors = [

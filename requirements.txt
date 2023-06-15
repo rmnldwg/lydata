@@ -6,3 +6,4 @@ jupyter-contrib-nbextensions
 icd10-cm == 0.0.5
 lyscripts == 0.6.8
 lazydocs == 0.4.8
+tueplots == 0.0.8

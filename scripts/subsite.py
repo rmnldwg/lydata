@@ -8,8 +8,9 @@ import textwrap
 
 import pandas as pd
 import matplotlib.pyplot as plt
+from tueplots import figsizes, fontsizes
 
-from lyscripts.plot.utils import get_size, COLORS
+from lyscripts.plot.utils import COLORS
 
 
 MPLSTYLE = Path(__file__).parent / ".mplstyle"
@@ -65,14 +66,18 @@ if __name__ == "__main__":
     subsites.index = subsites.index.map(icd_to_subsite)
 
     plt.style.use(MPLSTYLE)
-    fig, ax = plt.subplots(figsize=get_size(), constrained_layout=True)
+    plt.rcParams.update(figsizes.icml2022_half(
+        nrows=1, ncols=1, height_to_width_ratio=0.75,
+    ))
+    plt.rcParams.update(fontsizes.icml2022())
+    fig, ax = plt.subplots()
 
     subsites.plot.barh(
         ax=ax,
         color=COLORS["blue"],
-        xlabel="Number of patients",
+        xlabel="number of patients",
         ylabel="",
     )
-    ax.set_yticklabels(subsites.index, fontsize=6, linespacing=0.75)
+    ax.set_yticklabels(subsites.index, fontsize=5, linespacing=0.75)
 
     plt.savefig(output_dir / OUTPUT_NAME, dpi=300)

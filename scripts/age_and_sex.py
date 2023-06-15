@@ -8,8 +8,9 @@ import argparse
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from tueplots import figsizes, fontsizes
 
-from lyscripts.plot.utils import get_size, COLORS
+from lyscripts.plot.utils import COLORS
 
 
 MPLSTYLE = Path(__file__).parent / ".mplstyle"
@@ -63,13 +64,11 @@ if __name__ == "__main__":
     }
 
     plt.style.use(MPLSTYLE)
-    fig, ax = plt.subplots(
-        1,2,
-        figsize=get_size(width="full"),
-        sharey=True,
-        gridspec_kw={"wspace": 0.01},
-        constrained_layout=True
-    )
+    plt.rcParams.update(figsizes.icml2022_full(
+        nrows=1, ncols=2, height_to_width_ratio=0.75,
+    ))
+    plt.rcParams.update(fontsizes.icml2022())
+    fig, ax = plt.subplots(1,2, sharey=True)
 
     ax[0].hist(
         male_ages,
@@ -89,8 +88,8 @@ if __name__ == "__main__":
     ax[0].set_yticks(np.linspace(10,90,5))
     ax[0].set_yticks(np.linspace(20,100,5), minor=True)
     ax[0].set_yticklabels(np.linspace(10,90,5, dtype=int))
-    ax[0].grid(axis="x")
-    ax[0].legend(loc="lower left", fontsize=8)
+    ax[0].tick_params(axis="y", pad=7)
+    ax[0].legend(loc="lower left")
 
 
     ax[1].hist(
@@ -105,8 +104,7 @@ if __name__ == "__main__":
     )
 
     ax[1].set_xlim(male_xlim)
-    ax[1].grid(axis="x")
-    ax[1].legend(loc="lower right", fontsize=8)
+    ax[1].legend(loc="lower right")
 
     fig.supxlabel("number of patients", fontweight="normal", fontsize="medium")
 
