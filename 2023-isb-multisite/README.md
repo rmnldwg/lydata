@@ -22,12 +22,12 @@ This folder contains data about clinically and pathologically diagnosed lymphati
 
 Below we show some figures that aim to coarsely characterize the patient cohort in this directory.
 
-| ![age distribution](./figures/age_and_sex.png)                               |
+| ![age distribution](figures/age_and_sex.png)                               |
 | ---------------------------------------------------------------------------- |
 | **Figure 1:** _Distribution over age, stratified by sex and smoking status._ |
 
 
-| ![T-category distribution](./figures/t_category.png)                         | ![subsite distribution](./figures/subsite.png)           |
+| ![T-category distribution](figures/t_category.png)                         | ![subsite distribution](figures/subsite.png)           |
 | ---------------------------------------------------------------------------- | -------------------------------------------------------- |
 | **Figure 2:** _Distribution over age, stratified by sex and smoking status._ | **Figure 3:** _Distribution over primary tumor subsite._ |
 
