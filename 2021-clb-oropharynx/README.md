@@ -52,7 +52,7 @@ The data is provided as a CSV-table containing one row for each of the 263 patie
       12. **`n_stage`**: The N category of the patient, indicating the degree of spread to regional lymph nodes.
       13. **`m_stage`**: The M category of the patient, encoding the presence of distant metastases.
 2. **`tumor`**: Information about tumors is stored under this top-level header.
-   1. **`1`**: The second level enumerates the synchronous tumors. In our database, no patient has had a second tumor, but this structure of the file allows us to include such patients in the future. The third-level headers are the same for each tumor..
+   1. **`1`**: The second level enumerates the synchronous tumors. In our database, no patient has had a second tumor but this structure of the file allows us to include such patients in the future. The third-level headers are the same for each tumor..
       1. **`location`**: Anatomic location of the tumor. Since this dataset contains only oropharyngeal SCC patients, this is always `oropharynx`.
       2. **`subsite`**: The subsite of the tumor, specified by ICD-O-3 code.
       3. **`central`**: `true` when the tumor is located centrally on the mid-sagittal plane.

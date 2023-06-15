@@ -304,7 +304,7 @@ def from_pathology(entry) -> tuple[dict[str, int], bool]:
     `LNL I: 10a` and `LNL II: 10a`.
 
     Additionally, if extracapsular extension was found, they would add 100 to the
-    number. And if parts of an LNL were resected with another LNL, but another part of
+    number. And if parts of an LNL were resected with another LNL but another part of
     the LNL was investigated on its own, they would write something like `12 + 4b`.
     """
     res = {}
@@ -979,8 +979,8 @@ COLUMN_MAP = {
                     "Total number of dissected lymph nodes in the left LNLs Ib-III. "
                     "This information is gathered for a particular figure in our "
                     "publication. Note that this is not just the sum of the dissected "
-                    "nodes in the LNLs Ib to III, because some levels were resected "
-                    "en-bloc. Those are included in this column, but could not be "
+                    "nodes in the LNLs Ib to III because some levels were resected "
+                    "en-bloc. Those are included in this column but could not be "
                     "resolved for the individual LNLs."
                 ),
                 "func": num_Ib_to_III_from_pathology,
@@ -1043,8 +1043,8 @@ COLUMN_MAP = {
                     "Total number of dissected lymph nodes in the right LNLs Ib-III. "
                     "This information is gathered for a particular figure in our "
                     "publication. Note that this is not just the sum of the dissected "
-                    "nodes in the LNLs Ib to III, because some levels were resected "
-                    "en-bloc. Those are included in this column, but could not be "
+                    "nodes in the LNLs Ib to III because some levels were resected "
+                    "en-bloc. Those are included in this column but could not be "
                     "resolved for the individual LNLs."
                 ),
                 "func": num_Ib_to_III_from_pathology,
@@ -1122,9 +1122,9 @@ COLUMN_MAP = {
                     "Total number of dissected lymph nodes found to harbor metastases "
                     "in the left LNLs Ib-III. This information is gathered for a "
                     "particular figure in our publication. Note that this is not just "
-                    "the sum of the dissected nodes in the LNLs Ib to III, because "
+                    "the sum of the dissected nodes in the LNLs Ib to III because "
                     "some levels were resected en-bloc. Those are included in this "
-                    "column, but could not be resolved for the individual LNLs."
+                    "column but could not be resolved for the individual LNLs."
                 ),
                 "func": num_Ib_to_III_from_pathology,
                 "columns": PATHOLOGY_COLS_POSITIVE,
@@ -1177,9 +1177,9 @@ COLUMN_MAP = {
                     "Total number of dissected lymph nodes found to harbor metastases "
                     "in the right LNLs Ib-III. This information is gathered for a "
                     "particular figure in our publication. Note that this is not just "
-                    "the sum of the dissected nodes in the LNLs Ib to III, because "
+                    "the sum of the dissected nodes in the LNLs Ib to III because "
                     "some levels were resected en-bloc. Those are included in this "
-                    "column, but could not be resolved for the individual LNLs."
+                    "column but could not be resolved for the individual LNLs."
                 ),
                 "func": num_Ib_to_III_from_pathology,
                 "columns": PATHOLOGY_COLS_POSITIVE,

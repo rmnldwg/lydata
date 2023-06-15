@@ -236,7 +236,7 @@ COLUMN_MAP = {
         "1": {
             "__doc__": (
                 "The second level enumerates the synchronous tumors. In our database,"
-                " no patient has had a second tumor, but this structure of the file"
+                " no patient has had a second tumor but this structure of the file"
                 " allows us to include such patients in the future. The third-level"
                 " headers are the same for each tumor.."
             ),

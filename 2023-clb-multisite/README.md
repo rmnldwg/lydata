@@ -43,7 +43,7 @@ The data is provided as a CSV-table containing one row for each of the 373 patie
       3. **`sex`**: The biological sex of the patient.
       4. **`age`**: The age of the patient at the time of diagnosis.
       5. **`weight`**: The weight of the patient at the time of diagnosis.
-      6. **`diagnose_date`**: The date of surgery, because the raw file does not specify a date of diagnosis.
+      6. **`diagnose_date`**: The date of surgery because the raw file does not specify a date of diagnosis.
       7. **`alcohol_abuse`**: Whether the patient was abusingly drinking alcohol at the time of diagnosis.
       8. **`nicotine_abuse`**: Whether the patient was smoking nicotine at the time of diagnosis.
       9. **`hpv_status`**: The HPV p16 status of the patient.
@@ -53,8 +53,8 @@ The data is provided as a CSV-table containing one row for each of the 373 patie
       13. **`m_stage`**: The M category of the patient.
       14. **`extracapsular`**: Whether the patient had extracapsular spread. In this dataset, this information is only globally available, not for each individual lymph node level.
 2. **`tumor`**: This top-level header contains general tumor information.
-   1. **`1`**: The second level header enumerates sychronous tumors.
-      1. **`location`**: The location of the tumor. This is empty for all patients, because we can later infer it from the subsite's ICD-O-3 code.
+   1. **`1`**: The second level header enumerates synchronous tumors.
+      1. **`location`**: The location of the tumor. This is empty for all patients because we can later infer it from the subsite's ICD-O-3 code.
       2. **`subsite`**: The subsite of the tumor, specified by ICD-O-3 code.
       3. **`central`**: Whether the tumor is located centrally w.r.t. the mid-sagittal plane.
       4. **`extension`**: Whether the tumor extended over the mid-sagittal line.
@@ -68,7 +68,7 @@ The data is provided as a CSV-table containing one row for each of the 373 patie
       1. **`III`**: For example, this column reports the involvement of the ipsilateral LNL III.
    3. **`contra`**: This reports the involvement of the contralateral LNLs.
       1. **`V`**: This column reports the pathologic involvement of the contralateral LNL V.
-4. **`diagnostic_consensus`**: This top-level header contains information about the diagnostic consensus, which we assumed to be negative for each LNL that was not resected during the neck dissection.
+4. **`diagnostic_consensus`**: This top-level header contains information about the diagnostic consensus, which we assumed to be negative for each LNL that was not resected during the neck dissection. However, we do not know if it was positive for resected patients. This means, all columns under this top-level header are essentially inferred from looking at missing entries under the pathology columns.
    1. **`info`**: This second-level header contains general information.
       1. **`date`**: The date of the diagnostic consensus (same as surgery).
    2. **`ipsi`**: This reports the diagnostic consensus of the ipsilateral LNLs.
@@ -80,19 +80,19 @@ The data is provided as a CSV-table containing one row for each of the 373 patie
       1. **`date`**: The date of the neck dissection.
    2. **`ipsi`**: This reports the total number of dissected lymph nodes per ipsilateral LNL.
       1. **`II`**: For instance, this column reports the total number of dissected lymph nodes in ipsilateral LNL II.
-      2. **`Ib_to_III`**: This column reports the total number of dissected lymph nodes in ipsilateral LNL Ib to III. This column exists for convenience, because we created a figure based on this.
+      2. **`Ib_to_III`**: This column reports the total number of dissected lymph nodes in ipsilateral LNL Ib to III. This column exists for convenience because we created a figure based on this.
    3. **`contra`**: This reports the total number of dissected lymph nodes per contralateral LNL.
       1. **`VII`**: While this column reports the total number of dissected lymph nodes in contralateral LNL VII.
-      2. **`Ib_to_III`**: This column reports the total number of dissected lymph nodes in contralateral LNL Ib to III. This column exists for convenience, because we created a figure based on this.
+      2. **`Ib_to_III`**: This column reports the total number of dissected lymph nodes in contralateral LNL Ib to III. This column exists for convenience because we created a figure based on this.
 6. **`positive_dissected`**: This top-level header contains information about the number of dissected lymph nodes per LNL that were pathologically found to be positive.
    1. **`info`**: This second-level header contains general information.
       1. **`date`**: The date of the neck dissection.
    2. **`ipsi`**: This reports the number of dissected lymph nodes per ipsilateral LNL that were pathologically found to be positive.
       1. **`IV`**: Here, we report the number of metastatic lymph nodes in ipsilateral LNL IV.
-      2. **`Ib_to_III`**: This column reports the number of metastatic dissected lymph nodes in ipsilateral LNL Ib to III. This column exists for convenience, because we created a figure based on this.
+      2. **`Ib_to_III`**: This column reports the number of metastatic dissected lymph nodes in ipsilateral LNL Ib to III. This column exists for convenience because we created a figure based on this.
    3. **`contra`**: This reports the number of dissected lymph nodes per contralateral LNL that were pathologically found to be positive.
       1. **`Ia`**: And this column reports the number of metastatic lymph nodes in contralateral LNL Ia.
-      2. **`Ib_to_III`**: This column reports the number of metastatic dissected lymph nodes in contralateral LNL Ib to III. This column exists for convenience, because we created a figure based on this.
+      2. **`Ib_to_III`**: This column reports the number of metastatic dissected lymph nodes in contralateral LNL Ib to III. This column exists for convenience because we created a figure based on this.
 
 
 ---

@@ -333,7 +333,7 @@ COLUMN_MAP = {
             },
             "diagnose_date": {
                 "__doc__": (
-                    "The date of surgery, because the raw file does not specify a "
+                    "The date of surgery because the raw file does not specify a "
                     "date of diagnosis."
                 ),
                 "func": robust(smpl_date),
@@ -395,9 +395,9 @@ COLUMN_MAP = {
     "tumor": {
         "__doc__": "This top-level header contains general tumor information.",
         "1": {
-            "__doc__": "The second level header enumerates sychronous tumors.",
+            "__doc__": "The second level header enumerates synchronous tumors.",
             "location": {
-                "__doc__": "The location of the tumor. This is empty for all patients, because we can later infer it from the subsite's ICD-O-3 code.",
+                "__doc__": "The location of the tumor. This is empty for all patients because we can later infer it from the subsite's ICD-O-3 code.",
                 "default": None,
             },
             "subsite": {
@@ -521,8 +521,11 @@ COLUMN_MAP = {
     "diagnostic_consensus": {
         "__doc__": (
             "This top-level header contains information about the diagnostic "
-            "consensus, which we assumed to be negative for each LNL that was "
-            "not resected during the neck dissection."
+            "consensus, which we assumed to be negative for each LNL that was not "
+            "resected during the neck dissection. However, we do not know if it was "
+            "positive for resected patients. This means, all columns under this "
+            "top-level header are essentially inferred from looking at missing "
+            "entries under the pathology columns."
         ),
         "info": {
             "__doc__": "This second-level header contains general information.",
@@ -652,7 +655,7 @@ COLUMN_MAP = {
                 "__doc__": (
                     "This column reports the total number of dissected lymph "
                     "nodes in ipsilateral LNL Ib to III. This column exists "
-                    "for convenience, because we created a figure based on this."
+                    "for convenience because we created a figure based on this."
                 ),
                 "func": sum_columns,
                 "columns": IB_TO_III_DISSECTED["total"]["ipsi"],
@@ -699,7 +702,7 @@ COLUMN_MAP = {
                 "__doc__": (
                     "This column reports the total number of dissected lymph "
                     "nodes in contralateral LNL Ib to III. This column exists "
-                    "for convenience, because we created a figure based on this."
+                    "for convenience because we created a figure based on this."
                 ),
                 "func": sum_columns,
                 "columns": IB_TO_III_DISSECTED["total"]["contra"],
@@ -762,7 +765,7 @@ COLUMN_MAP = {
                 "__doc__": (
                     "This column reports the number of metastatic dissected lymph "
                     "nodes in ipsilateral LNL Ib to III. This column exists "
-                    "for convenience, because we created a figure based on this."
+                    "for convenience because we created a figure based on this."
                 ),
                 "func": sum_columns,
                 "columns": IB_TO_III_DISSECTED["positive"]["ipsi"],
@@ -809,7 +812,7 @@ COLUMN_MAP = {
                 "__doc__": (
                     "This column reports the number of metastatic dissected lymph "
                     "nodes in contralateral LNL Ib to III. This column exists "
-                    "for convenience, because we created a figure based on this."
+                    "for convenience because we created a figure based on this."
                 ),
                 "func": sum_columns,
                 "columns": IB_TO_III_DISSECTED["positive"]["contra"],
