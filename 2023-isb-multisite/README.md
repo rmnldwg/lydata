@@ -1,6 +1,7 @@
 # 2023 ISB Multisite
 
-> :warning: **WARNING**  
+> ⚠️ **WARNING**
+> 
 > This is still a work in progress!
 
 This folder contains data about clinically and pathologically diagnosed lymphatic patterns of progression from 333 patients treated at the [Inselspital Bern] between 2001 and 2018.
