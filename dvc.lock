@@ -23,8 +23,8 @@ stages:
     deps:
     - path: 2023-clb-multisite/README.template
       hash: md5
-      md5: 47d082c336fe45b579cb651de10ca504
-      size: 2855
+      md5: 7fd43de458fc171e235134278a8d7d9a
+      size: 3010
     - path: 2023-clb-multisite/data.csv
       hash: md5
       md5: 5de121d6d64e39c251a860f47a153e75
@@ -40,16 +40,16 @@ stages:
     outs:
     - path: 2023-clb-multisite/README.md
       hash: md5
-      md5: 9d7fc7f6c2ead232fbd94b571f24184c
-      size: 14084
+      md5: 743b2d04cdde9028be7bfa2e3b4b7b91
+      size: 14239
   description-and-docs@2023-isb-multisite:
     cmd: "python scripts/render.py -m 2023-isb-multisite/mapping.py -d 2023-isb-multisite/data.csv\
       \ -t 2023-isb-multisite/README.template -o 2023-isb-multisite/README.md\n"
     deps:
     - path: 2023-isb-multisite/README.template
       hash: md5
-      md5: c0451dc6378d1fd8717564ffc1cc9ac6
-      size: 2640
+      md5: 9b30730c02b9d920aebcdc98ded63fcd
+      size: 2797
     - path: 2023-isb-multisite/data.csv
       hash: md5
       md5: 79dd72d92f6a1817f98fbc406d139ae9
@@ -65,8 +65,8 @@ stages:
     outs:
     - path: 2023-isb-multisite/README.md
       hash: md5
-      md5: 35ac60157e049b4e0fa521108684dfbe
-      size: 17607
+      md5: c9fca6aced66ff0262fca3086dd2b60f
+      size: 17764
   lyproxify@0:
     cmd: "lyscripts data lyproxify -i 2021-clb-oropharynx/raw.csv -o 2021-clb-oropharynx/data.csv\
       \ -m 2021-clb-oropharynx/mapping.py -r 0\n"
@@ -107,8 +107,8 @@ stages:
     deps:
     - path: 2021-clb-oropharynx/README.template
       hash: md5
-      md5: 72f5bd634355b337fbb9a37a374bbd4d
-      size: 16360
+      md5: 8b19cbd6d8b97ad12571222619da3ac6
+      size: 16535
     - path: 2021-clb-oropharynx/data.csv
       hash: md5
       md5: d40c0a1ae967a6983d60a0a809cf3972
@@ -124,8 +124,8 @@ stages:
     outs:
     - path: 2021-clb-oropharynx/README.md
       hash: md5
-      md5: e906220b56094704d969f72fcc658f7e
-      size: 25086
+      md5: 02dd863ae499240507b3ce14fe6d6651
+      size: 25261
   convert-to-docx@2021-clb-oropharynx:
     cmd: "pandoc -o ../2021-clb-oropharynx.docx 2021-clb-oropharynx/README.md\n"
     deps:

@@ -18,6 +18,7 @@ This folder contains data about clinically and pathologically diagnosed lymphati
 - [Mapping Documentation](#mapping)
 
 
+<a id="cohort-characteristics"></a>
 ## Cohort Characteristics
 
 Below we show some figures that aim to coarsely characterize the patient cohort in this directory.
@@ -32,21 +33,25 @@ Below we show some figures that aim to coarsely characterize the patient cohort 
 | **Figure 2:** _Distribution over age, stratified by sex and smoking status._ | **Figure 3:** _Distribution over primary tumor subsite._ |
 
 
+<a id="online-interface"></a>
 ## Online Interface
 
 We provide a user-friendly and intuitive graphical user interface to view the dataset, which is available at https://lyprox.org/. The GUI has two main functionalities: the patient list and the dashboard. The patient list allows for viewing the characteristics of a patient, corresponding to one row of the csv file, in a visually appealing and intuitive way. The dashboard allows for filtering of the dataset. For example, the user may select all patients with primary tumors extending over the mid-sagittal plane with involvement of ipsilateral level III. The dashboard will then display the number or percentage of patients with metastases in each of the other LNLs.
 
 
+<a id="curation"></a>
 ## Curation
 
 TODO: needs to be written
 
 
+<a id="data-description"></a>
 ## Data Description
 
 The data is provided as a CSV-table containing one row for each of the 333 patients. The table has a header with three levels that describe the columns. Below we explain each column in the form of a list with three levels. So, for example, list entry 1.i.g refers to a column with the three-level header `patient | # | nicotine_abuse` and this column reports about the patient's smoking status.
 
 
+<a id="documentation-of-columns"></a>
 ## Documentation of Columns
 
 1. **`patient`**: This top-level header contains general patient information.
@@ -125,6 +130,7 @@ The data is provided as a CSV-table containing one row for each of the 333 patie
 
 
 ---
+
 
 <a id="mapping"></a>
 

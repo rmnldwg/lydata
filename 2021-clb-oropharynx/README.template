@@ -1,6 +1,7 @@
 # 2021 CLB Oropharynx
 
-> :warning: **WARNING**  
+> ⚠️ **WARNING**
+>
 > This is not yet finalized.
 
 [![Green Journal](https://img.shields.io/badge/Rad%20Onc-j.radonc.2021.01.028-3e6e0e)](https://doi.org/10.1016/j.radonc.2021.01.028)
@@ -20,6 +21,7 @@ This folder contains the detailed patterns of lymphatic progression of 263 patie
 - [References](#references)
 
 
+<a id="cohort-characteristics"></a>
 ## Cohort Characteristics
 
 Below we show some figures that aim to coarsely characterize the patient cohort in this directory.
@@ -34,26 +36,31 @@ Below we show some figures that aim to coarsely characterize the patient cohort 
 | **Figure 2:** _Distribution over age, stratified by sex and smoking status._ | **Figure 3:** _Distribution over primary tumor subsite._ |
 
 
+<a id="curation"></a>
 ## Curation
 
 This is detailed in their publication [[1]](#1) and a we are planning to submit a manuscript describing to the data the *Data in Brief* journal.
 
 
+<a id="online-interface"></a>
 ## Online Interface
 
 We provide a user-friendly and intuitive graphical user interface to view the dataset, which is available at https://lyprox.org/. The GUI has two main functionalities: the patient list and the dashboard. The patient list allows for viewing the characteristics of a patient, corresponding to one row of the csv file, in a visually appealing and intuitive way. The dashboard allows for filtering of the dataset. For example, the user may select all patients with primary tumors extending over the mid-sagittal plane with involvement of ipsilateral level III. The dashboard will then display the number or percentage of patients with metastases in each of the other LNLs.
 
 
+<a id="data-description"></a>
 ## Data Description
 
 The data is provided as a CSV-table containing one row for each of the {{ num_patients }} patients. The table has a header with three levels that describe the columns. Below we explain each column in the form of a list with three levels. So, for example, list entry 1.i.g refers to a column with the three-level header `patient | # | hpv_status` and underneath it tha patients' HPV status is listed.
 
 
+<a id="documentation-of-columns"></a>
 ## Documentation of Columns
 
 {{ column_description }}
 
 
+<a id="raw-data"></a>
 ## Raw Data
 
 We also provide the raw data as a CSV file that was used to collect the data in the first place. Because this dataset was collected in France, the columns in the raw data file are in French. Therefore, we provide a legend on some of the columns in the `raw.csv` table:
