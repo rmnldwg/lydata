@@ -288,7 +288,9 @@ def sum_columns(*columns, **_kwargs) -> int:
     res = 0
     for column in columns:
         add = robust(int)(column)
-        res += add if add is not None else 0
+        if add is None:
+            return None
+        res += add
 
     return res
 

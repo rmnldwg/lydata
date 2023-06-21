@@ -406,24 +406,33 @@ def num_Ib_to_III_from_pathology(*lnl_entries, side="left") -> int | None:
     lnl_results = [from_pathology(e)[0] for e in lnl_entries]
     nums_by_symbol = {s: res.get(s, None) for res in lnl_results for s in res.keys()}
     symbols = list(nums_by_symbol.keys())
-    
+
     if "this" in symbols:
         symbols.remove("this")
 
     known_lnl_invs = np.array([lnl_res.get("this") for lnl_res in lnl_results])
 
-    res = -1
+    res = 0
+    must_drop = False
+
     for lnl in ["Ib", "IIa", "IIb", "III"]:
         lnl_idx = get_index(side, lnl)
         if known_lnl_invs[lnl_idx] is not None:
             res += known_lnl_invs[lnl_idx]
+        else:
+            must_drop = True
 
     for symbol in symbols:
-        symbol_pattern = np.array([_.get(symbol, 0) > 0 for _ in lnl_results])
-        if all(symbol_pattern <= IB_TO_III_PATTERN[side]):
+        symbol_pattern = (
+            np.array([_.get(symbol, 0) > 0 for _ in lnl_results])
+            & IB_TO_III_PATTERN[side]
+        )
+        if all(symbol_pattern <= IB_TO_III_PATTERN[side]) and symbol_pattern.sum() > 1:
             res += nums_by_symbol[symbol]
+        else:
+            must_drop = True
 
-    return res + 1 if res >= 0 else None
+    return None if must_drop else res
 
 
 def binary_super_from_pathology(*lnl_entries, lnl="I", side="left") -> bool | None:
