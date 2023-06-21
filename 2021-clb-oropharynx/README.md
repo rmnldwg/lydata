@@ -57,62 +57,62 @@ The data is provided as a CSV-table containing one row for each of the 263 patie
 <a id="documentation-of-columns"></a>
 ## Documentation of Columns
 
-1. **`patient`**: General information about the patient’s condition can be found under this top-level header.
-   1. **`#`**: The second level under patient has no meaning and exists solely as a filler.
-      1. **`id`**: Enumeration of the patients.
-      2. **`institution`**: The clinic where the data was extracted.
-      3. **`sex`**: The biological sex of the patient.
-      4. **`age`**: The age of the patient at the time of diagnosis.
-      5. **`diagnose_date`**: Date of diagnosis (format `YYYY-mm-dd`) defined as the date of first histological confirmation of HNSCC.
-      6. **`alcohol_abuse`**: `true` for patients who stated that they consume alcohol regularly, `false` otherwise.
-      7. **`nicotine_abuse`**: `true` for patients who have been regular smokers (> 10 pack years), `false` otherwise.
-      8. **`pack_years`**: Number of pack years of smoking hitory of the patient.
-      9. **`hpv_status`**: `true` for patients with human papilloma virus associated tumors (as defined by p16 immunohistochemistry).
-      10. **`neck_dissection`**: Indicates whether the patient has received a neck dissection as part of the treatment.
-      11. **`tnm_edition`**: The edition of the TNM classification used to classify the patient.
-      12. **`n_stage`**: The N category of the patient, indicating the degree of spread to regional lymph nodes.
-      13. **`m_stage`**: The M category of the patient, encoding the presence of distant metastases.
-2. **`tumor`**: Information about tumors is stored under this top-level header.
-   1. **`1`**: The second level enumerates the synchronous tumors. In our database, no patient has had a second tumor but this structure of the file allows us to include such patients in the future. The third-level headers are the same for each tumor..
-      1. **`location`**: Anatomic location of the tumor. Since this dataset contains only oropharyngeal SCC patients, this is always `oropharynx`.
-      2. **`subsite`**: The subsite of the tumor, specified by ICD-O-3 code.
-      3. **`central`**: `true` when the tumor is located centrally on the mid-sagittal plane.
-      4. **`extension`**: `true` when the tumor extends over the mid-sagittal plane.
-      5. **`volume`**: The volume of the tumor in cm^3.
-      6. **`stage_prefix`**: Prefix modifier of the T-category. Can be `“c”` or `“p”`. In this dataset, only the clinically assessed T-category is available.
-      7. **`t_stage`**: T-category of the tumor, according to TNM staging.
-3. **`diagnostic_consensus`**: This top-level header contains the per-level clinical consensus on lymph node involvement. It was assessed based on different diagnostic modalities like CT or MRI.
-   1. **`info`**: The second level header contains general information on the diagnostic consensus.
-      1. **`date`**: The date of the diagnostic consensus (same as date of diagnosis).
-   2. **`ipsi`**: These columns report the involvement based on the diagnostic consensus for ipsilateral LNLs.
-      1. **`II`**: For example, the clinical involvement of level II lymph nodes.
-   3. **`contra`**: These columns report the involvement based on the diagnostic consensus for contralateral LNLs.
-      1. **`Ib`**: For example, the clinical involvement of sub-level Ib lymph nodes.
-4. **`pathology`**: Columns under this header contain pathologically assessed involvement information for each LNL.
-   1. **`info`**: The second level header contains general information on the pathology.
-      1. **`date`**: The date of the pathology (same as date of diagnosis).
-   2. **`ipsi`**: Here, we report the ipsilateral LNL involvement based on the pathology.
-      1. **`V`**: For instance, the pathologically assessed involvement of level V lymph nodes.
-   3. **`contra`**: The contralateral LNL involvement based on the pathology.
-      1. **`II`**: E.g., the pathologically assessed involvement of sub-level II lymph nodes.
-5. **`total_dissected`**: The total number of lymph nodes resected per LNL.
-   1. **`info`**: The second level header contains general information on the pathology.
-      1. **`date`**: The date of the pathology (same as date of diagnosis).
-   2. **`ipsi`**: Number of dissected lymph nodes in ipsilateral LNLs.
-      1. **`all`**: Like the total number of lymph nodes dissected in all ipsilateral LNLs.
-      2. **`IV`**: Or the number of dissected lymph nodes in level IV only.
-   3. **`contra`**: Number of dissected lymph nodes in contralateral LNLs.
-      1. **`all`**: Consequently, these column contains the total number of lymph nodes dissected in all contralateral LNLs.
-      2. **`Ia`**: And this column reports only the number of dissected lymph nodes in level Ia.
-6. **`positive_dissected`**: The number of metastatic lymph nodes found in the dissected LNLs.
-   1. **`info`**: The second level header contains general information on the pathology.
-      1. **`date`**: The date of the pathology (same as date of diagnosis).
-   2. **`ipsi`**: Columns under this second-level header report the number of metastatic lymph nodes found in the dissected ipsilateral LNLs.
-      1. **`all`**: First, the total number of metastatic lymph nodes found in all ipsilateral LNLs.
-      2. **`VII`**: And then, for instance, the number of metastatic lymph nodes found in level VII only.
-   3. **`contra`**: Columns under this second-level header report the number of metastatic lymph nodes found in the dissected contralateral LNLs.
-      1. **`all`**: In analogy to the ipsilateral LNLs, this column states the total number of metastatic lymph nodes found in all contralateral LNLs.
-      2. **`III`**: And this column reports the number of metastatic lymph nodes found in level III only.
+1. **`patient:`** General information about the patient’s condition can be found under this top-level header.
+    1. **`#:`** The second level under patient has no meaning and exists solely as a filler.
+        1. **`id:`** Enumeration of the patients.
+        2. **`institution:`** The clinic where the data was extracted.
+        3. **`sex:`** The biological sex of the patient.
+        4. **`age:`** The age of the patient at the time of diagnosis.
+        5. **`diagnose_date:`** Date of diagnosis (format `YYYY-mm-dd`) defined as the date of first histological confirmation of HNSCC.
+        6. **`alcohol_abuse:`** `true` for patients who stated that they consume alcohol regularly, `false` otherwise.
+        7. **`nicotine_abuse:`** `true` for patients who have been regular smokers (> 10 pack years), `false` otherwise.
+        8. **`pack_years:`** Number of pack years of smoking hitory of the patient.
+        9. **`hpv_status:`** `true` for patients with human papilloma virus associated tumors (as defined by p16 immunohistochemistry).
+        10. **`neck_dissection:`** Indicates whether the patient has received a neck dissection as part of the treatment.
+        11. **`tnm_edition:`** The edition of the TNM classification used to classify the patient.
+        12. **`n_stage:`** The N category of the patient, indicating the degree of spread to regional lymph nodes.
+        13. **`m_stage:`** The M category of the patient, encoding the presence of distant metastases.
+2. **`tumor:`** Information about tumors is stored under this top-level header.
+    1. **`1:`** The second level enumerates the synchronous tumors. In our database, no patient has had a second tumor but this structure of the file allows us to include such patients in the future. The third-level headers are the same for each tumor..
+        1. **`location:`** Anatomic location of the tumor. Since this dataset contains only oropharyngeal SCC patients, this is always `oropharynx`.
+        2. **`subsite:`** The subsite of the tumor, specified by ICD-O-3 code.
+        3. **`central:`** `true` when the tumor is located centrally on the mid-sagittal plane.
+        4. **`extension:`** `true` when the tumor extends over the mid-sagittal plane.
+        5. **`volume:`** The volume of the tumor in cm^3.
+        6. **`stage_prefix:`** Prefix modifier of the T-category. Can be `“c”` or `“p”`. In this dataset, only the clinically assessed T-category is available.
+        7. **`t_stage:`** T-category of the tumor, according to TNM staging.
+3. **`diagnostic_consensus:`** This top-level header contains the per-level clinical consensus on lymph node involvement. It was assessed based on different diagnostic modalities like CT or MRI.
+    1. **`info:`** The second level header contains general information on the diagnostic consensus.
+        1. **`date:`** The date of the diagnostic consensus (same as date of diagnosis).
+    2. **`ipsi:`** These columns report the involvement based on the diagnostic consensus for ipsilateral LNLs.
+        1. **`II:`** For example, the clinical involvement of level II lymph nodes.
+    3. **`contra:`** These columns report the involvement based on the diagnostic consensus for contralateral LNLs.
+        1. **`Ib:`** For example, the clinical involvement of sub-level Ib lymph nodes.
+4. **`pathology:`** Columns under this header contain pathologically assessed involvement information for each LNL.
+    1. **`info:`** The second level header contains general information on the pathology.
+        1. **`date:`** The date of the pathology (same as date of diagnosis).
+    2. **`ipsi:`** Here, we report the ipsilateral LNL involvement based on the pathology.
+        1. **`V:`** For instance, the pathologically assessed involvement of level V lymph nodes.
+    3. **`contra:`** The contralateral LNL involvement based on the pathology.
+        1. **`II:`** E.g., the pathologically assessed involvement of sub-level II lymph nodes.
+5. **`total_dissected:`** The total number of lymph nodes resected per LNL.
+    1. **`info:`** The second level header contains general information on the pathology.
+        1. **`date:`** The date of the pathology (same as date of diagnosis).
+    2. **`ipsi:`** Number of dissected lymph nodes in ipsilateral LNLs.
+        1. **`all:`** Like the total number of lymph nodes dissected in all ipsilateral LNLs.
+        2. **`IV:`** Or the number of dissected lymph nodes in level IV only.
+    3. **`contra:`** Number of dissected lymph nodes in contralateral LNLs.
+        1. **`all:`** Consequently, these column contains the total number of lymph nodes dissected in all contralateral LNLs.
+        2. **`Ia:`** And this column reports only the number of dissected lymph nodes in level Ia.
+6. **`positive_dissected:`** The number of metastatic lymph nodes found in the dissected LNLs.
+    1. **`info:`** The second level header contains general information on the pathology.
+        1. **`date:`** The date of the pathology (same as date of diagnosis).
+    2. **`ipsi:`** Columns under this second-level header report the number of metastatic lymph nodes found in the dissected ipsilateral LNLs.
+        1. **`all:`** First, the total number of metastatic lymph nodes found in all ipsilateral LNLs.
+        2. **`VII:`** And then, for instance, the number of metastatic lymph nodes found in level VII only.
+    3. **`contra:`** Columns under this second-level header report the number of metastatic lymph nodes found in the dissected contralateral LNLs.
+        1. **`all:`** In analogy to the ipsilateral LNLs, this column states the total number of metastatic lymph nodes found in all contralateral LNLs.
+        2. **`III:`** And this column reports the number of metastatic lymph nodes found in level III only.
 
 
 

@@ -1,10 +1,10 @@
 numpy ~= 1.24
 pandas ~= 2.0
 matplotlib ~= 3.7
-dvc ~= 3
+dvc ~= 3.1
 jupyter
 jupyter-contrib-nbextensions
 icd10-cm == 0.0.5
-lyscripts == 0.6.8
+lyscripts == 0.6.9
 lazydocs == 0.4.8
 tueplots == 0.0.8

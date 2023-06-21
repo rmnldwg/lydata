@@ -40,8 +40,8 @@ stages:
     outs:
     - path: 2023-clb-multisite/README.md
       hash: md5
-      md5: 743b2d04cdde9028be7bfa2e3b4b7b91
-      size: 14239
+      md5: 7a08b235fdc0042b296fb0ea8f026dbc
+      size: 14327
   description-and-docs@2023-isb-multisite:
     cmd: "python scripts/render.py -m 2023-isb-multisite/mapping.py -d 2023-isb-multisite/data.csv\
       \ -t 2023-isb-multisite/README.template -o 2023-isb-multisite/README.md\n"
@@ -65,8 +65,8 @@ stages:
     outs:
     - path: 2023-isb-multisite/README.md
       hash: md5
-      md5: 67ae2badfbccd85bf1bddd6da868cdae
-      size: 17762
+      md5: cf97cbea313706eff6e78e5c04a64a5b
+      size: 17872
   lyproxify@0:
     cmd: "lyscripts data lyproxify -i 2021-clb-oropharynx/raw.csv -o 2021-clb-oropharynx/data.csv\
       \ -m 2021-clb-oropharynx/mapping.py -r 0\n"
@@ -124,8 +124,8 @@ stages:
     outs:
     - path: 2021-clb-oropharynx/README.md
       hash: md5
-      md5: 02dd863ae499240507b3ce14fe6d6651
-      size: 25261
+      md5: c6e023bf8c3f668072b0675190cece77
+      size: 25347
   convert-to-docx@2021-clb-oropharynx:
     cmd: "pandoc -o ../2021-clb-oropharynx.docx 2021-clb-oropharynx/README.md\n"
     deps:

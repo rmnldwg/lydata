@@ -55,79 +55,79 @@ The data is provided as a CSV-table containing one row for each of the 333 patie
 <a id="documentation-of-columns"></a>
 ## Documentation of Columns
 
-1. **`patient`**: This top-level header contains general patient information.
-   1. **`#`**: The second level header for the `patient` columns is only a placeholder.
-      1. **`id`**: The local study ID.
-      2. **`institution`**: The institution where the patient was treated.
-      3. **`sex`**: The biological sex of the patient.
-      4. **`age`**: The age of the patient at the time of diagnosis.
-      5. **`diagnose_date`**: The date of diagnosis.
-      6. **`alcohol_abuse`**: Whether the patient was abusingly drinking alcohol at the time of diagnosis.
-      7. **`nicotine_abuse`**: Whether the patient was considered a smoker. This is set to `False`, when the patient had zero pack-years
-      8. **`hpv_status`**: The HPV p16 status of the patient.
-      9. **`neck_dissection`**: Whether the patient underwent a neck dissection. In this dataset, all patients underwent a neck dissection.
-      10. **`tnm_edition`**: The edition of the TNM classification used.
-      11. **`n_stage`**: The pN category of the patient (pathologically assessed).
-      12. **`m_stage`**: The M category of the patient.
-      13. **`extracapsular`**: Whether the patient had extracapsular spread in any LNL.
-2. **`tumor`**: This top-level header contains general tumor information.
-   1. **`1`**: This second-level header enumerates synchronous tumors.
-      1. **`location`**: The location of the tumor.
-      2. **`subsite`**: The subsite of the tumor, specified by ICD-O-3 code.
-      3. **`side`**: Whether the tumor occurred on the right or left side of the mid-sagittal plane.
-      4. **`central`**: Whether the tumor was located centrally or not.
-      5. **`extension`**: Whether the tumor extended over the mid-sagittal line.
-      6. **`volume`**: The volume of the tumor in cm^3.
-      7. **`stage_prefix`**: The prefix of the T category.
-      8. **`t_stage`**: The T category of the tumor.
-3. **`CT`**: This top-level header contains involvement information from the CT scan.
-   1. **`info`**: This second-level header contains general information about the CT scan.
-      1. **`date`**: The date of the CT scan.
-   2. **`left`**: This describes the observed involvement of the left LNLs.
-      1. **`Va`**: As an example, this describes the clinical involvement of the left LNL Va, as observed in a CT scan.
-   3. **`right`**: This describes the observed involvement of the right LNLs.
-      1. **`IIa`**: While this describes the clinical involvement of the right LNL IIa, as observed in a CT scan.
-4. **`MRI`**: This top-level header contains involvement information from the MRI scan.
-   1. **`info`**: This second-level header contains general information about the MRI scan.
-      1. **`date`**: The date of the MRI scan.
-   2. **`left`**: This describes the observed involvement of the left LNLs.
-      1. **`Ia`**: E.g., this describes the clinical involvement of the left LNL Ia, as observed in an MRI scan.
-   3. **`right`**: This describes the observed involvement of the right LNLs.
-      1. **`III`**: This describes the clinical involvement of the right LNL III, as observed in an MRI scan.
-5. **`PET`**: This top-level header contains involvement information from the PET scan.
-   1. **`info`**: This second-level header contains general information about the PET scan.
-      1. **`date`**: The date of the PET scan.
-   2. **`left`**: This describes the observed involvement of the left LNLs.
-      1. **`IV`**: For instance, this describes the clinical involvement of the left LNL IV, as observed in a PET scan.
-   3. **`right`**: This describes the observed involvement of the right LNLs.
-      1. **`III`**: On the other side, this describes the clinical involvement of the right LNL III, as observed in a PET scan.
-6. **`pathology`**: This top-level header contains involvement information from the pathology report.
-   1. **`info`**: This second-level header contains general information about the pathology report.
-      1. **`date`**: Date of the neck dissection.
-   2. **`left`**: Microscopic involvement of the left LNLs.
-      1. **`I`**: This describes whether the left LNL I was pathologically involved or not.
-   3. **`right`**: Microscopic involvement of the right LNLs.
-      1. **`IIb`**: This describes whether the right sub-LNL IIb was pathologically involved or not.
-7. **`total_dissected`**: This top-level header contains information about the number of lymph nodes dissected in each LNL.
-   1. **`info`**: This second-level header contains general information about the pathology report.
-      1. **`date`**: Date of the neck dissection.
-   2. **`left`**: Number of dissected lymph nodes per LNL on the left side.
-      1. **`Va`**: Number of dissected lymph nodes in the left sub-LNL Va.
-      2. **`Ib_to_III`**: Total number of dissected lymph nodes in the left LNLs Ib-III. This information is gathered for a particular figure in our publication. Note that this is not just the sum of the dissected nodes in the LNLs Ib to III because some levels were resected en-bloc. Those are included in this column but could not be resolved for the individual LNLs.
-   3. **`right`**: Number of dissected lymph nodes per LNL on the right side.
-      1. **`II`**: Total number of dissected lymph nodes in the right LNL II.
-      2. **`Ib_to_III`**: Total number of dissected lymph nodes in the right LNLs Ib-III. This information is gathered for a particular figure in our publication. Note that this is not just the sum of the dissected nodes in the LNLs Ib to III because some levels were resected en-bloc. Those are included in this column but could not be resolved for the individual LNLs.
-8. **`positive_dissected`**: This top-level header contains information about the number of pathologically positive lymph nodes in each LNL.
-   1. **`info`**: This second-level header contains general information about the findings of metastasis by the pathologist.
-      1. **`date`**: Date of the neck dissection.
-      2. **`largest_node_mm`**: Size of the largest lymph node in the neck dissection in mm.
-      3. **`largest_node_lnl`**: LNL where the largest pathological lymph node metastasis was found.
-   2. **`left`**: Number of pathologically positive lymph nodes per LNL on the left side.
-      1. **`V`**: Total number of pathologically positive lymph nodes in the left LNL V.
-      2. **`Ib_to_III`**: Total number of dissected lymph nodes found to harbor metastases in the left LNLs Ib-III. This information is gathered for a particular figure in our publication. Note that this is not just the sum of the dissected nodes in the LNLs Ib to III because some levels were resected en-bloc. Those are included in this column but could not be resolved for the individual LNLs.
-   3. **`right`**: Number of pathologically positive lymph nodes per LNL on the right side.
-      1. **`IIa`**: Total number of pathologically positive lymph nodes in the right sub-LNL IIa.
-      2. **`Ib_to_III`**: Total number of dissected lymph nodes found to harbor metastases in the right LNLs Ib-III. This information is gathered for a particular figure in our publication. Note that this is not just the sum of the dissected nodes in the LNLs Ib to III because some levels were resected en-bloc. Those are included in this column but could not be resolved for the individual LNLs.
+1. **`patient:`** This top-level header contains general patient information.
+    1. **`#:`** The second level header for the `patient` columns is only a placeholder.
+        1. **`id:`** The local study ID.
+        2. **`institution:`** The institution where the patient was treated.
+        3. **`sex:`** The biological sex of the patient.
+        4. **`age:`** The age of the patient at the time of diagnosis.
+        5. **`diagnose_date:`** The date of diagnosis.
+        6. **`alcohol_abuse:`** Whether the patient was abusingly drinking alcohol at the time of diagnosis.
+        7. **`nicotine_abuse:`** Whether the patient was considered a smoker. This is set to `False`, when the patient had zero pack-years
+        8. **`hpv_status:`** The HPV p16 status of the patient.
+        9. **`neck_dissection:`** Whether the patient underwent a neck dissection. In this dataset, all patients underwent a neck dissection.
+        10. **`tnm_edition:`** The edition of the TNM classification used.
+        11. **`n_stage:`** The pN category of the patient (pathologically assessed).
+        12. **`m_stage:`** The M category of the patient.
+        13. **`extracapsular:`** Whether the patient had extracapsular spread in any LNL.
+2. **`tumor:`** This top-level header contains general tumor information.
+    1. **`1:`** This second-level header enumerates synchronous tumors.
+        1. **`location:`** The location of the tumor.
+        2. **`subsite:`** The subsite of the tumor, specified by ICD-O-3 code.
+        3. **`side:`** Whether the tumor occurred on the right or left side of the mid-sagittal plane.
+        4. **`central:`** Whether the tumor was located centrally or not.
+        5. **`extension:`** Whether the tumor extended over the mid-sagittal line.
+        6. **`volume:`** The volume of the tumor in cm^3.
+        7. **`stage_prefix:`** The prefix of the T category.
+        8. **`t_stage:`** The T category of the tumor.
+3. **`CT:`** This top-level header contains involvement information from the CT scan.
+    1. **`info:`** This second-level header contains general information about the CT scan.
+        1. **`date:`** The date of the CT scan.
+    2. **`left:`** This describes the observed involvement of the left LNLs.
+        1. **`Va:`** As an example, this describes the clinical involvement of the left LNL Va, as observed in a CT scan.
+    3. **`right:`** This describes the observed involvement of the right LNLs.
+        1. **`IIa:`** While this describes the clinical involvement of the right LNL IIa, as observed in a CT scan.
+4. **`MRI:`** This top-level header contains involvement information from the MRI scan.
+    1. **`info:`** This second-level header contains general information about the MRI scan.
+        1. **`date:`** The date of the MRI scan.
+    2. **`left:`** This describes the observed involvement of the left LNLs.
+        1. **`Ia:`** E.g., this describes the clinical involvement of the left LNL Ia, as observed in an MRI scan.
+    3. **`right:`** This describes the observed involvement of the right LNLs.
+        1. **`III:`** This describes the clinical involvement of the right LNL III, as observed in an MRI scan.
+5. **`PET:`** This top-level header contains involvement information from the PET scan.
+    1. **`info:`** This second-level header contains general information about the PET scan.
+        1. **`date:`** The date of the PET scan.
+    2. **`left:`** This describes the observed involvement of the left LNLs.
+        1. **`IV:`** For instance, this describes the clinical involvement of the left LNL IV, as observed in a PET scan.
+    3. **`right:`** This describes the observed involvement of the right LNLs.
+        1. **`III:`** On the other side, this describes the clinical involvement of the right LNL III, as observed in a PET scan.
+6. **`pathology:`** This top-level header contains involvement information from the pathology report.
+    1. **`info:`** This second-level header contains general information about the pathology report.
+        1. **`date:`** Date of the neck dissection.
+    2. **`left:`** Microscopic involvement of the left LNLs.
+        1. **`I:`** This describes whether the left LNL I was pathologically involved or not.
+    3. **`right:`** Microscopic involvement of the right LNLs.
+        1. **`IIb:`** This describes whether the right sub-LNL IIb was pathologically involved or not.
+7. **`total_dissected:`** This top-level header contains information about the number of lymph nodes dissected in each LNL.
+    1. **`info:`** This second-level header contains general information about the pathology report.
+        1. **`date:`** Date of the neck dissection.
+    2. **`left:`** Number of dissected lymph nodes per LNL on the left side.
+        1. **`Va:`** Number of dissected lymph nodes in the left sub-LNL Va.
+        2. **`Ib_to_III:`** Total number of dissected lymph nodes in the left LNLs Ib-III. This information is gathered for a particular figure in our publication. Note that this is not just the sum of the dissected nodes in the LNLs Ib to III because some levels were resected en-bloc. Those are included in this column but could not be resolved for the individual LNLs.
+    3. **`right:`** Number of dissected lymph nodes per LNL on the right side.
+        1. **`II:`** Total number of dissected lymph nodes in the right LNL II.
+        2. **`Ib_to_III:`** Total number of dissected lymph nodes in the right LNLs Ib-III. This information is gathered for a particular figure in our publication. Note that this is not just the sum of the dissected nodes in the LNLs Ib to III because some levels were resected en-bloc. Those are included in this column but could not be resolved for the individual LNLs.
+8. **`positive_dissected:`** This top-level header contains information about the number of pathologically positive lymph nodes in each LNL.
+    1. **`info:`** This second-level header contains general information about the findings of metastasis by the pathologist.
+        1. **`date:`** Date of the neck dissection.
+        2. **`largest_node_mm:`** Size of the largest lymph node in the neck dissection in mm.
+        3. **`largest_node_lnl:`** LNL where the largest pathological lymph node metastasis was found.
+    2. **`left:`** Number of pathologically positive lymph nodes per LNL on the left side.
+        1. **`V:`** Total number of pathologically positive lymph nodes in the left LNL V.
+        2. **`Ib_to_III:`** Total number of dissected lymph nodes found to harbor metastases in the left LNLs Ib-III. This information is gathered for a particular figure in our publication. Note that this is not just the sum of the dissected nodes in the LNLs Ib to III because some levels were resected en-bloc. Those are included in this column but could not be resolved for the individual LNLs.
+    3. **`right:`** Number of pathologically positive lymph nodes per LNL on the right side.
+        1. **`IIa:`** Total number of pathologically positive lymph nodes in the right sub-LNL IIa.
+        2. **`Ib_to_III:`** Total number of dissected lymph nodes found to harbor metastases in the right LNLs Ib-III. This information is gathered for a particular figure in our publication. Note that this is not just the sum of the dissected nodes in the LNLs Ib to III because some levels were resected en-bloc. Those are included in this column but could not be resolved for the individual LNLs.
 
 
 ---
