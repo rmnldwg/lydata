@@ -944,6 +944,11 @@ COLUMN_MAP = {
                 "func": robust(smpl_date),
                 "columns": ["Date of ND"],
             },
+            "all_lnls": {
+                "__doc__": "The total number of investigated lymph nodes.",
+                "func": robust(int),
+                "columns": ["Total LNs investigated"],
+            },
         },
         "left": {
             "__doc__": "Number of dissected lymph nodes per LNL on the left side.",
@@ -1089,6 +1094,11 @@ COLUMN_MAP = {
                 "__doc__": "Date of the neck dissection.",
                 "func": robust(smpl_date),
                 "columns": ["Date of ND"],
+            },
+            "all_lnls": {
+                "__doc__": "The total number of involved lymph nodes.",
+                "func": robust(int),
+                "columns": ["Total LNs positive"],
             },
             "largest_node_mm": {
                 "__doc__": (

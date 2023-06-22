@@ -111,6 +111,7 @@ The data is provided as a CSV-table containing one row for each of the 333 patie
 7. **`total_dissected:`** This top-level header contains information about the number of lymph nodes dissected in each LNL.
     1. **`info:`** This second-level header contains general information about the pathology report.
         1. **`date:`** Date of the neck dissection.
+        2. **`all_lnls:`** The total number of investigated lymph nodes.
     2. **`left:`** Number of dissected lymph nodes per LNL on the left side.
         1. **`Va:`** Number of dissected lymph nodes in the left sub-LNL Va.
         2. **`Ib_to_III:`** Total number of dissected lymph nodes in the left LNLs Ib-III. This information is gathered for a particular figure in our publication. Note that this is not just the sum of the dissected nodes in the LNLs Ib to III because some levels were resected en-bloc. Those are included in this column but could not be resolved for the individual LNLs.
@@ -120,8 +121,9 @@ The data is provided as a CSV-table containing one row for each of the 333 patie
 8. **`positive_dissected:`** This top-level header contains information about the number of pathologically positive lymph nodes in each LNL.
     1. **`info:`** This second-level header contains general information about the findings of metastasis by the pathologist.
         1. **`date:`** Date of the neck dissection.
-        2. **`largest_node_mm:`** Size of the largest lymph node in the neck dissection in mm.
-        3. **`largest_node_lnl:`** LNL where the largest pathological lymph node metastasis was found.
+        2. **`all_lnls:`** The total number of involved lymph nodes.
+        3. **`largest_node_mm:`** Size of the largest lymph node in the neck dissection in mm.
+        4. **`largest_node_lnl:`** LNL where the largest pathological lymph node metastasis was found.
     2. **`left:`** Number of pathologically positive lymph nodes per LNL on the left side.
         1. **`V:`** Total number of pathologically positive lymph nodes in the left LNL V.
         2. **`Ib_to_III:`** Total number of dissected lymph nodes found to harbor metastases in the left LNLs Ib-III. This information is gathered for a particular figure in our publication. Note that this is not just the sum of the dissected nodes in the LNLs Ib to III because some levels were resected en-bloc. Those are included in this column but could not be resolved for the individual LNLs.
