@@ -52,12 +52,12 @@ stages:
       size: 2795
     - path: 2023-isb-multisite/data.csv
       hash: md5
-      md5: d11760c8241e0d1f3e693fe8697aed88
-      size: 188078
+      md5: d96a4c5f9e2f7ff9d88777ef03e5269e
+      size: 188358
     - path: 2023-isb-multisite/mapping.py
       hash: md5
-      md5: 21326f9c5cfafc9ca50c209efb1f2996
-      size: 45199
+      md5: c88b261c0a095edd2f72104c7f4f527e
+      size: 45844
     - path: scripts/render.py
       hash: md5
       md5: 6d41cb47a8c326a558958693b08004f1
@@ -90,8 +90,8 @@ stages:
     deps:
     - path: 2023-isb-multisite/mapping.py
       hash: md5
-      md5: 21326f9c5cfafc9ca50c209efb1f2996
-      size: 45199
+      md5: c88b261c0a095edd2f72104c7f4f527e
+      size: 45844
     - path: 2023-isb-multisite/raw.csv
       hash: md5
       md5: 231ddf11be72a2f1e7e5f972f515ade6
@@ -99,8 +99,8 @@ stages:
     outs:
     - path: 2023-isb-multisite/data.csv
       hash: md5
-      md5: d11760c8241e0d1f3e693fe8697aed88
-      size: 188078
+      md5: d96a4c5f9e2f7ff9d88777ef03e5269e
+      size: 188358
   description-and-docs@2021-clb-oropharynx:
     cmd: "python scripts/render.py -m 2021-clb-oropharynx/mapping.py -d 2021-clb-oropharynx/data.csv\
       \ -t 2021-clb-oropharynx/README.template -o 2021-clb-oropharynx/README.md\n"
@@ -183,8 +183,8 @@ stages:
     deps:
     - path: 2023-isb-multisite/data.csv
       hash: md5
-      md5: d11760c8241e0d1f3e693fe8697aed88
-      size: 188078
+      md5: d96a4c5f9e2f7ff9d88777ef03e5269e
+      size: 188358
     - path: scripts/t_category.py
       hash: md5
       md5: 525ea786589ede53c4b9bb7e5f9d8d42
@@ -205,8 +205,8 @@ stages:
     deps:
     - path: 2023-isb-multisite/data.csv
       hash: md5
-      md5: d11760c8241e0d1f3e693fe8697aed88
-      size: 188078
+      md5: d96a4c5f9e2f7ff9d88777ef03e5269e
+      size: 188358
     - path: scripts/age_and_sex.py
       hash: md5
       md5: acd161580d93b39eda4c46e5fb54a79d
@@ -271,8 +271,8 @@ stages:
     deps:
     - path: 2023-isb-multisite/data.csv
       hash: md5
-      md5: d11760c8241e0d1f3e693fe8697aed88
-      size: 188078
+      md5: d96a4c5f9e2f7ff9d88777ef03e5269e
+      size: 188358
     - path: scripts/subsite.py
       hash: md5
       md5: 96c9cad5c95aee7198ee07b5ecb05167

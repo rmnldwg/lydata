@@ -403,30 +403,40 @@ def num_Ib_to_III_from_pathology(*lnl_entries, side="left") -> int | None:
     """
     Infer number of involved lymph nodes in LNL Ib to III from pathology.
     """
+    # an array of dicts with the numbers of investigated/involved nodes per LNL
     lnl_results = [from_pathology(e)[0] for e in lnl_entries]
-    nums_by_symbol = {s: res.get(s, None) for res in lnl_results for s in res.keys()}
-    symbols = list(nums_by_symbol.keys())
+    # dict with the number of investigated/involved sorted by suffix symbols
+    total_by_symbol = {s: res.get(s, None) for res in lnl_results for s in res.keys()}
+    # list of suffix symbols
+    symbols = list(total_by_symbol.keys())
 
     if "this" in symbols:
         symbols.remove("this")
 
-    known_lnl_invs = np.array([lnl_res.get("this") for lnl_res in lnl_results])
+    # array of numbers of investigated/involved nodes per LNL that were not resected
+    # en-block together with another LNL
+    known_involvements = np.array([lnl_res.get("this") for lnl_res in lnl_results])
 
     res = 0
     must_drop = False
 
     for lnl in ["Ib", "IIa", "IIb", "III"]:
         lnl_idx = get_index(side, lnl)
-        if known_lnl_invs[lnl_idx] is not None:
-            res += known_lnl_invs[lnl_idx]
-        else:
+        has_symbols = len(lnl_results[lnl_idx]) > 0
+        if known_involvements[lnl_idx] is not None:
+            res += known_involvements[lnl_idx]
+        # if the info for this LNL is not available in isolation and it was not
+        # resected en-block with another LNL, we can't be sure about the involvement
+        elif not has_symbols:
             must_drop = True
 
     for symbol in symbols:
         symbol_pattern = np.array([_.get(symbol, 0) > 0 for _ in lnl_results])
         is_resected_within_Ib_to_III = all(symbol_pattern <= IB_TO_III_PATTERN[side])
         if is_resected_within_Ib_to_III:
-            res += nums_by_symbol[symbol]
+            res += total_by_symbol[symbol]
+            # if symbol == "a" and total_by_symbol["a"] == 8:
+            #     pass
 
         if (
             sum(symbol_pattern & IB_TO_III_PATTERN[side]) > 0
