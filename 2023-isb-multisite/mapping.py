@@ -106,23 +106,23 @@ PATHOLOGY_COLS_INVESTIGATED = [
 ALL_FALSE = [False] * 8
 SUBLVL_PATTERN = {
     "left": {
-        #     right side  Ia    Ib    IIa    IIb    III    IV     Va     Vb
-        "I": [*ALL_FALSE, True, True, False, False, False, False, False, False],
-        "II": [*ALL_FALSE, False, False, True, True, False, False, False, False],
-        "V": [*ALL_FALSE, False, False, False, False, False, False, True, True],
+        #              right side  Ia    Ib    IIa    IIb    III    IV     Va     Vb
+        "I": np.array([*ALL_FALSE, True, True, False, False, False, False, False, False]),
+        "II": np.array([*ALL_FALSE, False, False, True, True, False, False, False, False]),
+        "V": np.array([*ALL_FALSE, False, False, False, False, False, False, True, True]),
     },
     "right": {
-        #     Ia    Ib    IIa    IIb    III    IV     Va     Vb     left side
-        "I": [True, True, False, False, False, False, False, False, *ALL_FALSE],
-        "II": [False, False, True, True, False, False, False, False, *ALL_FALSE],
-        "V": [False, False, False, False, False, False, True, True, *ALL_FALSE],
+        #              Ia    Ib    IIa    IIb    III    IV     Va     Vb     left side
+        "I": np.array([True, True, False, False, False, False, False, False, *ALL_FALSE]),
+        "II": np.array([False, False, True, True, False, False, False, False, *ALL_FALSE]),
+        "V": np.array([False, False, False, False, False, False, True, True, *ALL_FALSE]),
     },
 }
 IB_TO_III_PATTERN = {
-    #        right side  Ia     Ib    IIa   IIb   III   IV     Va     Vb
-    "left": [*ALL_FALSE, False, True, True, True, True, False, False, False],
-    #         Ia     Ib    IIa   IIb   III   IV     Va     Vb     left side
-    "right": [False, True, True, True, True, False, False, False, *ALL_FALSE],
+    #                 right side  Ia     Ib    IIa   IIb   III   IV     Va     Vb
+    "left": np.array([*ALL_FALSE, False, True, True, True, True, False, False, False]),
+    #                  Ia     Ib    IIa   IIb   III   IV     Va     Vb     left side
+    "right": np.array([False, True, True, True, True, False, False, False, *ALL_FALSE]),
 }
 
 
@@ -423,13 +423,15 @@ def num_Ib_to_III_from_pathology(*lnl_entries, side="left") -> int | None:
             must_drop = True
 
     for symbol in symbols:
-        symbol_pattern = (
-            np.array([_.get(symbol, 0) > 0 for _ in lnl_results])
-            & IB_TO_III_PATTERN[side]
-        )
-        if all(symbol_pattern <= IB_TO_III_PATTERN[side]) and symbol_pattern.sum() > 1:
+        symbol_pattern = np.array([_.get(symbol, 0) > 0 for _ in lnl_results])
+        is_resected_within_Ib_to_III = all(symbol_pattern <= IB_TO_III_PATTERN[side])
+        if is_resected_within_Ib_to_III:
             res += nums_by_symbol[symbol]
-        else:
+
+        if (
+            sum(symbol_pattern & IB_TO_III_PATTERN[side]) > 0
+            and sum(symbol_pattern & ~IB_TO_III_PATTERN[side]) > 0
+        ):
             must_drop = True
 
     return None if must_drop else res
