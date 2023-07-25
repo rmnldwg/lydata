@@ -1,6 +1,7 @@
 """
 Plot the distribution over primary tumor subsites.
 """
+from collections import defaultdict
 from pathlib import Path
 import argparse
 import re
@@ -11,45 +12,55 @@ import matplotlib.pyplot as plt
 from tueplots import figsizes, fontsizes
 
 from lyscripts.plot.utils import COLORS
+from lyscripts.utils import flatten
+
+
+def invert(mapping: dict) -> dict:
+    """Invert a dictionary with lists as values."""
+    result = {}
+    for key, value_list in mapping.items():
+        for value in value_list:
+            result[value] = key
+
+    return result
 
 
 MPLSTYLE = Path(__file__).parent / ".mplstyle"
 OUTPUT_NAME = Path(__file__).with_suffix(".png").name
-SUBSITES = {
-    "C00": "lips",
-    "C01": "base of tongue",
-    "C02": "other & unspec. parts of tongue",
-    "C03": "gum",
-    "C04": "floor of mouth",
-    "C05": "palate",
-    "C06": "other & unspec. parts of mouth",
-    "C07": "parotid gland",
-    "C08": "other & unspec. major salivary glands",
-    "C09": "tonsil",
-    "C10": "oropharynx",
-    "C11": "nasopharynx",
-    "C12": "pyriform sinus",
-    "C13": "hypopharynx",
-    "C14": "other/ill-defined sites in the lip, oral cavity and pharynx",
-    "C32": "larynx",
+SUBSITE_DICT = {
+    "oropharynx": {
+        "base of tongue":  ["C01"  , "C01.9"],
+        "tonsil":          ["C09"  , "C09.0", "C09.1", "C09.8", "C09.9"],
+        "other":           ["C10"  , "C10.0", "C10.1", "C10.2", "C10.3",
+                            "C10.4", "C10.8", "C10.9"],
+    },
+    "hypopharynx": {
+        "all":             ["C12"  , "C12.9",
+                            "C13"  , "C13.0", "C13.1", "C13.2", "C13.8", "C13.9"],
+    },
+    "larynx": {
+        "glottis":         ["C32.0", "C32.1", "C32.2"],
+        "other":           ["C32"  , "C32.8", "C32.9"],
+    },
+    "oral cavity": {
+        "lips":            ["C00", "C00.1", "C00.2", "C00.3", "C00.4", "C00.5",
+                            "C00.8", "C00.9"],
+        "tongue":          ["C02"  , "C02.0", "C02.1", "C02.2", "C02.3", "C02.4",
+                            "C02.8", "C02.9",],
+        "gums & cheek":    ["C03"  , "C03.0", "C03.1", "C03.9",
+                            "C06"  , "C06.0", "C06.1", "C06.2", "C06.8", "C06.9",],
+        "floor of mouth":  ["C04"  , "C04.0", "C04.1", "C04.8", "C04.9",],
+        "palate":          ["C05"  , "C05.0", "C05.1", "C05.2", "C05.8", "C05.9",],
+        "glands":          ["C08"  , "C08.0", "C08.1", "C08.9",],
+    },
 }
-
-
-def group_icd_codex(icd):
-    """Group ICD codes to their parent blocks."""
-    match = re.match(r"(C\d\d)", icd)
-    return match.group(1)
-
-
-def icd_to_subsite(icd):
-    """Convert an ICD code to a subsite."""
-    match = re.match(r"(C\d\d)", icd)
-    return "\n".join(textwrap.wrap(SUBSITES[match.group(1)], width=22))
+FLAT_SUBSITE_DICT = flatten(SUBSITE_DICT)
+INVERTED_FLAT_SUBSITE_DICT = invert(FLAT_SUBSITE_DICT)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        prog="age_and_sex",
+        prog="subsite",
         description=__doc__,
     )
     parser.add_argument(
@@ -61,9 +72,18 @@ if __name__ == "__main__":
     output_dir = args.data.parent / "figures"
     output_dir.mkdir(exist_ok=True)
 
-    subsites = data[("tumor", "1", "subsite")].map(group_icd_codex)
+    subsites = data[("tumor", "1", "subsite")]
     subsites = subsites.value_counts()
-    subsites.index = subsites.index.map(icd_to_subsite)
+
+    grouped_subsites = defaultdict(lambda: defaultdict(int))
+    for icd, count in subsites.items():
+        location, subsite = INVERTED_FLAT_SUBSITE_DICT[icd]
+        grouped_subsites[location][subsite] += count
+
+    sorted_subsites = {}
+    for location, subdict in grouped_subsites.items():
+        sorted_subdict = dict(sorted(subdict.items(), key=lambda item: -item[1]))
+        sorted_subsites[location] = sorted_subdict
 
     plt.style.use(MPLSTYLE)
     plt.rcParams.update(figsizes.icml2022_half(
@@ -72,12 +92,28 @@ if __name__ == "__main__":
     plt.rcParams.update(fontsizes.icml2022())
     fig, ax = plt.subplots()
 
-    subsites.plot.barh(
-        ax=ax,
-        color=COLORS["blue"],
-        xlabel="number of patients",
-        ylabel="",
-    )
-    ax.set_yticklabels(subsites.index, fontsize=5, linespacing=0.75)
+    inter_loc_space, intra_loc_space = 1, 1
+    cursor = 0
+    positions = []
+    labels = []
+    for i, (location, subdict) in enumerate(sorted_subsites.items()):
+        location_positions = []
+        location_values = []
+        for j, (subsite, count) in enumerate(subdict.items()):
+            location_positions.append(cursor)
+            location_values.append(count)
+            labels.append(subsite)
+            cursor -= intra_loc_space
+
+        ax.barh(location_positions, location_values, label=location)
+
+        positions = [*positions, *location_positions]
+        cursor -= inter_loc_space
+
+    ax.set_xlabel("Number of Patients")
+    ax.set_yticks(positions)
+    ax.set_yticklabels(labels)
+    ax.legend()
+    ax.grid(axis="y")
 
     plt.savefig(output_dir / OUTPUT_NAME, dpi=300)
