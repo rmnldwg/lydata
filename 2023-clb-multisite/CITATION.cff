@@ -8,6 +8,9 @@ message: >-
   from this file.
 type: dataset
 authors:
+  - given-names: Dorothea
+    family-names: Barbatei
+    affiliation: Centre Léon Bérard
   - given-names: Vincent
     family-names: Grégoire
     email: vincent.gregoire@lyon.unicancer.fr

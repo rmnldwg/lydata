@@ -8,10 +8,20 @@ message: >-
   from this file.
 type: dataset
 authors:
+  - given-names: Sandrine
+    family-names: Werlen
+    affiliation: Inselpital Bern
+  - given-names: Olgun
+    family-names: Elicin
+    affiliation: Inselspital Bern
+    orcid: 'https://orcid.org/0000-0002-6996-0646'
   - given-names: Roland
     family-names: Giger
     email: roland.giger@insel.ch
     affiliation: Inselspital Bern
     orcid: 'https://orcid.org/0000-0002-5574-3210'
+  - given-names: Adrian
+    family-names: Schubert
+    affiliation: Inselspital Bern
 repository-code: 'https://github.com/rmnldwg/lyDATA/tree/main/2023-isb-multisite'
 license: MIT
