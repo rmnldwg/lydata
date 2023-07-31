@@ -89,3 +89,15 @@ stages:
         - ${item}/data.csv
       cmd: >
         python scripts/subsite.py ${item}/data.csv
+
+  bar-plot:
+    foreach:
+      - 2021-clb-oropharynx
+      - 2023-clb-multisite
+      - 2023-isb-multisite
+    do:
+      deps:
+        - scripts/bar_plot.py
+        - ${item}/data.csv
+      cmd:
+        python scripts/bar_plot.py ${item}/data.csv

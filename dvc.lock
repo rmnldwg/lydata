@@ -288,3 +288,36 @@ stages:
       hash: md5
       md5: 3a777047b4a2b55a31a114ae26b48e91
       size: 3922
+  bar-plot@2021-clb-oropharynx:
+    cmd: python scripts/bar_plot.py 2021-clb-oropharynx/data.csv
+    deps:
+    - path: 2021-clb-oropharynx/data.csv
+      hash: md5
+      md5: d40c0a1ae967a6983d60a0a809cf3972
+      size: 92742
+    - path: scripts/bar_plot.py
+      hash: md5
+      md5: 65c6304694688261ce7cf1de97b18b47
+      size: 2627
+  bar-plot@2023-clb-multisite:
+    cmd: python scripts/bar_plot.py 2023-clb-multisite/data.csv
+    deps:
+    - path: 2023-clb-multisite/data.csv
+      hash: md5
+      md5: 9d72ee96af2c51033a2fb0bb8551e318
+      size: 123938
+    - path: scripts/bar_plot.py
+      hash: md5
+      md5: 65c6304694688261ce7cf1de97b18b47
+      size: 2627
+  bar-plot@2023-isb-multisite:
+    cmd: python scripts/bar_plot.py 2023-isb-multisite/data.csv
+    deps:
+    - path: 2023-isb-multisite/data.csv
+      hash: md5
+      md5: 3de3a3d4238148e1b4e5f813e83d4c80
+      size: 205012
+    - path: scripts/bar_plot.py
+      hash: md5
+      md5: 65c6304694688261ce7cf1de97b18b47
+      size: 2627
