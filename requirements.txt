@@ -5,6 +5,6 @@ dvc ~= 3.1
 jupyter
 jupyter-contrib-nbextensions
 icd10-cm == 0.0.5
-lyscripts == 0.6.9
+lyscripts == 0.7.2
 lazydocs == 0.4.8
 tueplots == 0.0.8

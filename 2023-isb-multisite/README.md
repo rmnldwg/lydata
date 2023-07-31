@@ -130,6 +130,12 @@ The data is provided as a CSV-table containing one row for each of the 333 patie
     3. **`right:`** Number of pathologically positive lymph nodes per LNL on the right side.
         1. **`IIa:`** Total number of pathologically positive lymph nodes in the right sub-LNL IIa.
         2. **`Ib_to_III:`** Total number of dissected lymph nodes found to harbor metastases in the right LNLs Ib-III. This information is gathered for a particular figure in our publication. Note that this is not just the sum of the dissected nodes in the LNLs Ib to III because some levels were resected en-bloc. Those are included in this column but could not be resolved for the individual LNLs.
+9. **`enbloc_dissected:`** These columns only report the number of lymph nodes that where resected en-bloc. If, e.g., the LNLs II, III, and IV were resected together, then in each of the respective columns, we report the total number of jointly resected lymph nodes and add a symbol - e.g. 'a' - to identify the en-bloc resection.
+    1. **`left:`** This reports the en-bloc resection of the left LNLs.
+    2. **`right:`** This reports the en-bloc resection of the right LNLs.
+10. **`enbloc_positive:`** These columns only report the number of positive lymph nodes that where resected en-bloc. If, e.g., the LNLs II, III, and IV were resected together, then in each of the respective columns, we report the number of jointly resected lymph nodes that were found to harbor metastases and add a symbol - e.g. 'a' - to identify the en-bloc resection.
+    1. **`left:`** For each LNL, this reports the number of en-bloc resected and positive lymph nodes on the left side.
+    2. **`right:`** For each LNL, this reports the number of en-bloc resected and positive lymph nodes on the right side.
 
 
 ---
@@ -420,6 +426,17 @@ binary_super_from_pathology(*lnl_entries, lnl='I', side='left') → bool | None
 ```
 
 Infer if super LNL is involved from pathology. 
+
+
+---
+
+### <kbd>function</kbd> `enbloc_resected_from_pathology`
+
+```python
+enbloc_resected_from_pathology(*lnl_entries) → str | None
+```
+
+Return number and symbol of co-resected LNLs. 
 
 
 ---

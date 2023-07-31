@@ -459,6 +459,19 @@ def binary_super_from_pathology(*lnl_entries, lnl="I", side="left") -> bool | No
     return num > 0
 
 
+def enbloc_resected_from_pathology(*lnl_entries) -> str | None:
+    """Return number and symbol of co-resected LNLs."""
+    res, *_ = from_pathology(lnl_entries[0])
+
+    if "this" in res:
+        del res["this"]
+
+    if len(res) == 0:
+        return None
+
+    return "+".join(f"{v}{k}" for k, v in res.items())
+
+
 def map_ece(*lnl_entries, **_kwargs):
     """
     Infer from the provided columns if the patient had LNL involvement with
@@ -1218,4 +1231,168 @@ COLUMN_MAP = {
             }
         },
     },
+    "enbloc_dissected": {
+        "__doc__": (
+            "These columns only report the number of lymph nodes that where resected "
+            "en-bloc. If, e.g., the LNLs II, III, and IV were resected together, then "
+            "in each of the respective columns, we report the total number of jointly "
+            "resected lymph nodes and add a symbol - e.g. 'a' - to identify the "
+            "en-bloc resection."
+        ),
+        "left": {
+            "__doc__": "This reports the en-bloc resection of the left LNLs.",
+            "Ia": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["left Level Ia #investigated"],
+            },
+            "Ib": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["left Level Ib #investigated"],
+            },
+            "IIa": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["left Level IIa #investigated"],
+            },
+            "IIb": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["left Level IIb #investigated"],
+            },
+            "III": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["left Level III #investigated"],
+            },
+            "IV": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["left Level IV #investigated"],
+            },
+            "Va": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["left Level Va #investigated"],
+            },
+            "Vb": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["left Level Vb #investigated"],
+            },
+        },
+        "right": {
+            "__doc__": "This reports the en-bloc resection of the right LNLs.",
+            "Ia": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["right Level Ia #investigated "],
+            },
+            "Ib": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["right Level Ib #investigated"],
+            },
+            "IIa": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["right Level IIa #investigated"],
+            },
+            "IIb": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["right Level IIb #investigated"],
+            },
+            "III": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["right Level III #investigated"],
+            },
+            "IV": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["right Level IV #investigated"],
+            },
+            "Va": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["right Level Va #investigated"],
+            },
+            "Vb": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["right Level Vb #investigated"],
+            },
+        },
+    },
+    "enbloc_positive": {
+        "__doc__": (
+            "These columns only report the number of positive lymph nodes that where "
+            "resected en-bloc. If, e.g., the LNLs II, III, and IV were resected "
+            "together, then in each of the respective columns, we report the number "
+            "of jointly resected lymph nodes that were found to harbor metastases "
+            "and add a symbol - e.g. 'a' - to identify the en-bloc resection."
+        ),
+        "left": {
+            "__doc__": (
+                "For each LNL, this reports the number of en-bloc resected and "
+                "positive lymph nodes on the left side."
+            ),
+            "Ia": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["left Level Ia #positiv"],
+            },
+            "Ib": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["left Level Ib #positiv"],
+            },
+            "IIa": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["left Level IIa #positiv"],
+            },
+            "IIb": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["left Level IIb #positiv"],
+            },
+            "III": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["left Level III #positiv"],
+            },
+            "IV": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["left Level IV #positiv"],
+            },
+            "Va": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["left Level Va #positiv"],
+            },
+            "Vb": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["left Level Vb #positiv"],
+            },
+        },
+        "right": {
+            "__doc__": (
+                "For each LNL, this reports the number of en-bloc resected and "
+                "positive lymph nodes on the right side."
+            ),
+            "Ia": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["right Level Ia #positiv "],
+            },
+            "Ib": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["right Level Ib #positiv"],
+            },
+            "IIa": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["right Level IIa #positiv"],
+            },
+            "IIb": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["right Level IIb #positiv"],
+            },
+            "III": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["right Level III #positiv"],
+            },
+            "IV": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["right Level IV #positiv"],
+            },
+            "Va": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["right Level Va #positiv"],
+            },
+            "Vb": {
+                "func": enbloc_resected_from_pathology,
+                "columns": ["right Level Vb #positiv"],
+            },
+        },
+    }
 }
