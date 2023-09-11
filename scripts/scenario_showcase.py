@@ -44,7 +44,10 @@ if __name__ == "__main__":
         nrows=NROWS, ncols=NCOLS, height_to_width_ratio=0.2,
     ))
     plt.rcParams.update(fontsizes.icml2022())
-    fig, ax = plt.subplots(nrows=NROWS, ncols=NCOLS, sharex=True)
+    fig, ax = plt.subplots(
+        nrows=NROWS, ncols=NCOLS, sharex=True,
+        gridspec_kw={"height_ratios": [3, 5]},
+    )
 
     data = pd.read_csv(args.data, header=[0, 1, 2])
     ipsi_involvement = data["max_llh", "ipsi"]
@@ -94,10 +97,12 @@ if __name__ == "__main__":
         )
 
     loc = "oral cavity"
-    starts = np.zeros(3, dtype=int)
-    nums = np.zeros(3, dtype=int)
+    starts = np.zeros(5, dtype=int)
+    nums = np.zeros(5, dtype=int)
     totals = np.array([
         (is_location(loc) & ~is_t_stage(0)).sum(),
+        (is_location(loc) & ~is_t_stage(0) & has_II_involved).sum(),
+        (is_location(loc) & ~is_t_stage(0) & ~has_II_involved).sum(),
         (is_location(loc) & ~is_t_stage(0) & is_gums_and_cheek).sum(),
         (is_location(loc) & ~is_t_stage(0) & is_tongue).sum(),
     ])
@@ -105,11 +110,13 @@ if __name__ == "__main__":
         starts += nums
         nums = np.array([
             (is_location(loc) & is_t_stage(t) & has_III_involved).sum(),
+            (is_location(loc) & is_t_stage(t) & has_II_involved & has_III_involved).sum(),
+            (is_location(loc) & is_t_stage(t) & ~has_II_involved & has_III_involved).sum(),
             (is_location(loc) & is_t_stage(t) & is_gums_and_cheek & has_III_involved).sum(),
             (is_location(loc) & is_t_stage(t) & is_tongue & has_III_involved).sum(),
         ])
         ax[1].barh(
-            y=[2, 1, 0],
+            y=[4, 3, 2, 1, 0],
             width=100 * nums / totals,
             left=100 * starts / totals,
             color=COLORS[t - 1],
@@ -117,15 +124,15 @@ if __name__ == "__main__":
         )
         ax[1].set_title(loc, fontweight="bold")
         ax[1].set_yticks(
-            ticks=[0, 1, 2],
-            labels= ["tongue tumor", "tumor in gums/cheek", "overall"],
+            ticks=[0, 1, 2, 3, 4],
+            labels=["tongue tumor", "tumor in gums/cheek", "LNL II healthy", "LNL II involved", "overall"],
         )
 
     ends = starts + nums
     for j, end in enumerate(ends):
         ax[1].text(
             x=100 * (ends / totals)[j] + 1,
-            y=2 - j - 0.13,
+            y=4 - j - 0.13,
             s=f"{str(end)} / {str(totals[j])}",
         )
 

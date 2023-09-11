@@ -395,10 +395,10 @@ stages:
       size: 2151
     - path: scripts/scenario_showcase.py
       hash: md5
-      md5: 8a8ade5959dc5b311c801cb1f47653ca
-      size: 4656
+      md5: 0f9bfd6d539308d71ff468e861977dae
+      size: 5106
     outs:
     - path: scenario_showcase.png
       hash: md5
-      md5: 89ac7d17e1407ac2507bbd45dfc3fa68
-      size: 71494
+      md5: cba1e67b642b7f3ab5c4baf0be4f7321
+      size: 86010
