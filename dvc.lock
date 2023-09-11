@@ -245,7 +245,7 @@ stages:
       md5: acd161580d93b39eda4c46e5fb54a79d
       size: 3214
   plot-subsite@2021-usz-oropharynx:
-    cmd: "python scripts/subsite.py 2021-usz-oropharynx/data.csv\n"
+    cmd: "python scripts/subsite.py --data 2021-usz-oropharynx/data.csv\n"
     deps:
     - path: 2021-usz-oropharynx/data.csv
       hash: md5
@@ -253,10 +253,10 @@ stages:
       size: 166960
     - path: scripts/subsite.py
       hash: md5
-      md5: 3a777047b4a2b55a31a114ae26b48e91
-      size: 3922
+      md5: b980334bb29f028125f1abf77e073d47
+      size: 4645
   plot-subsite@2021-clb-oropharynx:
-    cmd: "python scripts/subsite.py 2021-clb-oropharynx/data.csv\n"
+    cmd: "python scripts/subsite.py --data 2021-clb-oropharynx/data.csv\n"
     deps:
     - path: 2021-clb-oropharynx/data.csv
       hash: md5
@@ -264,10 +264,10 @@ stages:
       size: 92742
     - path: scripts/subsite.py
       hash: md5
-      md5: 3a777047b4a2b55a31a114ae26b48e91
-      size: 3922
+      md5: b980334bb29f028125f1abf77e073d47
+      size: 4645
   plot-subsite@2023-isb-multisite:
-    cmd: "python scripts/subsite.py 2023-isb-multisite/data.csv\n"
+    cmd: "python scripts/subsite.py --data 2023-isb-multisite/data.csv\n"
     deps:
     - path: 2023-isb-multisite/data.csv
       hash: md5
@@ -275,10 +275,10 @@ stages:
       size: 205012
     - path: scripts/subsite.py
       hash: md5
-      md5: 3a777047b4a2b55a31a114ae26b48e91
-      size: 3922
+      md5: b980334bb29f028125f1abf77e073d47
+      size: 4645
   plot-subsite@2023-clb-multisite:
-    cmd: "python scripts/subsite.py 2023-clb-multisite/data.csv\n"
+    cmd: "python scripts/subsite.py --data 2023-clb-multisite/data.csv\n"
     deps:
     - path: 2023-clb-multisite/data.csv
       hash: md5
@@ -286,8 +286,8 @@ stages:
       size: 123938
     - path: scripts/subsite.py
       hash: md5
-      md5: 3a777047b4a2b55a31a114ae26b48e91
-      size: 3922
+      md5: b980334bb29f028125f1abf77e073d47
+      size: 4645
   bar-plot@2021-clb-oropharynx:
     cmd: python scripts/bar_plot.py 2021-clb-oropharynx/data.csv
     deps:

@@ -135,7 +135,7 @@ stages:
         - scripts/subsite.py
         - ${item}/data.csv
       cmd: >
-        python scripts/subsite.py ${item}/data.csv
+        python scripts/subsite.py --data ${item}/data.csv
 
   bar-plot:
     foreach:

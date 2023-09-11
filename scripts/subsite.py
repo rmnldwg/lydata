@@ -1,11 +1,10 @@
 """
 Plot the distribution over primary tumor subsites.
 """
+from cgitb import text
 from collections import defaultdict
 from pathlib import Path
 import argparse
-import re
-import textwrap
 
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -56,6 +55,13 @@ SUBSITE_DICT = {
 }
 FLAT_SUBSITE_DICT = flatten(SUBSITE_DICT)
 INVERTED_FLAT_SUBSITE_DICT = invert(FLAT_SUBSITE_DICT)
+JOINED_SUBSITE_DICT = {}
+for location, subdict in SUBSITE_DICT.items():
+    JOINED_SUBSITE_DICT[location] = set()
+    for subsite, icds in subdict.items():
+        JOINED_SUBSITE_DICT[location] = JOINED_SUBSITE_DICT[location].union(
+            {icd.split(".")[0] for icd in icds}
+        )
 
 
 if __name__ == "__main__":
@@ -64,7 +70,8 @@ if __name__ == "__main__":
         description=__doc__,
     )
     parser.add_argument(
-        "data", type=Path, help="Path to the data file.",
+        "--data", type=Path, default="2023-isb-multisite/data.csv",
+        help="Path to the data file.",
     )
     args = parser.parse_args()
 
@@ -96,20 +103,31 @@ if __name__ == "__main__":
     cursor = 0
     positions = []
     labels = []
+    max_count = 0
     for i, (location, subdict) in enumerate(sorted_subsites.items()):
         location_positions = []
         location_values = []
         for j, (subsite, count) in enumerate(subdict.items()):
+            if count > max_count:
+                max_count = count
+            icds = {icd for icd in SUBSITE_DICT[location][subsite]}
             location_positions.append(cursor)
             location_values.append(count)
             labels.append(subsite)
+            ax.text(
+                x=2,
+                y=cursor - 0.15,
+                s=", ".join(sorted(icds)),
+                fontsize=4,
+                color=COLORS["gray"],
+            )
             cursor -= intra_loc_space
-
         ax.barh(location_positions, location_values, label=location)
 
         positions = [*positions, *location_positions]
         cursor -= inter_loc_space
 
+    ax.set_xlim(0, max_count + 10)
     ax.set_xlabel("Number of Patients")
     ax.set_yticks(positions)
     ax.set_yticklabels(labels)
