@@ -130,7 +130,7 @@ if __name__ == "__main__":
         )
 
     ax[1].legend(fontsize="medium")
-    ax[1].set_xlabel("Percentage of Patients")
+    ax[1].set_xlabel("Patients with involvement in LNL III [%]")
     ax[1].set_xlim(0, 40)
 
     plt.savefig(OUTPUT_PATH, dpi=300)
