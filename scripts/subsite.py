@@ -50,7 +50,7 @@ SUBSITE_DICT = {
                             "C06"  , "C06.0", "C06.1", "C06.2", "C06.8", "C06.9",],
         "floor of mouth":  ["C04"  , "C04.0", "C04.1", "C04.8", "C04.9",],
         "palate":          ["C05"  , "C05.0", "C05.1", "C05.2", "C05.8", "C05.9",],
-        "glands":          ["C08"  , "C08.0", "C08.1", "C08.9",],
+        "salivary glands": ["C08"  , "C08.0", "C08.1", "C08.9",],
     },
 }
 FLAT_SUBSITE_DICT = flatten(SUBSITE_DICT)

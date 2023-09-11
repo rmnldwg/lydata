@@ -253,7 +253,7 @@ stages:
       size: 166960
     - path: scripts/subsite.py
       hash: md5
-      md5: e9ab06e14b27180d2891e0fad7f3b4be
+      md5: 3bc7a351a634211ca9f8382b7d71bd96
       size: 4704
   plot-subsite@2021-clb-oropharynx:
     cmd: "python scripts/subsite.py --data 2021-clb-oropharynx/data.csv\n"
@@ -264,7 +264,7 @@ stages:
       size: 92742
     - path: scripts/subsite.py
       hash: md5
-      md5: e9ab06e14b27180d2891e0fad7f3b4be
+      md5: 3bc7a351a634211ca9f8382b7d71bd96
       size: 4704
   plot-subsite@2023-isb-multisite:
     cmd: "python scripts/subsite.py --data 2023-isb-multisite/data.csv\n"
@@ -275,7 +275,7 @@ stages:
       size: 205012
     - path: scripts/subsite.py
       hash: md5
-      md5: e9ab06e14b27180d2891e0fad7f3b4be
+      md5: 3bc7a351a634211ca9f8382b7d71bd96
       size: 4704
   plot-subsite@2023-clb-multisite:
     cmd: "python scripts/subsite.py --data 2023-clb-multisite/data.csv\n"
@@ -286,7 +286,7 @@ stages:
       size: 123938
     - path: scripts/subsite.py
       hash: md5
-      md5: e9ab06e14b27180d2891e0fad7f3b4be
+      md5: 3bc7a351a634211ca9f8382b7d71bd96
       size: 4704
   bar-plot@2021-clb-oropharynx:
     cmd: python scripts/bar_plot.py 2021-clb-oropharynx/data.csv
@@ -395,10 +395,10 @@ stages:
       size: 2151
     - path: scripts/scenario_showcase.py
       hash: md5
-      md5: 28d016103702d2ad198e9adfa1796ccb
-      size: 3348
+      md5: 8a8ade5959dc5b311c801cb1f47653ca
+      size: 4656
     outs:
     - path: scenario_showcase.png
       hash: md5
-      md5: 70ee0a7bc5d1fdb4300cac764bde841d
-      size: 94775
+      md5: 89ac7d17e1407ac2507bbd45dfc3fa68
+      size: 71494
