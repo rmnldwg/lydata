@@ -93,8 +93,8 @@ if __name__ == "__main__":
         sorted_subsites[location] = sorted_subdict
 
     plt.style.use(MPLSTYLE)
-    plt.rcParams.update(figsizes.icml2022_half(
-        nrows=1, ncols=1, height_to_width_ratio=0.75,
+    plt.rcParams.update(figsizes.icml2022_full(
+        nrows=1, ncols=1, height_to_width_ratio=0.4,
     ))
     plt.rcParams.update(fontsizes.icml2022())
     fig, ax = plt.subplots()
@@ -118,7 +118,7 @@ if __name__ == "__main__":
                 x=4,
                 y=cursor,
                 s=", ".join(sorted(icds)),
-                fontsize=4,
+                fontsize="small",
                 verticalalignment="center",
                 color=COLORS["gray"],
             )
@@ -132,7 +132,7 @@ if __name__ == "__main__":
     ax.set_xlabel("Number of Patients")
     ax.set_yticks(positions)
     ax.set_yticklabels(labels)
-    ax.legend()
+    ax.legend(fontsize="medium")
     ax.grid(axis="y")
 
     plt.savefig(output_dir / OUTPUT_NAME, dpi=300)
