@@ -115,10 +115,11 @@ if __name__ == "__main__":
             location_values.append(count)
             labels.append(subsite)
             ax.text(
-                x=2,
-                y=cursor - 0.15,
+                x=4,
+                y=cursor,
                 s=", ".join(sorted(icds)),
                 fontsize=4,
+                verticalalignment="center",
                 color=COLORS["gray"],
             )
             cursor -= intra_loc_space
