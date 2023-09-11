@@ -25,6 +25,53 @@ stages:
         - ${item.folder}/data.csv:
             cache: false
 
+  join:
+    desc:
+      Join together those datasets for which we want to create the showcase plot.
+    deps:
+      - 2021-clb-oropharynx/data.csv
+      - 2023-isb-multisite/data.csv
+      - 2023-clb-multisite/data.csv
+    cmd: >
+      lyscripts data join
+      --inputs 2021-clb-oropharynx/data.csv 2023-isb-multisite/data.csv 2023-clb-multisite/data.csv
+      --output joined.csv
+    outs:
+      - joined.csv
+
+  enhance:
+    desc:
+      This stage fixes the super- and sub-level reporting for the LNLs and also creates
+      new 'modalities' from combining existing ones, e.g. using the logical AND or
+      estimating the most likely involvement based on the observations only.
+    cmd: >
+      lyscripts data enhance
+      --consensus max_llh
+      --params modalities.yaml
+      joined.csv enhanced.csv
+    deps:
+      - joined.csv
+    params:
+      - modalities.yaml:
+          - modalities
+    outs:
+      - enhanced.csv
+
+  scenario-showcase:
+    desc:
+      Plot some involvement prevalences in the data for different scenarios, showcasing
+      what is possible when data is reported in as much detail as we provide it.
+    deps:
+      - enhanced.csv
+      - scripts/scenario_showcase.py
+      - scripts/.mplstyle
+    cmd: >
+      python scripts/scenario_showcase.py
+      --data enhanced.csv
+      --mplstyle scripts/.mplstyle
+    outs:
+      - scenario_showcase.png
+
   description-and-docs:
     foreach:
       - 2021-clb-oropharynx

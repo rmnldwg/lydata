@@ -136,3 +136,8 @@ dmypy.json
 
 # Ignore documentation in any `docs` directory
 **/docs/**
+
+# DVC
+/scenario_showcase.png
+/joined.csv
+/enhanced.csv

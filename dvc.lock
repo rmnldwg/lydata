@@ -321,3 +321,84 @@ stages:
       hash: md5
       md5: 65c6304694688261ce7cf1de97b18b47
       size: 2627
+  join:
+    cmd: "lyscripts data join --inputs 2021-clb-oropharynx/data.csv 2023-isb-multisite/data.csv
+      2023-clb-multisite/data.csv --output joined.csv\n"
+    deps:
+    - path: 2021-clb-oropharynx/data.csv
+      hash: md5
+      md5: d40c0a1ae967a6983d60a0a809cf3972
+      size: 92742
+    - path: 2023-clb-multisite/data.csv
+      hash: md5
+      md5: 9d72ee96af2c51033a2fb0bb8551e318
+      size: 123938
+    - path: 2023-isb-multisite/data.csv
+      hash: md5
+      md5: 3de3a3d4238148e1b4e5f813e83d4c80
+      size: 205012
+    outs:
+    - path: joined.csv
+      hash: md5
+      md5: 02e7b881140cb304291f0b9789601057
+      size: 520932
+  enhance:
+    cmd: "lyscripts data enhance --consensus max_llh --params modalities.yaml joined.csv
+      enhanced.csv\n"
+    deps:
+    - path: joined.csv
+      hash: md5
+      md5: 02e7b881140cb304291f0b9789601057
+      size: 520932
+    params:
+      modalities.yaml:
+        modalities:
+          CT:
+          - 0.76
+          - 0.81
+          MRI:
+          - 0.63
+          - 0.81
+          PET:
+          - 0.86
+          - 0.79
+          FNA:
+          - 0.98
+          - 0.8
+          diagnostic_consensus:
+          - 0.86
+          - 0.81
+          pathology:
+          - 1.0
+          - 1.0
+          pCT:
+          - 0.86
+          - 0.81
+          max_llh:
+          - 1.0
+          - 1.0
+    outs:
+    - path: enhanced.csv
+      hash: md5
+      md5: cf106149f756f5b76d43fa3271649572
+      size: 645012
+  scenario-showcase:
+    cmd: "python scripts/scenario_showcase.py --data enhanced.csv --mplstyle scripts/.mplstyle\n"
+    deps:
+    - path: enhanced.csv
+      hash: md5
+      md5: cf106149f756f5b76d43fa3271649572
+      size: 645012
+    - path: scripts/.mplstyle
+      hash: md5
+      md5: 1dd8e65e1d2705d5c02ec977b8e7ca0d
+      size: 2151
+    - path: scripts/scenario_showcase.py
+      hash: md5
+      md5: 28d016103702d2ad198e9adfa1796ccb
+      size: 3348
+    outs:
+    - path: scenario_showcase.png
+      hash: md5
+      md5: 70ee0a7bc5d1fdb4300cac764bde841d
+      size: 94775
