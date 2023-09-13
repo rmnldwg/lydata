@@ -4,7 +4,7 @@
 > 
 > This is still a work in progress!
 
-This folder contains data about clinically and pathologically diagnosed lymphatic patterns of progression from 333 patients treated at the [Inselspital Bern] between 2001 and 2018.
+This folder contains data about clinically and pathologically diagnosed lymphatic patterns of progression from 332 patients treated at the [Inselspital Bern] between 2001 and 2018.
 
 [Inselspital Bern]: https://www.insel.ch/de/
 
@@ -49,7 +49,7 @@ TODO: needs to be written
 <a id="data-description"></a>
 ## Data Description
 
-The data is provided as a CSV-table containing one row for each of the 333 patients. The table has a header with three levels that describe the columns. Below we explain each column in the form of a list with three levels. So, for example, list entry 1.i.g refers to a column with the three-level header `patient | # | nicotine_abuse` and this column reports about the patient's smoking status.
+The data is provided as a CSV-table containing one row for each of the 332 patients. The table has a header with three levels that describe the columns. Below we explain each column in the form of a list with three levels. So, for example, list entry 1.i.g refers to a column with the three-level header `patient | # | nicotine_abuse` and this column reports about the patient's smoking status.
 
 
 <a id="documentation-of-columns"></a>
