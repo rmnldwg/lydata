@@ -1,8 +1,7 @@
 # 2023 ISB Multisite
 
-> ⚠️ **WARNING**
-> 
-> This is still a work in progress!
+> [!WARNING]
+> The dataset in the form presented here has not yet been published in a peer-reviewed journal. It has, however, been submitted to *Data in Brief* and parts of it are analyzed n another work. Until these papers have been accepted, this dataset may still change.
 
 This folder contains data about clinically and pathologically diagnosed lymphatic patterns of progression from 332 patients treated at the [Inselspital Bern] between 2001 and 2018.
 
@@ -43,7 +42,7 @@ We provide a user-friendly and intuitive graphical user interface to view the da
 <a id="curation"></a>
 ## Curation
 
-TODO: needs to be written
+Curation and inclusion criteria will be published in a separate *Data in Brief* article that is currently under review.
 
 
 <a id="data-description"></a>
