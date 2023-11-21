@@ -417,14 +417,15 @@ stages:
   format-dates-insert-institution-and-remove-spaces:
     cmd: sed 's/\([0-9]\{2\}\)\/\([0-9]\{2\}\)\/\([0-9]\{4\}\)/\3-\2-\1/g' 2023-hvh-oropharynx/raw.csv
       | sed 's/,dataset,/,institution,/g' | sed "s/,2023_HVH_OROPHARYNX,/,Vall d'Hebron
-      Hospital Barcelona,/g" | sed 's/,\s,/,,/g' > 2023-hvh-oropharynx/data.csv
+      Hospital Barcelona,/g" | sed 's/,\s,/,,/g' | sed 's/,\([0-3]\)[A-C]*,/,\1,/g'
+      > 2023-hvh-oropharynx/data.csv
     deps:
     - path: 2023-hvh-oropharynx/raw.csv
       hash: md5
-      md5: 86078d185c55fa16b066db4917306425
-      size: 81066
+      md5: 5a27e0c69b2aff581c01c1baae8d12f0
+      size: 80520
     outs:
     - path: 2023-hvh-oropharynx/data.csv
       hash: md5
-      md5: b241f628c91881867872c3dd2e1e1c30
-      size: 83185
+      md5: 95e9ad00cb478760ce38160d62bb9eda
+      size: 82574
