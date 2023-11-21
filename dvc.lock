@@ -402,3 +402,29 @@ stages:
       hash: md5
       md5: 2ce86261eac36207428e832fc452cadb
       size: 86913
+  remove-spaces:
+    cmd: "sed 's/,\\s,/,,/' 2023-hvh-oropharynx/raw.csv > 2023-hvh-oropharynx/data.csv\n"
+    deps:
+    - path: 2023-hvh-oropharynx/raw.csv
+      hash: md5
+      md5: 112174280f4e4fad71256b68a1882ed5
+      size: 83202
+    outs:
+    - path: 2023-hvh-oropharynx/data.csv
+      hash: md5
+      md5: fd903ddebc5380e7fabdd117aa4d8b8b
+      size: 83190
+  format-dates-insert-institution-and-remove-spaces:
+    cmd: sed 's/\([0-9]\{2\}\)\/\([0-9]\{2\}\)\/\([0-9]\{4\}\)/\3-\2-\1/g' 2023-hvh-oropharynx/raw.csv
+      | sed 's/,dataset,/,institution,/g' | sed "s/,2023_HVH_OROPHARYNX,/,Vall d'Hebron
+      Hospital Barcelona,/g" | sed 's/,\s,/,,/g' > 2023-hvh-oropharynx/data.csv
+    deps:
+    - path: 2023-hvh-oropharynx/raw.csv
+      hash: md5
+      md5: 86078d185c55fa16b066db4917306425
+      size: 81066
+    outs:
+    - path: 2023-hvh-oropharynx/data.csv
+      hash: md5
+      md5: b241f628c91881867872c3dd2e1e1c30
+      size: 83185
