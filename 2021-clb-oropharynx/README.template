@@ -1,8 +1,7 @@
 # 2021 CLB Oropharynx
 
-> ⚠️ **WARNING**
->
-> This is not yet finalized.
+> [!WARNING]
+> The dataset in the form presented here has not yet been published in a peer-reviewed journal. It has, however, been submitted to *Data in Brief*. Until it has been accepted, this dataset may still change.
 
 [![Green Journal](https://img.shields.io/badge/Rad%20Onc-j.radonc.2021.01.028-3e6e0e)](https://doi.org/10.1016/j.radonc.2021.01.028)
 

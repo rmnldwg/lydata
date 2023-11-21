@@ -1,10 +1,9 @@
 # 2023 CLB Multisite
 
-> ⚠️ **WARNING**
-> 
-> This is still a work in progress!
+> [!WARNING]
+> The dataset in the form presented here has not yet been published in a peer-reviewed journal. It has, however, been submitted to *Data in Brief* and parts of it are analyzed n another work. Until these papers have been accepted, this dataset may still change.
 
-This folder contains the pathology report data on lymphatic involvement in {{ num_patients }} patients with head and neck cancer, diagnosed and treated at the [Centre Léon Bérard] between 2001 and 2018.
+This folder contains the pathology report data on lymphatic involvement in 373 patients with head and neck cancer, diagnosed and treated with neck dissection at the [Centre Léon Bérard] between 2001 and 2018.
 
 The `raw.csv` data does contain patients which are duplicates of the patient records in the `2021-clb-oropharynx` folder, but they have been filtered out in the `data.csv` file.
 
@@ -39,7 +38,7 @@ Below we show some figures that aim to coarsely characterize the patient cohort 
 <a id="curation"></a>
 ## Curation
 
-TODO: Find out about that soon
+Curation and inclusion criteria will be published in a separate *Data in Brief* article that is currently under review.
 
 
 <a id="online-interface"></a>
