@@ -1,0 +1,150 @@
+stages:
+  lyproxify:
+    foreach:
+      - folder: 2021-clb-oropharynx
+        args: "-r 0"
+      - folder: 2023-clb-multisite
+        args: "-r 0 1 2 --drop-rows 439 --add-index"
+      - folder: 2023-isb-multisite
+        args: "-r 0"
+    do:
+      desc:
+        Parse the `raw.csv` data using the `lyscripts` Python package and the
+        `mapping.py` module to bring the original data into a format that the online
+        interface LyProX understands.
+      cmd: >
+        lyscripts data lyproxify
+        -i ${item.folder}/raw.csv
+        -o ${item.folder}/data.csv
+        -m ${item.folder}/mapping.py
+        ${item.args}
+      deps:
+        - ${item.folder}/raw.csv
+        - ${item.folder}/mapping.py
+      outs:
+        - ${item.folder}/data.csv:
+            cache: false
+
+  join:
+    desc:
+      Join together those datasets for which we want to create the showcase plot.
+    deps:
+      - 2021-clb-oropharynx/data.csv
+      - 2023-isb-multisite/data.csv
+      - 2023-clb-multisite/data.csv
+    cmd: >
+      lyscripts data join
+      --inputs 2021-clb-oropharynx/data.csv 2023-isb-multisite/data.csv 2023-clb-multisite/data.csv
+      --output joined.csv
+    outs:
+      - joined.csv
+
+  enhance:
+    desc:
+      This stage fixes the super- and sub-level reporting for the LNLs and also creates
+      new 'modalities' from combining existing ones, e.g. using the logical AND or
+      estimating the most likely involvement based on the observations only.
+    cmd: >
+      lyscripts data enhance
+      --consensus max_llh
+      --params modalities.yaml
+      joined.csv enhanced.csv
+    deps:
+      - joined.csv
+    params:
+      - modalities.yaml:
+          - modalities
+    outs:
+      - enhanced.csv
+
+  scenario-showcase:
+    desc:
+      Plot some involvement prevalences in the data for different scenarios, showcasing
+      what is possible when data is reported in as much detail as we provide it.
+    deps:
+      - enhanced.csv
+      - scripts/scenario_showcase.py
+      - scripts/.mplstyle
+    cmd: >
+      python scripts/scenario_showcase.py
+      --data enhanced.csv
+      --mplstyle scripts/.mplstyle
+    outs:
+      - scenario_showcase.png
+
+  description-and-docs:
+    foreach:
+      - 2021-clb-oropharynx
+      - 2023-clb-multisite
+      - 2023-isb-multisite
+    do:
+      desc:
+        Generate the description of the `data.csv` columns from the `COLUMN_MAP` inside
+        the `mapping.py` file, as well as the documentation of all the functions used
+        in the `mapping.py` module. Insert these documentations into the
+        `README.template` and create the `README.md` from it.
+      deps:
+        - scripts/render.py
+        - ${item}/README.template
+        - ${item}/mapping.py
+        - ${item}/data.csv
+      outs:
+        - ${item}/README.md:
+            cache: false
+      cmd: >
+        python scripts/render.py
+        -m ${item}/mapping.py
+        -d ${item}/data.csv
+        -t ${item}/README.template
+        -o ${item}/README.md
+
+  plot-t-category:
+    foreach:
+      - 2021-usz-oropharynx
+      - 2021-clb-oropharynx
+      - 2023-clb-multisite
+      - 2023-isb-multisite
+    do:
+      deps:
+        - scripts/t_category.py
+        - ${item}/data.csv
+      cmd: >
+        python scripts/t_category.py ${item}/data.csv
+
+  plot-age-and-sex:
+    foreach:
+      - 2021-usz-oropharynx
+      - 2021-clb-oropharynx
+      - 2023-clb-multisite
+      - 2023-isb-multisite
+    do:
+      deps:
+        - scripts/age_and_sex.py
+        - ${item}/data.csv
+      cmd: >
+        python scripts/age_and_sex.py ${item}/data.csv
+
+  plot-subsite:
+    foreach:
+      - 2021-usz-oropharynx
+      - 2021-clb-oropharynx
+      - 2023-clb-multisite
+      - 2023-isb-multisite
+    do:
+      deps:
+        - scripts/subsite.py
+        - ${item}/data.csv
+      cmd: >
+        python scripts/subsite.py --data ${item}/data.csv
+
+  bar-plot:
+    foreach:
+      - 2021-clb-oropharynx
+      - 2023-clb-multisite
+      - 2023-isb-multisite
+    do:
+      deps:
+        - scripts/bar_plot.py
+        - ${item}/data.csv
+      cmd:
+        python scripts/bar_plot.py ${item}/data.csv

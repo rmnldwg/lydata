@@ -1,8 +1,5 @@
-# This CITATION.cff file was generated with cffinit.
-# Visit https://bit.ly/cffinit to generate yours today!
-
 cff-version: 1.2.0
-title: lyDATA/2021-usz-oropharynx
+title: "lyDATA: 2021 USZ Oropharynx"
 abstract: >-
   Patterns of lymphatic progression of oropharyngeal SCC patients treated at
   the USZ between 2013 and 2019.
@@ -54,7 +51,6 @@ authors:
 identifiers:
   - type: doi
     value: '10.5281/zenodo.5833835'
-repository-code: 'https://github.com/rmnldwg/lydata/tree/main/2021-usz-oropharynx'
-url: 'https://lyprox.org'
-license: MIT
+url: 'https://github.com/rmnldwg/lydata/tree/main/2021-usz-oropharynx'
+license: CC BY-SA 4.0
 date-released: '2021-11-24'

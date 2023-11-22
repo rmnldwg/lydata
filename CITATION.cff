@@ -10,8 +10,9 @@ abstract: >-
   different release dates, institutions and tumor subsites.
 message: >-
   If you use any of the datasets in this repository, please cite them using the
-  respective CITATION.cff file in the corresponding subfolder. Use the metadata
-  from this file if you refer to the collection of all datasets only.
+  this file and the respective CITATION.cff file in the corresponding subfolder.
+  For reusing the repository structure or Python code, a citation using the
+  metadata from this file is sufficient.
 keywords:
   - head & neck squamous cell carcinoma
   - patterns of progression
