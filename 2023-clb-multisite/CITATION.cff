@@ -1,8 +1,9 @@
-# This CITATION.cff file was generated with cffinit.
-# Visit https://bit.ly/cffinit to generate yours today!
-
 cff-version: 1.2.0
-title: 2023 CLB Multisite
+title: "lyDATA: 2023 CLB Multisite"
+abstract: >-
+  Pathology report data on lymphatic involvement in 373 patients with head and neck
+  cancer, diagnosed and treated with neck dissection at the Centre Léon Bérard between
+  2001 and 2018.
 message: >-
   If you use this dataset, please cite it using the metadata
   from this file.
@@ -15,5 +16,9 @@ authors:
     family-names: Grégoire
     email: vincent.gregoire@lyon.unicancer.fr
     affiliation: Centre Léon Bérard
+  - given-names: Philippe
+    family-names: Zroundba
+    affiliation: Centre Léon Bérard
 url: 'https://github.com/rmnldwg/lyDATA/tree/main/2023-clb-multisite'
-license: MIT
+license: CC BY-SA 4.0
+date-released: '2023-11-22'

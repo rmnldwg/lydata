@@ -97,6 +97,18 @@ We have developed and implemented probabilistic models for lymphatic tumor progr
 
 [lymph]: https://github.com/rmnldwg/lymph
 
+
+## License
+
+All patient data in this repository, e.g. all files whose names end with .xlsx or .csv, as well as figures depicting characteristics of that data, are licensed under [CC BY-SA 4.0]. Attribution must be given to the owner of the repository (see the `CITATION.cff` file at the root of the repository) and the collector(s) or curator(s) of the respective dataset (see the `CITATION.cff` file inside the corresponding dataset's folder).
+
+The remaining material is licensed under the [MIT License]. This includes e.g. all Python files and the overall structure of the repository.
+
+
+[CC BY-SA 4.0]: https://creativecommons.org/licenses/by-sa/4.0/
+[MIT License]: https://mit-license.org/
+
+
 ## References
 
 <a id="1">[1]</a>

@@ -1,9 +1,9 @@
 cff-version: 1.2.0
-title: lyDATA/2021-clb-oropharynx
+title: "lyDATA: 2021 CLB Oropharynx"
 abstract: >-
-  Patterns of lymphatic progression of 263 oropharyngeal squamous cell carcinoma
-  (SCC) patients treated with various neck node dissections at the Centre Léon
-  Bérard (CLB) between 2014 and 2018.
+  Detailed patterns of lymphatic progression of 263 patients with squamous cell
+  carcinomas (SCCs) in the oropharynx, treated at the Centre Léon Bérard (CLB) between
+  2014 and 2018.
 message: >-
   If you use this dataset, please cite it using the metadata from this file.
 keywords:
@@ -41,5 +41,5 @@ authors:
     family-names: Grégoire
     affiliation: Centre Léon Bérard
 url: 'https://github.com/rmnldwg/lyDATA/tree/main/2021-clb-oropharynx'
-license: MIT
+license: CC BY-SA 4.0
 date-released: '2022-05-17'
