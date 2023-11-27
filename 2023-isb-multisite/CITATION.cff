@@ -15,6 +15,10 @@ authors:
     family-names: Elicin
     affiliation: Inselspital Bern
     orcid: 'https://orcid.org/0000-0002-6996-0646'
+  - given-names: Matthias
+    family-names: Dettmer
+    affiliation: University of Bern, Klinikum Stuttgart
+    orcid: 'https://orcid.org/0000-0003-0948-1392'
   - given-names: Roland
     family-names: Giger
     email: roland.giger@insel.ch
@@ -23,10 +27,10 @@ authors:
   - given-names: Adrian
     family-names: Schubert
     affiliation: Inselspital Bern
-  - given-names: Matthias
-    family-names: Dettmer
-    affiliation: University of Bern, Klinikum Stuttgart
-    orcid: 'https://orcid.org/0000-0003-0948-1392'
 repository-code: 'https://github.com/rmnldwg/lyDATA/tree/main/2023-isb-multisite'
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.10210423
+    description: "Zenodo indexed version of the dataset"
 license: CC BY-SA 4.0
 date-released: '2023-11-22'

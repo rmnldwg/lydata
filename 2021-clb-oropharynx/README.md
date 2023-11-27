@@ -1,5 +1,7 @@
 # 2021 CLB Oropharynx
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10204085.svg)](https://doi.org/10.5281/zenodo.10204085)
+
 > [!WARNING]
 > The dataset in the form presented here has not yet been published in a peer-reviewed journal. It has, however, been submitted to *Data in Brief*. Until it has been accepted, this dataset may still change.
 

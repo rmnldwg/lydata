@@ -1,5 +1,7 @@
 # 2023 CLB Multisite
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10210361.svg)](https://doi.org/10.5281/zenodo.10210361)
+
 > [!WARNING]
 > The dataset in the form presented here has not yet been published in a peer-reviewed journal. It has, however, been submitted to *Data in Brief* and parts of it are analyzed n another work. Until these papers have been accepted, this dataset may still change.
 
