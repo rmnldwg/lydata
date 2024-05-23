@@ -1,5 +1,6 @@
 """Module containing a custom accessor and helpers for querying lydata."""
 from __future__ import annotations
+from operator import getitem
 from typing import Any, Literal
 
 import pandas as pd
@@ -49,14 +50,14 @@ class Q:
     def __repr__(self):
         return f"Q({self.colname!r}, {self.operator!r}, {self.value!r})"
 
-    def __and__(self, other: Q) -> QAnd:
-        return QAnd(self, other)
+    def __and__(self, other: Q) -> AndQ:
+        return AndQ(self, other)
 
-    def __or__(self, other: Q) -> QOr:
-        return QOr(self, other)
+    def __or__(self, other: Q) -> OrQ:
+        return OrQ(self, other)
 
-    def __invert__(self) -> QNot:
-        return QNot(self)
+    def __invert__(self) -> NotQ:
+        return NotQ(self)
 
     def execute(self, df: pd.DataFrame) -> pd.Series:
         """Return a boolean mask where the query is satisfied for ``df``."""
@@ -73,8 +74,21 @@ class Q:
         return self._OPERATOR_MAP[self.operator](column, self.value)
 
 
-class QAnd(Q):
-    """Query object for combining two queries with a logical AND."""
+class AndQ(Q):
+    """Query object for combining two queries with a logical AND.
+
+    >>> df = pd.DataFrame({'col1': [1, 2, 3]})
+    >>> q1 = Q('col1', '>', 1)
+    >>> q2 = Q('col1', '<', 3)
+    >>> and_q = q1 & q2
+    >>> isinstance(and_q, AndQ)
+    True
+    >>> and_q.execute(df)
+    0    False
+    1     True
+    2    False
+    Name: col1, dtype: bool
+    """
     def __init__(self, q1: Q, q2: Q):
         self.q1 = q1
         self.q2 = q2
@@ -87,8 +101,21 @@ class QAnd(Q):
         return self.q1.execute(df) & self.q2.execute(df)
 
 
-class QOr(Q):
-    """Query object for combining two queries with a logical OR."""
+class OrQ(Q):
+    """Query object for combining two queries with a logical OR.
+
+    >>> df = pd.DataFrame({'col1': [1, 2, 3]})
+    >>> q1 = Q('col1', '==', 1)
+    >>> q2 = Q('col1', '==', 3)
+    >>> or_q = q1 | q2
+    >>> isinstance(or_q, OrQ)
+    True
+    >>> or_q.execute(df)
+    0     True
+    1    False
+    2     True
+    Name: col1, dtype: bool
+    """
     def __init__(self, q1: Q, q2: Q):
         self.q1 = q1
         self.q2 = q2
@@ -101,8 +128,20 @@ class QOr(Q):
         return self.q1.execute(df) | self.q2.execute(df)
 
 
-class QNot(Q):
-    """Query object for negating a query."""
+class NotQ(Q):
+    """Query object for negating a query.
+
+    >>> df = pd.DataFrame({'col1': [1, 2, 3]})
+    >>> q = Q('col1', '==', 2)
+    >>> not_q = ~q
+    >>> isinstance(not_q, NotQ)
+    True
+    >>> not_q.execute(df)
+    0     True
+    1    False
+    2     True
+    Name: col1, dtype: bool
+    """
     def __init__(self, q: Q):
         self.q = q
 
@@ -119,6 +158,12 @@ class LydataAccessor:
     """Custom accessor for handling lymphatic involvement data."""
     def __init__(self, obj: pd.DataFrame) -> None:
         self._obj = obj
+
+    def __getattr__(self, name: str) -> Any:
+        if name in _SHORTNAME_MAP:
+            return getitem(self._obj, _SHORTNAME_MAP[name])
+
+        raise AttributeError(f"Attribute {name!r} not found.")
 
     def query(self, query: Q = None) -> pd.DataFrame:
         """Return a DataFrame with rows that satisfy the query."""
