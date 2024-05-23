@@ -48,7 +48,7 @@ tests = [
 include = ["lydata"]
 
 [tool.setuptools.package-data]
-"lydata" = ["*/data.csv"]
+"lydata" = ["../*/data.csv"]
 
 [tool.pytest.ini_options]
 testpaths = "."
