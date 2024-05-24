@@ -6,6 +6,8 @@ from typing import Any, Literal
 import pandas as pd
 import pandas.api.extensions as pd_ext
 
+from lydata import __uri__
+
 
 _SHORTNAME_MAP = {
     "age": ("patient", "#", "age"),
@@ -25,8 +27,20 @@ def get_all_true(df: pd.DataFrame) -> pd.Series:
     return pd.Series([True] * len(df))
 
 
-class Q:
-    """Query object for filtering a DataFrame."""
+class CombineQMixin:
+    """Mixin class for combining queries."""
+    def __and__(self, other: Q | AndQ | OrQ | NotQ) -> AndQ:
+        return AndQ(self, other)
+
+    def __or__(self, other: Q | AndQ | OrQ | NotQ) -> OrQ:
+        return OrQ(self, other)
+
+    def __invert__(self) -> NotQ:
+        return NotQ(self)
+
+
+class Q(CombineQMixin):
+    """Combinable query object for filtering a DataFrame."""
 
     _OPERATOR_MAP = {
         "==": lambda x, y: x == y,
@@ -34,6 +48,7 @@ class Q:
         "<=": lambda x, y: x <= y,
         ">":  lambda x, y: x >  y,
         ">=": lambda x, y: x >= y,
+        "!=": lambda x, y: x != y,   # this should be the same as ~Q("col", "==", value)
     }
 
     def __init__(
@@ -50,15 +65,6 @@ class Q:
     def __repr__(self):
         return f"Q({self.colname!r}, {self.operator!r}, {self.value!r})"
 
-    def __and__(self, other: Q) -> AndQ:
-        return AndQ(self, other)
-
-    def __or__(self, other: Q) -> OrQ:
-        return OrQ(self, other)
-
-    def __invert__(self) -> NotQ:
-        return NotQ(self)
-
     def execute(self, df: pd.DataFrame) -> pd.Series:
         """Return a boolean mask where the query is satisfied for ``df``."""
         try:
@@ -74,13 +80,15 @@ class Q:
         return self._OPERATOR_MAP[self.operator](column, self.value)
 
 
-class AndQ(Q):
+class AndQ(CombineQMixin):
     """Query object for combining two queries with a logical AND.
 
     >>> df = pd.DataFrame({'col1': [1, 2, 3]})
     >>> q1 = Q('col1', '>', 1)
     >>> q2 = Q('col1', '<', 3)
     >>> and_q = q1 & q2
+    >>> print(and_q)
+    Q('col1', '>', 1) & Q('col1', '<', 3)
     >>> isinstance(and_q, AndQ)
     True
     >>> and_q.execute(df)
@@ -101,13 +109,15 @@ class AndQ(Q):
         return self.q1.execute(df) & self.q2.execute(df)
 
 
-class OrQ(Q):
+class OrQ(CombineQMixin):
     """Query object for combining two queries with a logical OR.
 
     >>> df = pd.DataFrame({'col1': [1, 2, 3]})
     >>> q1 = Q('col1', '==', 1)
     >>> q2 = Q('col1', '==', 3)
     >>> or_q = q1 | q2
+    >>> print(or_q)
+    Q('col1', '==', 1) | Q('col1', '==', 3)
     >>> isinstance(or_q, OrQ)
     True
     >>> or_q.execute(df)
@@ -128,12 +138,14 @@ class OrQ(Q):
         return self.q1.execute(df) | self.q2.execute(df)
 
 
-class NotQ(Q):
+class NotQ(CombineQMixin):
     """Query object for negating a query.
 
     >>> df = pd.DataFrame({'col1': [1, 2, 3]})
     >>> q = Q('col1', '==', 2)
     >>> not_q = ~q
+    >>> print(not_q)
+    ~Q('col1', '==', 2)
     >>> isinstance(not_q, NotQ)
     True
     >>> not_q.execute(df)
@@ -153,6 +165,17 @@ class NotQ(Q):
         return ~self.q.execute(df)
 
 
+class NoneQ(CombineQMixin):
+    """Query object that always returns the entire DataFrame. Useful as default."""
+
+    def __repr__(self):
+        return "NoneQ()"
+
+    def execute(self, df: pd.DataFrame) -> pd.Series:
+        """Return a boolean mask with all entries set to ``True``."""
+        return get_all_true(df)
+
+
 @pd_ext.register_dataframe_accessor("lydata")
 class LydataAccessor:
     """Custom accessor for handling lymphatic involvement data."""
@@ -168,7 +191,7 @@ class LydataAccessor:
     def query(self, query: Q = None) -> pd.DataFrame:
         """Return a DataFrame with rows that satisfy the query."""
         if query is None:
-            query = get_all_true
+            query = NoneQ()
 
         mask = query.execute(self._obj)
         return self._obj[mask]
@@ -176,9 +199,9 @@ class LydataAccessor:
     def portion(self, query: Q = None, given: Q = None) -> float:
         """Return portion of rows that satisfy ``query`` given the ``given`` query."""
         if query is None:
-            query = get_all_true
+            query = NoneQ()
         if given is None:
-            given = get_all_true
+            given = NoneQ()
 
         given_mask = given.execute(self._obj)
         query_mask = query.execute(self._obj)
@@ -207,6 +230,7 @@ def main():
     print(portion)  # Output the calculated portion
     print(given)
     print(query)
+    print(__uri__)
 
 
 if __name__ == "__main__":
