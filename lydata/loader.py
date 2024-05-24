@@ -1,12 +1,14 @@
 """Module for loading the lydata datasets."""
 from pathlib import Path
 from typing import Generator
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import mistletoe
 from mistletoe.block_token import Heading
 from mistletoe.markdown_renderer import MarkdownRenderer
 import pandas as pd
+
+from lydata import _repo
 
 
 @dataclass
@@ -15,13 +17,43 @@ class DatasetSpec:
     institution: str
     subsite: str
     path: Path
-    description: str
+    description: str = field(default="", repr=False)
+    repo: str = field(default=_repo, repr=False)
+    revision: str = field(default="main", repr=False)
+
+    @property
+    def name(self) -> str:
+        """Get the name of the dataset.
+
+        >>> spec = DatasetSpec(2023, "clb", "multisite", Path("path"), "description")
+        >>> spec.name
+        '2023-clb-multisite'
+        """
+        return f"{self.year}-{self.institution}-{self.subsite}"
+
+    @property
+    def url(self) -> str:
+        """Get the URL to the dataset.
+
+        >>> spec = DatasetSpec(2023, "clb", "multisite", Path("path"), "description")
+        >>> spec.url
+        'https://raw.githubusercontent.com/rmnldwg/lydata/main/2023-clb-multisite/data.csv'
+        """
+        return (
+            "https://raw.githubusercontent.com/"
+            f"{self.repo}/{self.revision}/"
+            f"{self.year}-{self.institution}-{self.subsite}/data.csv"
+        )
 
     def load(self, **load_kwargs) -> pd.DataFrame:
         """Load the dataset."""
         kwargs = {"header": [0, 1, 2]}
         kwargs.update(load_kwargs)
         return pd.read_csv(self.path / "data.csv", **kwargs)
+
+    def fetch(self, **load_kwargs) -> pd.DataFrame:
+        """Fetch the dataset from the web."""
+        return pd.read_csv(self.url, **load_kwargs)
 
 
 def remove_subheadings(elements: list, min_level: int = 1) -> list:
@@ -55,7 +87,6 @@ def get_description(
 
         if short:
             doc.children = remove_subheadings(doc.children, min_level=1)
-            
 
         return renderer.render(doc)
 
@@ -67,11 +98,11 @@ def available_datasets(
 ) -> Generator[DatasetSpec, None, None]:
     """Generate names of available datasets.
 
-    >>> list(available_datasets())   # doctest: +NORMALIZE_WHITESPACE
-    ['2023-isb-multisite',
+    >>> [ds.name for ds in available_datasets()]   # doctest: +NORMALIZE_WHITESPACE
+    ['2021-usz-oropharynx',
      '2021-clb-oropharynx',
-     '2021-usz-oropharynx',
-     '2023-clb-multisite']
+     '2023-clb-multisite',
+     '2023-isb-multisite']
     """
     year = str(year)
     search_path = Path(__file__).parent.parent
@@ -99,3 +130,19 @@ def load_datasets(
     """Generate datasets."""
     for dataset_spec in available_datasets(year, institution, subsite):
         yield dataset_spec.load(**load_kwargs)
+
+
+def fetch_datasets(
+    year: int | str = "*",
+    institution: str = "*",
+    subsite: str = "*",
+    **load_kwargs,
+) -> Generator[pd.DataFrame, None, None]:
+    """Fetch datasets from the web.
+
+    TODO: `available_dataset()` list those datasets that are present on disk. An
+    improvement to the `fetch_datasets()` function would be to get the list of available
+    datasets from the web.
+    """
+    for dataset_spec in available_datasets(year, institution, subsite):
+        yield dataset_spec.fetch(**load_kwargs)
