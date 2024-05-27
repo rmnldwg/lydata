@@ -1,7 +1,8 @@
 """Module containing a custom accessor and helpers for querying lydata."""
 from __future__ import annotations
+from dataclasses import dataclass
 from operator import getitem
-from typing import Any, Literal
+from typing import Any, Literal, TypeVar, Union
 
 import pandas as pd
 import pandas.api.extensions as pd_ext
@@ -29,10 +30,10 @@ def get_all_true(df: pd.DataFrame) -> pd.Series:
 
 class CombineQMixin:
     """Mixin class for combining queries."""
-    def __and__(self, other: Q | AndQ | OrQ | NotQ) -> AndQ:
+    def __and__(self, other: QTypes) -> AndQ:
         return AndQ(self, other)
 
-    def __or__(self, other: Q | AndQ | OrQ | NotQ) -> OrQ:
+    def __or__(self, other: QTypes) -> OrQ:
         return OrQ(self, other)
 
     def __invert__(self) -> NotQ:
@@ -43,12 +44,12 @@ class Q(CombineQMixin):
     """Combinable query object for filtering a DataFrame."""
 
     _OPERATOR_MAP = {
-        "==": lambda x, y: x == y,
-        "<":  lambda x, y: x <  y,
-        "<=": lambda x, y: x <= y,
-        ">":  lambda x, y: x >  y,
-        ">=": lambda x, y: x >= y,
-        "!=": lambda x, y: x != y,   # this should be the same as ~Q("col", "==", value)
+        "==": lambda series, value: series == value,
+        "<":  lambda series, value: series <  value,
+        "<=": lambda series, value: series <= value,
+        ">":  lambda series, value: series >  value,
+        ">=": lambda series, value: series >= value,
+        "!=": lambda series, value: series != value,    # same as ~Q("col", "==", value)
     }
 
     def __init__(
@@ -97,7 +98,7 @@ class AndQ(CombineQMixin):
     2    False
     Name: col1, dtype: bool
     """
-    def __init__(self, q1: Q, q2: Q):
+    def __init__(self, q1: QTypes, q2: QTypes):
         self.q1 = q1
         self.q2 = q2
 
@@ -126,7 +127,7 @@ class OrQ(CombineQMixin):
     2     True
     Name: col1, dtype: bool
     """
-    def __init__(self, q1: Q, q2: Q):
+    def __init__(self, q1: QTypes, q2: QTypes):
         self.q1 = q1
         self.q2 = q2
 
@@ -154,7 +155,7 @@ class NotQ(CombineQMixin):
     2     True
     Name: col1, dtype: bool
     """
-    def __init__(self, q: Q):
+    def __init__(self, q: QTypes):
         self.q = q
 
     def __repr__(self):
@@ -176,6 +177,49 @@ class NoneQ(CombineQMixin):
         return get_all_true(df)
 
 
+QTypes = Q | AndQ | OrQ | NotQ
+
+
+@dataclass
+class QueryPortion:
+    """Dataclass for storing the portion of a query."""
+    match: int
+    total: int
+
+    def __post_init__(self):
+        """Check that the portion is valid.
+
+        >>> QueryPortion(5, 2)
+        Traceback (most recent call last):
+            ...
+        ValueError: Match must be less than or equal to total.
+        """
+        if self.total < 0:
+            raise ValueError("Total must be non-negative.")
+        if self.match < 0:
+            raise ValueError("Match must be non-negative.")
+        if self.match > self.total:
+            raise ValueError("Match must be less than or equal to total.")
+
+    @property
+    def fail(self) -> int:
+        """Get the number of failures.
+
+        >>> QueryPortion(2, 5).fail
+        3
+        """
+        return self.total - self.match
+
+    @property
+    def ratio(self) -> float:
+        """Get the ratio of matches over the total.
+
+        >>> QueryPortion(2, 5).ratio
+        0.4
+        """
+        return self.match / self.total
+
+
 @pd_ext.register_dataframe_accessor("lydata")
 class LydataAccessor:
     """Custom accessor for handling lymphatic involvement data."""
@@ -183,54 +227,52 @@ class LydataAccessor:
         self._obj = obj
 
     def __getattr__(self, name: str) -> Any:
-        if name in _SHORTNAME_MAP:
+        """Access columns by short name.
+
+        >>> df = pd.DataFrame({("patient", "#", "age"): [61, 52, 73]})
+        >>> df.lydata.age
+        0    61
+        1    52
+        2    73
+        Name: (patient, #, age), dtype: int64
+        >>> df.lydata.foo
+        Traceback (most recent call last):
+            ...
+        AttributeError: Attribute 'foo' not found.
+        """
+        try:
             return getitem(self._obj, _SHORTNAME_MAP[name])
+        except KeyError as key_err:
+            raise AttributeError(f"Attribute {name!r} not found.") from key_err
 
-        raise AttributeError(f"Attribute {name!r} not found.")
-
-    def query(self, query: Q = None) -> pd.DataFrame:
-        """Return a DataFrame with rows that satisfy the query."""
-        if query is None:
-            query = NoneQ()
-
-        mask = query.execute(self._obj)
+    def query(self, query: QTypes = None) -> pd.DataFrame:
+        """Return a DataFrame with rows that satisfy the ``query``."""
+        mask = (query or NoneQ()).execute(self._obj)
         return self._obj[mask]
 
-    def portion(self, query: Q = None, given: Q = None) -> float:
-        """Return portion of rows that satisfy ``query`` given the ``given`` query."""
-        if query is None:
-            query = NoneQ()
-        if given is None:
-            given = NoneQ()
+    def portion(self, query: QTypes = None, given: QTypes = None) -> QueryPortion:
+        """Compute how many rows satisfy a ``query``, ``given`` some other conditions.
 
-        given_mask = given.execute(self._obj)
-        query_mask = query.execute(self._obj)
+        Returns a tuple with the number of matches and the number of total rows, such
+        that the ratio of the two is the portion of interest.
 
-        if not given_mask.any():
-            return 0
+        >>> df = pd.DataFrame({'x': [1, 2, 3]})
+        >>> df.lydata.portion(query=Q('x', '==', 2), given=Q('x', '>', 1))
+        QueryPortion(match=1, total=2)
+        >>> df.lydata.portion(query=Q('x', '==', 2), given=Q('x', '>', 3))
+        QueryPortion(match=0, total=0)
+        """
+        given_mask = (given or NoneQ()).execute(self._obj)
+        query_mask = (query or NoneQ()).execute(self._obj)
 
-        return query_mask[given_mask].mean()
+        return QueryPortion(
+            match=query_mask[given_mask].sum(),
+            total=given_mask.sum(),
+        )
 
 
 def main():
-    import numpy as np
-
-    # Example DataFrame
-    data = {
-        'col1': [1,      2,     5,    4,     5     ],
-        'col2': [True,   False, True, True, False ],
-        'col3': [np.nan, 'a',   'b',  'a',   np.nan]
-    }
-    df = pd.DataFrame(data)
-
-    # Example query
-    query = Q("col1", ">=", 3) & ~Q("col2", "==", False)
-    given = ~Q("col3", "==", pd.isna)
-    portion = df.lydata.portion(query=query, given=given)
-    print(portion)  # Output the calculated portion
-    print(given)
-    print(query)
-    print(__uri__)
+    pass
 
 
 if __name__ == "__main__":
