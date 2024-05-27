@@ -22,6 +22,7 @@ classifiers = [
 dependencies = [
     "numpy < 2",
     "pandas < 3",
+    "pygithub < 3",
 ]
 
 [project.urls]
