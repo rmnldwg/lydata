@@ -21,7 +21,7 @@ class DatasetSpec:
     year: int | str
     institution: str
     subsite: str
-    path: Path
+    path: Path | None = None
     description: str = field(default="", repr=False)
     repo: str = field(default=_repo, repr=False)
     revision: str = field(default="main", repr=False)
@@ -51,13 +51,15 @@ class DatasetSpec:
         )
 
     def _load_or_fetch(self, loc: Path | str, **load_kwargs) -> pd.DataFrame:
-        # pylint: disable=logging-fstring-interpolation
         kwargs = {"header": [0, 1, 2]}
         kwargs.update(load_kwargs)
         return pd.read_csv(loc, **kwargs)
 
     def load(self, **load_kwargs) -> pd.DataFrame:
         """Load the dataset."""
+        if self.path is None:
+            raise ValueError("Cannot load dataset: Path not known.")
+
         return self._load_or_fetch(self.path, **load_kwargs)
 
     def fetch(self, **load_kwargs) -> pd.DataFrame:
@@ -110,8 +112,11 @@ def _available_datasets_on_disk(
     for match in search_path.glob(f"{year}-{institution}-{subsite}"):
         if match.is_dir() and (match / "data.csv").exists():
             year, institution, subsite = match.name.split("-")
+
             readme_path = match / "README.md"
-            description = get_description(readme_path, short=True)
+            with open(readme_path) as readme_file:
+                description = get_description(readme_file, short=True)
+
             yield DatasetSpec(
                 year=year,
                 institution=institution,
@@ -156,9 +161,15 @@ def _available_datasets_on_github(
             matches.append(content)
 
     for match in matches:
-        readme = repo.get_contents(f"{match.path}/README.md")
-        # description =
-        data = repo.get_contents(f"{match.path}/data.csv")
+        year, institution, subsite = match.name.split("-")
+        readme = repo.get_contents(f"{match.path}/README.md").decoded_content.decode()
+        yield DatasetSpec(
+            year=year,
+            institution=institution,
+            subsite=subsite,
+            description=get_description(readme, short=True),
+            repo=_repo,
+        )
 
 
 def available_datasets(
@@ -169,14 +180,23 @@ def available_datasets(
 ) -> Generator[DatasetSpec, None, None]:
     """Generate names of available datasets.
 
-    >>> [ds.name for ds in available_datasets()]   # doctest: +NORMALIZE_WHITESPACE
+    >>> [ds.name for ds in available_datasets(where='disk')]   # doctest: +NORMALIZE_WHITESPACE
     ['2021-usz-oropharynx',
      '2021-clb-oropharynx',
+     '2023-clb-multisite',
+     '2023-isb-multisite']
+    >>> [ds.name for ds in available_datasets(where='github')]   # doctest: +NORMALIZE_WHITESPACE
+    ['2021-clb-oropharynx',
+     '2021-usz-oropharynx',
      '2023-clb-multisite',
      '2023-isb-multisite']
     """
     if where == "disk":
         yield from _available_datasets_on_disk(year, institution, subsite)
+    elif where == "github":
+        yield from _available_datasets_on_github(year, institution, subsite)
+    else:
+        raise ValueError(f"Unknown source: {where}")
 
 
 def load_datasets(
@@ -185,7 +205,7 @@ def load_datasets(
     subsite: str = "*",
     **load_kwargs,
 ) -> Generator[pd.DataFrame, None, None]:
-    """Generate datasets."""
+    """Load matching datasets from the disk."""
     for dataset_spec in available_datasets(year, institution, subsite):
         yield dataset_spec.load(**load_kwargs)
 
@@ -196,11 +216,6 @@ def fetch_datasets(
     subsite: str = "*",
     **load_kwargs,
 ) -> Generator[pd.DataFrame, None, None]:
-    """Fetch datasets from the web.
-
-    TODO: `available_dataset()` list those datasets that are present on disk. An
-    improvement to the `fetch_datasets()` function would be to get the list of available
-    datasets from the web.
-    """
+    """Fetch matching datasets from the web."""
     for dataset_spec in available_datasets(year, institution, subsite):
         yield dataset_spec.fetch(**load_kwargs)
