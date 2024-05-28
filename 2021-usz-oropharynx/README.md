@@ -71,7 +71,7 @@ The data is provided as a CSV-table containing one row for each of the 287 patie
         7. **`stage_prefix:`** Prefix modifier of the T-category. Can be `“c”` or `“p”`
         8. **`t_stage:`** T-category of the tumor, according to TNM staging
 3. **`<diagnostic modality>:`** Each recorded diagnostic modality is indicated by its own top-level header. In this file FNA, CT, MRI, PET, pathology and pCT (planning CT) are provided
-    1. **`info:`** 
+    1. **`info:`**
         1. **`date:`** Day on which a diagnose with the respective modality was performed
     2. **`ipsi:`** All findings of involved lymph nodes on the ipsilateral side of the patient’s neck
         1. **`<LNL>:`** One column is provided for each recorded lymph node level. For each level `true` indicates at least one finding diagnosed as malignant lymph node in the respective LNL, `false` means no malignant lymph node has been found and an empty field indicates that no diagnosis is available for this LNL according to the respective diagnostic modality. `<LNL>` can be: I, Ia, Ib, II, IIa, IIb, III, IV, V, VI, VII, VIII, IX, X.
@@ -82,23 +82,23 @@ The data is provided as a CSV-table containing one row for each of the 287 patie
 ## References
 
 <a id="1">[1]</a>
-R. Ludwig, B. Pouymayou, J.-M. Hoffmann *et al*, 
-"Detailed patient-individual reporting of lymph node involvement in oropharyngeal squamous cell carcinoma with an online interface." 
+R. Ludwig, B. Pouymayou, J.-M. Hoffmann *et al*,
+"Detailed patient-individual reporting of lymph node involvement in oropharyngeal squamous cell carcinoma with an online interface."
 Radiotherapy & Oncology, 2021, DOI: [10.1016/j.radonc.2022.01.035][Radiotherapy & Oncology]
 
 <a id="2">[2]</a>
-J. D. Brierley, M. K. Gospodarowicz, and C. Wittekind, 
-"TNM Classification of Malignant Tumours." 
+J. D. Brierley, M. K. Gospodarowicz, and C. Wittekind,
+"TNM Classification of Malignant Tumours."
 John Wiley & Sons, 2017.
 
 <a id="3">[3]</a>
-World Health Organization, Ed., 
-"International statistical classification of diseases and related health problems, 10th revision, 2nd edition." 
+World Health Organization, Ed.,
+"International statistical classification of diseases and related health problems, 10th revision, 2nd edition."
 Geneva: World Health Organization, 2004.
 
 <a id="4">[4]</a>
-A. G. Fritz, Ed., 
-"International classification of diseases for oncology: ICD-O, 3rd ed." 
+A. G. Fritz, Ed.,
+"International classification of diseases for oncology: ICD-O, 3rd ed."
 Geneva: World Health Organization, 2000.
 
 

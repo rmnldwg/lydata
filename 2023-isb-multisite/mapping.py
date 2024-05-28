@@ -57,13 +57,13 @@ respective column is about. This is used to generate the documentation for the
 ---
 """
 import re
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 import icd10
 import numpy as np
 import pandas as pd
 from dateutil.parser import parse
-
 
 MRI_OR_CT_COL = "MRI/CT preoperativ (if both => take MRI)"
 PATHOLOGY_COLS_POSITIVE = [

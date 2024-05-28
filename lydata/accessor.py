@@ -1,14 +1,12 @@
 """Module containing a custom accessor and helpers for querying lydata."""
 from __future__ import annotations
+
 from dataclasses import dataclass
 from operator import getitem
-from typing import Any, Literal, TypeVar, Union
+from typing import Any, Literal
 
 import pandas as pd
 import pandas.api.extensions as pd_ext
-
-from lydata import __uri__
-
 
 _SHORTNAME_MAP = {
     "age": ("patient", "#", "age"),

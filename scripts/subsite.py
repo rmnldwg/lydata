@@ -1,17 +1,15 @@
 """
 Plot the distribution over primary tumor subsites.
 """
-from cgitb import text
+import argparse
 from collections import defaultdict
 from pathlib import Path
-import argparse
 
-import pandas as pd
 import matplotlib.pyplot as plt
-from tueplots import figsizes, fontsizes
-
+import pandas as pd
 from lyscripts.plot.utils import COLORS
 from lyscripts.utils import flatten
+from tueplots import figsizes, fontsizes
 
 
 def invert(mapping: dict) -> dict:

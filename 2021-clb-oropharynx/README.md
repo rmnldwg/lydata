@@ -189,46 +189,46 @@ We also provide the raw data as a CSV file that was used to collect the data in 
 <a id="mapping"></a>
 
 ## <kbd>module</kbd> `mapping`
-Map the `raw.csv` data from the 2021-clb-oropharynx cohort to the `data.csv` file. 
+Map the `raw.csv` data from the 2021-clb-oropharynx cohort to the `data.csv` file.
 
-This module defines how the command `lyscripts data lyproxify` (see [here](rmnldwg.github.io/lyscripts) for the documentation of the `lyscripts` module) should handle the `raw.csv` data that was extracted at the Inselspital Bern in order to transform it into a [LyProX](https://lyprox.org)-compatible `data.csv` file. 
+This module defines how the command `lyscripts data lyproxify` (see [here](rmnldwg.github.io/lyscripts) for the documentation of the `lyscripts` module) should handle the `raw.csv` data that was extracted at the Inselspital Bern in order to transform it into a [LyProX](https://lyprox.org)-compatible `data.csv` file.
 
-The most important definitions in here are the list `EXCLUDE` and the dictionary `COLUMN_MAP` that defines how to construct the new columns based on the `raw.csv` data. They are described in more detail below: 
+The most important definitions in here are the list `EXCLUDE` and the dictionary `COLUMN_MAP` that defines how to construct the new columns based on the `raw.csv` data. They are described in more detail below:
 
 
---- 
+---
 
-### <kbd>global</kbd> `EXCLUDE` 
+### <kbd>global</kbd> `EXCLUDE`
 
-List of tuples specifying which function to run for which columns to find out if patients/rows should be excluded in the lyproxified `data.csv`. 
+List of tuples specifying which function to run for which columns to find out if patients/rows should be excluded in the lyproxified `data.csv`.
 
-The first element of each tuple is the flattened multi-index column name, the second element is the function to run on the column to determine if a patient/row should be excluded: 
+The first element of each tuple is the flattened multi-index column name, the second element is the function to run on the column to determine if a patient/row should be excluded:
 
 ```python
 EXCLUDE = [
      (column_name, check_function),
 ]
-``` 
+```
 
-Essentially, a row is excluded, if for that row `check_function(raw_data[column_name])` evaluates to `True`. 
+Essentially, a row is excluded, if for that row `check_function(raw_data[column_name])` evaluates to `True`.
 
-More information can be found in the [documentation](https://rmnldwg.github.io/lyscripts/lyscripts/data/lyproxify.html#exclude_patients) of the `lyproxify` function. 
-
-
---- 
-
-### <kbd>global</kbd> `COLUMN_MAP` 
-
-This is the actual mapping dictionary that describes how to transform the `raw.csv` table into the `data.csv` table that can be fed into and understood by [LyProX](https://lyprox.org). 
-
-See [here](https://rmnldwg.github.io/lyscripts/lyscripts/data/lyproxify.html#transform_to_lyprox) for details on how this dictionary is used by the `lyproxify` script. 
-
-It contains a tree-like structure that is human-readable and mimics the tree of multi-level headers in the final `data.csv` file. For every column in the final `data.csv` file, the dictionary describes from which columns in the `raw.csv` file the data should be extracted and what function should be applied to it. 
-
-It also contains a `__doc__` key for every sub-dictionary that describes what the respective column is about. This is used to generate the documentation for the `README.md` file of this data. 
+More information can be found in the [documentation](https://rmnldwg.github.io/lyscripts/lyscripts/data/lyproxify.html#exclude_patients) of the `lyproxify` function.
 
 
---- 
+---
+
+### <kbd>global</kbd> `COLUMN_MAP`
+
+This is the actual mapping dictionary that describes how to transform the `raw.csv` table into the `data.csv` table that can be fed into and understood by [LyProX](https://lyprox.org).
+
+See [here](https://rmnldwg.github.io/lyscripts/lyscripts/data/lyproxify.html#transform_to_lyprox) for details on how this dictionary is used by the `lyproxify` script.
+
+It contains a tree-like structure that is human-readable and mimics the tree of multi-level headers in the final `data.csv` file. For every column in the final `data.csv` file, the dictionary describes from which columns in the `raw.csv` file the data should be extracted and what function should be applied to it.
+
+It also contains a `__doc__` key for every sub-dictionary that describes what the respective column is about. This is used to generate the documentation for the `README.md` file of this data.
+
+
+---
 
 **Global Variables**
 ---------------
@@ -243,7 +243,7 @@ It also contains a `__doc__` key for every sub-dictionary that describes what th
 robust_date(entry, *_args, **_kwargs)
 ```
 
-Robustly parse a date string. 
+Robustly parse a date string.
 
 
 ---
@@ -254,7 +254,7 @@ Robustly parse a date string.
 robust_int(entry, *_args, **_kwargs)
 ```
 
-Robustly convert a string to int, if possible. 
+Robustly convert a string to int, if possible.
 
 
 ---
@@ -265,7 +265,7 @@ Robustly convert a string to int, if possible.
 get_subsite(entry, *_args, **_kwargs)
 ```
 
-Get human-readable subsite from ICD-10 code. 
+Get human-readable subsite from ICD-10 code.
 
 
 ---
@@ -276,7 +276,7 @@ Get human-readable subsite from ICD-10 code.
 parse_pathology(entry, *_args, **_kwargs)
 ```
 
-Transform number of positive nodes to `True`, `False` or `None`. 
+Transform number of positive nodes to `True`, `False` or `None`.
 
 
 ---
@@ -287,7 +287,7 @@ Transform number of positive nodes to `True`, `False` or `None`.
 strip_letters(entry, *_args, **_kwargs)
 ```
 
-Remove letters following a number. 
+Remove letters following a number.
 
 
 
@@ -299,16 +299,16 @@ Remove letters following a number.
 L. Bauwens *et al*, "Prevalence and distribution of cervical lymph node metastases in HPV-positive and HPV-negative oropharyngeal squamous cell carcinoma", Radiotherapy & Oncology, 2021, DOI: [10.1016/j.radonc.2021.01.028](https://doi.org/10.1016/j.radonc.2021.01.028)
 
 <a id="2">[2]</a>
-J. D. Brierley, M. K. Gospodarowicz, and C. Wittekind, 
-"TNM Classification of Malignant Tumours." 
+J. D. Brierley, M. K. Gospodarowicz, and C. Wittekind,
+"TNM Classification of Malignant Tumours."
 John Wiley & Sons, 2017.
 
 <a id="3">[3]</a>
-World Health Organization, Ed., 
-"International statistical classification of diseases and related health problems, 10th revision, 2nd edition." 
+World Health Organization, Ed.,
+"International statistical classification of diseases and related health problems, 10th revision, 2nd edition."
 Geneva: World Health Organization, 2004.
 
 <a id="4">[4]</a>
-A. G. Fritz, Ed., 
-"International classification of diseases for oncology: ICD-O, 3rd ed." 
+A. G. Fritz, Ed.,
+"International classification of diseases for oncology: ICD-O, 3rd ed."
 Geneva: World Health Organization, 2000.

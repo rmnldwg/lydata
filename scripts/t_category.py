@@ -1,14 +1,13 @@
 """
 Plot the distribution over patient's T-category.
 """
-from pathlib import Path
 import argparse
+from pathlib import Path
 
-import pandas as pd
 import matplotlib.pyplot as plt
-from tueplots import figsizes, fontsizes
-
+import pandas as pd
 from lyscripts.plot.utils import COLORS
+from tueplots import figsizes, fontsizes
 
 
 def create_label(percent):

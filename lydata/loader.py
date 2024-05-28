@@ -1,17 +1,17 @@
 """Module for loading the lydata datasets."""
-from io import TextIOWrapper
-import os
-import logging
 import fnmatch
-from pathlib import Path
-from typing import Generator, Literal
+import os
+from collections.abc import Generator
 from dataclasses import dataclass, field
+from io import TextIOWrapper
+from pathlib import Path
+from typing import Literal
 
 import mistletoe
+import pandas as pd
+from github import Auth, Github
 from mistletoe.block_token import Heading
 from mistletoe.markdown_renderer import MarkdownRenderer
-import pandas as pd
-from github import Github, Auth
 
 from lydata import _repo
 
@@ -157,7 +157,7 @@ def _available_datasets_on_github(
 
     for match in matches:
         readme = repo.get_contents(f"{match.path}/README.md")
-        description = 
+        # description =
         data = repo.get_contents(f"{match.path}/data.csv")
 
 
