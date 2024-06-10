@@ -1,6 +1,7 @@
 """Module containing a custom accessor and helpers for querying lydata."""
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
 from operator import getitem
 from typing import Any, Literal
@@ -8,7 +9,7 @@ from typing import Any, Literal
 import pandas as pd
 import pandas.api.extensions as pd_ext
 
-from lydata.validator import lydata_schema
+from lydata.validator import construct_schema
 
 _SHORTNAME_MAP = {
     "age": ("patient", "#", "age"),
@@ -47,7 +48,7 @@ class CombineQMixin:
 class Q(CombineQMixin):
     """Combinable query object for filtering a DataFrame."""
 
-    _OPERATOR_MAP = {
+    _OPERATOR_MAP: dict[str, Callable[[pd.Series, Any], pd.Series]] = {
         "==": lambda series, value: series == value,
         "<":  lambda series, value: series <  value,
         "<=": lambda series, value: series <= value,
@@ -62,13 +63,13 @@ class Q(CombineQMixin):
         column: str,
         operator: Literal["==", "<", "<=", ">", ">="],
         value: Any,
-    ):
+    ) -> None:
         """Create query object that can compare a ``column`` with a ``value``."""
         self.colname = column
         self.operator = operator
         self.value = value
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Return a string representation of the query."""
         return f"Q({self.colname!r}, {self.operator!r}, {self.value!r})"
 
@@ -105,12 +106,12 @@ class AndQ(CombineQMixin):
     Name: col1, dtype: bool
     """
 
-    def __init__(self, q1: QTypes, q2: QTypes):
+    def __init__(self, q1: QTypes, q2: QTypes) -> None:
         """Combine two queries with a logical AND."""
         self.q1 = q1
         self.q2 = q2
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Return a string representation of the query."""
         return f"{self.q1!r} & {self.q2!r}"
 
@@ -137,12 +138,12 @@ class OrQ(CombineQMixin):
     Name: col1, dtype: bool
     """
 
-    def __init__(self, q1: QTypes, q2: QTypes):
+    def __init__(self, q1: QTypes, q2: QTypes) -> None:
         """Combine two queries with a logical OR."""
         self.q1 = q1
         self.q2 = q2
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Return a string representation of the query."""
         return f"{self.q1!r} | {self.q2!r}"
 
@@ -168,11 +169,11 @@ class NotQ(CombineQMixin):
     Name: col1, dtype: bool
     """
 
-    def __init__(self, q: QTypes):
+    def __init__(self, q: QTypes) -> None:
         """Negate the given query ``q``."""
         self.q = q
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Return a string representation of the query."""
         return f"~{self.q!r}"
 
@@ -184,7 +185,7 @@ class NotQ(CombineQMixin):
 class NoneQ(CombineQMixin):
     """Query object that always returns the entire DataFrame. Useful as default."""
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Return a string representation of the query."""
         return "NoneQ()"
 
@@ -203,7 +204,7 @@ class QueryPortion:
     match: int
     total: int
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Check that the portion is valid.
 
         >>> QueryPortion(5, 2)
@@ -264,9 +265,15 @@ class LydataAccessor:
         except KeyError as key_err:
             raise AttributeError(f"Attribute {name!r} not found.") from key_err
 
-    def validate(self) -> None:
+    def validate(self, modalities: list[str] | None = None) -> pd.DataFrame:
         """Validate the DataFrame against the lydata schema."""
-        lydata_schema.validate(self._obj)
+        if modalities is None:
+            modalities = self._obj.columns.get_level_values(0).unique().to_list()
+            modalities.remove("patient")
+            modalities.remove("tumor")
+
+        lydata_schema = construct_schema(modalities=modalities)
+        return lydata_schema.validate(self._obj)
 
     def query(self, query: QTypes = None) -> pd.DataFrame:
         """Return a DataFrame with rows that satisfy the ``query``."""
@@ -294,9 +301,10 @@ class LydataAccessor:
         )
 
 
-def main():
+def main() -> None:
     """Run the module's doctests."""
-    pass
+    import doctest
+    doctest.testmod()
 
 
 if __name__ == "__main__":
