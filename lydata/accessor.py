@@ -300,6 +300,51 @@ class LydataAccessor:
             total=given_mask.sum(),
         )
 
+    def stats(
+        self,
+        aggfuncs: dict[str | tuple[str, str, str], str | Callable] | None = None,
+    ) -> Any:
+        """Compute statistics.
+
+        >>> df = pd.DataFrame({
+        ...     ('patient', '#', 'age'): [61, 52, 73, 99],
+        ...     ('patient', '#', 'hpv_status'): [True, False, None, True],
+        ...     ('tumor', '1', 't_stage'): [2, 3, 1, 2],
+        ... })
+        >>> df.lydata.stats()   # doctest: +NORMALIZE_WHITESPACE
+        {('patient', '#', 'hpv_status'): {True: 2, False: 1, None: 1},
+         ('tumor', '1', 't_stage'): {2: 2, 3: 1, 1: 1}}
+        """
+        if aggfuncs is None:
+            aggfuncs = {
+                "hpv": "value_counts",
+                "t_stage": "value_counts",
+            }
+
+
+        expanded_aggfuncs = expand_colmap(aggfuncs)
+        return {
+            col: self._obj[col].agg(func, dropna=False).to_dict()
+            for col, func in expanded_aggfuncs.items()
+        }
+
+
+def expand_colmap(
+    colmap: dict[str | tuple[str, str, str], Any],
+) -> dict[tuple[str, str, str], Any]:
+    """Expand the column map to full column names.
+
+    >>> expand_colmap({'age': 'foo', 'hpv': 'bar'})
+    {('patient', '#', 'age'): 'foo', ('patient', '#', 'hpv_status'): 'bar'}
+    """
+    expanded = {}
+
+    for col, func in colmap.items():
+        expanded_col = _SHORTNAME_MAP.get(col, col)
+        expanded[expanded_col] = func
+
+    return expanded
+
 
 def main() -> None:
     """Run the module's doctests."""
