@@ -379,8 +379,8 @@ COLUMN_MAP = {
                 "columns": TNM_COLS,
             },
             "m_stage": {
-                "__doc__": "The M category of the patient.",
-                "default": 2,
+                "__doc__": "The M category of the patient. `-1` refers to `'X'`.",
+                "default": -1,
             },
             "extracapsular": {
                 "__doc__": (

@@ -70,7 +70,7 @@ The data is provided as a CSV-table containing one row for each of the 263 patie
         10. **`neck_dissection:`** Indicates whether the patient has received a neck dissection as part of the treatment.
         11. **`tnm_edition:`** The edition of the TNM classification used to classify the patient.
         12. **`n_stage:`** The N category of the patient, indicating the degree of spread to regional lymph nodes.
-        13. **`m_stage:`** The M category of the patient, encoding the presence of distant metastases.
+        13. **`m_stage:`** The M category of the patient, encoding the presence of distant metastases. `-1` represents `'X'`.
 2. **`tumor:`** Information about tumors is stored under this top-level header.
     1. **`1:`** The second level enumerates the synchronous tumors. In our database, no patient has had a second tumor but this structure of the file allows us to include such patients in the future. The third-level headers are the same for each tumor..
         1. **`location:`** Anatomic location of the tumor. Since this dataset contains only oropharyngeal SCC patients, this is always `oropharynx`.

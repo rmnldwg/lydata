@@ -223,9 +223,9 @@ COLUMN_MAP = {
             "m_stage": {
                 "__doc__": (
                     "The M category of the patient, encoding the presence of distant"
-                    " metastases."
+                    " metastases. `-1` represents `'X'`."
                 ),
-                "func": lambda x, *a, **k: 2 if x == "x" else int(x),
+                "func": lambda x, *a, **k: -1 if x == "x" else int(x),
                 "columns": ["cM"],
             },
         },
