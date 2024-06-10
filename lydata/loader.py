@@ -18,6 +18,8 @@ from lydata import _repo
 
 @dataclass
 class DatasetSpec:
+    """Specification of a dataset."""
+
     year: int | str
     institution: str
     subsite: str
@@ -121,7 +123,7 @@ def _available_datasets_on_disk(
                 year=year,
                 institution=institution,
                 subsite=subsite,
-                path=match,
+                path=match / "data.csv",
                 description=description,
             )
 
@@ -137,7 +139,7 @@ def _get_github_auth() -> Auth:
     if user and password:
         return Auth.Login(user, password)
 
-    raise ValueError("Neither GITHUB_TOKEN nor GITHUB_USER and GITHUB_PASSWORD are set.")
+    raise ValueError("Neither GITHUB_TOKEN nor GITHUB_USER and GITHUB_PASSWORD set.")
 
 
 def _available_datasets_on_github(

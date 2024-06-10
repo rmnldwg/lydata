@@ -20,9 +20,11 @@ classifiers = [
     "Programming Language :: Python :: 3",
 ]
 dependencies = [
-    "numpy < 2",
-    "pandas < 3",
-    "pygithub < 3",
+    "numpy",
+    "pandas",
+    "pygithub",
+    "mistletoe",
+    "pandera",
 ]
 
 [project.urls]
@@ -53,6 +55,9 @@ include = ["lydata"]
 
 [tool.pytest.ini_options]
 testpaths = "."
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B", "C", "R", "U", "D", "I", "S", "T", "A", "N"]
 
 [tool.isort]
 line_length = 79

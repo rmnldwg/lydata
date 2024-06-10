@@ -8,6 +8,8 @@ from typing import Any, Literal
 import pandas as pd
 import pandas.api.extensions as pd_ext
 
+from lydata.validator import lydata_schema
+
 _SHORTNAME_MAP = {
     "age": ("patient", "#", "age"),
     "hpv": ("patient", "#", "hpv_status"),
@@ -28,13 +30,17 @@ def get_all_true(df: pd.DataFrame) -> pd.Series:
 
 class CombineQMixin:
     """Mixin class for combining queries."""
+
     def __and__(self, other: QTypes) -> AndQ:
+        """Combine two queries with a logical AND."""
         return AndQ(self, other)
 
     def __or__(self, other: QTypes) -> OrQ:
+        """Combine two queries with a logical OR."""
         return OrQ(self, other)
 
     def __invert__(self) -> NotQ:
+        """Negate the query."""
         return NotQ(self)
 
 
@@ -47,7 +53,8 @@ class Q(CombineQMixin):
         "<=": lambda series, value: series <= value,
         ">":  lambda series, value: series >  value,
         ">=": lambda series, value: series >= value,
-        "!=": lambda series, value: series != value,    # same as ~Q("col", "==", value)
+        "!=": lambda series, value: series != value,    # same as ~Q(series, "==", value)
+        "in": lambda series, value: series.isin(value), # value is a list
     }
 
     def __init__(
@@ -62,6 +69,7 @@ class Q(CombineQMixin):
         self.value = value
 
     def __repr__(self):
+        """Return a string representation of the query."""
         return f"Q({self.colname!r}, {self.operator!r}, {self.value!r})"
 
     def execute(self, df: pd.DataFrame) -> pd.Series:
@@ -96,11 +104,14 @@ class AndQ(CombineQMixin):
     2    False
     Name: col1, dtype: bool
     """
+
     def __init__(self, q1: QTypes, q2: QTypes):
+        """Combine two queries with a logical AND."""
         self.q1 = q1
         self.q2 = q2
 
     def __repr__(self):
+        """Return a string representation of the query."""
         return f"{self.q1!r} & {self.q2!r}"
 
     def execute(self, df: pd.DataFrame) -> pd.Series:
@@ -125,11 +136,14 @@ class OrQ(CombineQMixin):
     2     True
     Name: col1, dtype: bool
     """
+
     def __init__(self, q1: QTypes, q2: QTypes):
+        """Combine two queries with a logical OR."""
         self.q1 = q1
         self.q2 = q2
 
     def __repr__(self):
+        """Return a string representation of the query."""
         return f"{self.q1!r} | {self.q2!r}"
 
     def execute(self, df: pd.DataFrame) -> pd.Series:
@@ -153,10 +167,13 @@ class NotQ(CombineQMixin):
     2     True
     Name: col1, dtype: bool
     """
+
     def __init__(self, q: QTypes):
+        """Negate the given query ``q``."""
         self.q = q
 
     def __repr__(self):
+        """Return a string representation of the query."""
         return f"~{self.q!r}"
 
     def execute(self, df: pd.DataFrame) -> pd.Series:
@@ -168,6 +185,7 @@ class NoneQ(CombineQMixin):
     """Query object that always returns the entire DataFrame. Useful as default."""
 
     def __repr__(self):
+        """Return a string representation of the query."""
         return "NoneQ()"
 
     def execute(self, df: pd.DataFrame) -> pd.Series:
@@ -181,6 +199,7 @@ QTypes = Q | AndQ | OrQ | NotQ
 @dataclass
 class QueryPortion:
     """Dataclass for storing the portion of a query."""
+
     match: int
     total: int
 
@@ -221,7 +240,9 @@ class QueryPortion:
 @pd_ext.register_dataframe_accessor("lydata")
 class LydataAccessor:
     """Custom accessor for handling lymphatic involvement data."""
+
     def __init__(self, obj: pd.DataFrame) -> None:
+        """Initialize the accessor with a DataFrame."""
         self._obj = obj
 
     def __getattr__(self, name: str) -> Any:
@@ -242,6 +263,10 @@ class LydataAccessor:
             return getitem(self._obj, _SHORTNAME_MAP[name])
         except KeyError as key_err:
             raise AttributeError(f"Attribute {name!r} not found.") from key_err
+
+    def validate(self) -> None:
+        """Validate the DataFrame against the lydata schema."""
+        lydata_schema.validate(self._obj)
 
     def query(self, query: QTypes = None) -> pd.DataFrame:
         """Return a DataFrame with rows that satisfy the ``query``."""
@@ -270,6 +295,7 @@ class LydataAccessor:
 
 
 def main():
+    """Run the module's doctests."""
     pass
 
 
