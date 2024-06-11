@@ -3,25 +3,13 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass
-from operator import getitem
 from typing import Any, Literal
 
 import pandas as pd
 import pandas.api.extensions as pd_ext
 
+from lydata.utils import _COLUMN_MAP
 from lydata.validator import construct_schema
-
-_SHORTNAME_MAP = {
-    "age": ("patient", "#", "age"),
-    "hpv": ("patient", "#", "hpv_status"),
-    "smoke": ("patient", "#", "nicotine_abuse"),
-    "alcohol": ("patient", "#", "alcohol_abuse"),
-    "t_stage": ("tumor", "1", "t_stage"),
-    "n_stage": ("patient", "#", "n_stage"),
-    "m_stage": ("patient", "#", "m_stage"),
-    "midext": ("tumor", "1", "extension"),
-}
-"""Map of short names for columns."""
 
 
 def get_all_true(df: pd.DataFrame) -> pd.Series:
@@ -76,7 +64,7 @@ class Q(CombineQMixin):
     def execute(self, df: pd.DataFrame) -> pd.Series:
         """Return a boolean mask where the query is satisfied for ``df``."""
         try:
-            colname = _SHORTNAME_MAP[self.colname]
+            colname = _COLUMN_MAP.from_short[self.colname].long
         except KeyError:
             colname = self.colname
 
@@ -238,6 +226,8 @@ class QueryPortion:
         return self.match / self.total
 
 
+AggFuncType = dict[str | tuple[str, str, str], Callable[[pd.Series], pd.Series]]
+
 @pd_ext.register_dataframe_accessor("lydata")
 class LydataAccessor:
     """Custom accessor for handling lymphatic involvement data."""
@@ -246,8 +236,27 @@ class LydataAccessor:
         """Initialize the accessor with a DataFrame."""
         self._obj = obj
 
+    def __contains__(self, key: str) -> bool:
+        """Check if a column is contained in the DataFrame.
+
+        >>> df = pd.DataFrame({("patient", "#", "age"): [61, 52, 73]})
+        >>> "age" in df.lydata
+        True
+        >>> "foo" in df.lydata
+        False
+        >>> ("patient", "#", "age") in df.lydata
+        True
+        """
+        key = self._get_safe_long(key)
+        return key in self._obj
+
+    def __getitem__(self, key: str) -> pd.Series:
+        """Allow column access by short name, too."""
+        key = self._get_safe_long(key)
+        return self._obj[key]
+
     def __getattr__(self, name: str) -> Any:
-        """Access columns by short name.
+        """Access columns also by short name.
 
         >>> df = pd.DataFrame({("patient", "#", "age"): [61, 52, 73]})
         >>> df.lydata.age
@@ -261,9 +270,13 @@ class LydataAccessor:
         AttributeError: Attribute 'foo' not found.
         """
         try:
-            return getitem(self._obj, _SHORTNAME_MAP[name])
+            return self[name]
         except KeyError as key_err:
             raise AttributeError(f"Attribute {name!r} not found.") from key_err
+
+    def _get_safe_long(self, key: Any) -> tuple[str, str, str]:
+        """Get the long column name or return the input."""
+        return getattr(_COLUMN_MAP.from_short.get(key), "long", key)
 
     def validate(self, modalities: list[str] | None = None) -> pd.DataFrame:
         """Validate the DataFrame against the lydata schema."""
@@ -302,54 +315,69 @@ class LydataAccessor:
 
     def stats(
         self,
-        aggfuncs: dict[str | tuple[str, str, str], str | Callable] | None = None,
+        agg_funcs: AggFuncType | None = None,
+        use_shortnames: bool = True,
+        out_format: str = "dict",
     ) -> Any:
         """Compute statistics.
 
         >>> df = pd.DataFrame({
-        ...     ('patient', '#', 'age'): [61, 52, 73, 99],
+        ...     ('patient', '#', 'age'): [61, 52, 73, 61],
         ...     ('patient', '#', 'hpv_status'): [True, False, None, True],
         ...     ('tumor', '1', 't_stage'): [2, 3, 1, 2],
         ... })
         >>> df.lydata.stats()   # doctest: +NORMALIZE_WHITESPACE
-        {('patient', '#', 'hpv_status'): {True: 2, False: 1, None: 1},
-         ('tumor', '1', 't_stage'): {2: 2, 3: 1, 1: 1}}
+        {'age': {61: 2, 52: 1, 73: 1},
+         'hpv': {True: 2, False: 1, None: 1},
+         't_stage': {2: 2, 3: 1, 1: 1}}
         """
-        if aggfuncs is None:
-            aggfuncs = {
-                "hpv": "value_counts",
-                "t_stage": "value_counts",
-            }
+        _agg_funcs = _COLUMN_MAP.from_short.copy()
+        _agg_funcs.update(agg_funcs or {})
+        stats = {}
+
+        for colname, func in _agg_funcs.items():
+            if colname not in self:
+                continue
+
+            column = self[colname]
+            if use_shortnames and colname in _COLUMN_MAP.from_long:
+                colname = _COLUMN_MAP.from_long[colname].short
+
+            stats[colname] = getattr(func(column), f"to_{out_format}")()
+
+        return stats
 
 
-        expanded_aggfuncs = expand_colmap(aggfuncs)
-        return {
-            col: self._obj[col].agg(func, dropna=False).to_dict()
-            for col, func in expanded_aggfuncs.items()
-        }
-
-
-def expand_colmap(
-    colmap: dict[str | tuple[str, str, str], Any],
+def expand_mapping(
+    short_map: dict[str, Any],
+    colname_map: dict[str | tuple[str, str, str], Any] | None = None,
 ) -> dict[tuple[str, str, str], Any]:
     """Expand the column map to full column names.
 
-    >>> expand_colmap({'age': 'foo', 'hpv': 'bar'})
+    >>> expand_mapping({'age': 'foo', 'hpv': 'bar'})
     {('patient', '#', 'age'): 'foo', ('patient', '#', 'hpv_status'): 'bar'}
     """
-    expanded = {}
+    colname_map = colname_map or _COLUMN_MAP.from_short
+    expanded_map = {}
 
-    for col, func in colmap.items():
-        expanded_col = _SHORTNAME_MAP.get(col, col)
-        expanded[expanded_col] = func
+    for colname, func in short_map.items():
+        expanded_colname = getattr(colname_map.get(colname), "long", colname)
+        expanded_map[expanded_colname] = func
 
-    return expanded
+    return expanded_map
 
 
 def main() -> None:
     """Run the module's doctests."""
-    import doctest
-    doctest.testmod()
+    # import doctest
+    # doctest.testmod()
+
+    df = pd.DataFrame({
+        ('patient', '#', 'age'): [61, 52, 73, 61],
+        ('patient', '#', 'hpv_status'): [True, False, None, True],
+        ('tumor', '1', 't_stage'): [2, 3, 1, 2],
+    })
+    df.lydata.stats()   # doctest: +NORMALIZE_WHITESPACE
 
 
 if __name__ == "__main__":
