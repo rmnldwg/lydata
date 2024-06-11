@@ -212,6 +212,16 @@ def load_datasets(
         yield dataset_spec.load(**load_kwargs)
 
 
+def load_dataset(
+    year: int | str = "*",
+    institution: str = "*",
+    subsite: str = "*",
+    **load_kwargs,
+) -> pd.DataFrame:
+    """Load the first matching dataset from the disk."""
+    return next(load_datasets(year, institution, subsite, **load_kwargs))
+
+
 def fetch_datasets(
     year: int | str = "*",
     institution: str = "*",
@@ -221,3 +231,13 @@ def fetch_datasets(
     """Fetch matching datasets from the web."""
     for dataset_spec in available_datasets(year, institution, subsite):
         yield dataset_spec.fetch(**load_kwargs)
+
+
+def fetch_dataset(
+    year: int | str = "*",
+    institution: str = "*",
+    subsite: str = "*",
+    **load_kwargs,
+) -> pd.DataFrame:
+    """Fetch the first matching dataset from the web."""
+    return next(fetch_datasets(year, institution, subsite, **load_kwargs))
