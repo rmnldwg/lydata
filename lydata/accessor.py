@@ -5,10 +5,11 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any, Literal
 
+import numpy as np
 import pandas as pd
 import pandas.api.extensions as pd_ext
 
-from lydata.utils import _COLUMN_MAP
+from lydata.utils import Modality, get_default_column_map, get_default_modalities
 from lydata.validator import construct_schema
 
 
@@ -56,6 +57,7 @@ class Q(CombineQMixin):
         self.colname = column
         self.operator = operator
         self.value = value
+        self._column_map = get_default_column_map()
 
     def __repr__(self) -> str:
         """Return a string representation of the query."""
@@ -64,7 +66,7 @@ class Q(CombineQMixin):
     def execute(self, df: pd.DataFrame) -> pd.Series:
         """Return a boolean mask where the query is satisfied for ``df``."""
         try:
-            colname = _COLUMN_MAP.from_short[self.colname].long
+            colname = self._column_map.from_short[self.colname].long
         except KeyError:
             colname = self.colname
 
@@ -235,6 +237,7 @@ class LydataAccessor:
     def __init__(self, obj: pd.DataFrame) -> None:
         """Initialize the accessor with a DataFrame."""
         self._obj = obj
+        self._column_map = get_default_column_map()
 
     def __contains__(self, key: str) -> bool:
         """Check if a column is contained in the DataFrame.
@@ -276,7 +279,7 @@ class LydataAccessor:
 
     def _get_safe_long(self, key: Any) -> tuple[str, str, str]:
         """Get the long column name or return the input."""
-        return getattr(_COLUMN_MAP.from_short.get(key), "long", key)
+        return getattr(self._column_map.from_short.get(key), "long", key)
 
     def validate(self, modalities: list[str] | None = None) -> pd.DataFrame:
         """Validate the DataFrame against the lydata schema."""
@@ -331,7 +334,7 @@ class LydataAccessor:
          'hpv': {True: 2, False: 1, None: 1},
          't_stage': {2: 2, 3: 1, 1: 1}}
         """
-        _agg_funcs = _COLUMN_MAP.from_short.copy()
+        _agg_funcs = self._column_map.from_short.copy()
         _agg_funcs.update(agg_funcs or {})
         stats = {}
 
@@ -340,12 +343,85 @@ class LydataAccessor:
                 continue
 
             column = self[colname]
-            if use_shortnames and colname in _COLUMN_MAP.from_long:
-                colname = _COLUMN_MAP.from_long[colname].short
+            if use_shortnames and colname in self._column_map.from_long:
+                colname = self._column_map.from_long[colname].short
 
             stats[colname] = getattr(func(column), f"to_{out_format}")()
 
         return stats
+
+    def combine(
+        self,
+        modalities: list[Modality] | None = None,
+        method: Literal["max_llh", "rank", "AND", "OR"] = "max_llh",
+    ) -> pd.DataFrame:
+        """Combine diagnoses of ``modalities`` using ``method``."""
+        modalities = modalities or get_default_modalities()
+
+        diagnosis_stack = []
+        for modality in modalities:
+            this = self._obj[modality.name].copy().drop(columns=["info"])
+
+            for i, other in enumerate(diagnosis_stack):
+                this, other = this.align(other, join="outer")
+                diagnosis_stack[i] = other
+
+            diagnosis_stack.append(this)
+
+        columns = this.columns
+        diagnosis_stack = np.array(diagnosis_stack)
+
+        if method == "max_llh":
+            result = np.apply_along_axis(
+                func1d=_max_llh,
+                axis=0,
+                arr=diagnosis_stack,
+                sensitivities=np.array([mod.sens for mod in modalities]),
+                specificities=np.array([mod.spec for mod in modalities]),
+            )
+
+        return pd.DataFrame(result, columns=columns)
+
+
+def _max_llh(
+    diagnoses: np.ndarray,
+    sensitivities: np.ndarray,
+    specificities: np.ndarray,
+) -> bool:
+    """Compute the most likely diagnosis based on all ``diagnoses``.
+
+    >>> diagnoses = np.array([True, False, np.nan, None])
+    >>> sensitivities = np.array([0.9, 0.7, 0.7, 0.7])
+    >>> specificities = np.array([0.9, 0.7, 0.7, 0.7])
+    >>> _max_llh(diagnoses, sensitivities, specificities)
+    True
+    >>> diagnoses = np.array([True, False, False, False])
+    >>> _max_llh(diagnoses, sensitivities, specificities)
+    False
+    """
+    healthy_llh = is_false(diagnoses, 1 - specificities, specificities)
+    involved_llhs = is_true(diagnoses, sensitivities, 1 - sensitivities)
+    return healthy_llh < involved_llhs
+
+
+def is_false(
+    obs: np.ndarray,
+    false_pos_probs: np.ndarray,
+    true_neg_probs: np.ndarray,
+) -> float:
+    """Compute probability of ``False``, given ``obs``."""
+    false_llhs = np.where(obs, false_pos_probs, true_neg_probs)
+    return np.prod(np.where(pd.isna(false_llhs), 1., false_llhs))
+
+
+def is_true(
+    obs: np.ndarray,
+    true_pos_probs: np.ndarray,
+    false_neg_probs: np.ndarray,
+) -> float:
+    """Compute probability of ``True``, given ``obs``."""
+    true_llhs = np.where(obs, true_pos_probs, false_neg_probs)
+    return np.prod(np.where(pd.isna(true_llhs), 1., true_llhs))
 
 
 def expand_mapping(
@@ -357,7 +433,7 @@ def expand_mapping(
     >>> expand_mapping({'age': 'foo', 'hpv': 'bar'})
     {('patient', '#', 'age'): 'foo', ('patient', '#', 'hpv_status'): 'bar'}
     """
-    colname_map = colname_map or _COLUMN_MAP.from_short
+    colname_map = colname_map or get_default_column_map().from_short
     expanded_map = {}
 
     for colname, func in short_map.items():
@@ -369,15 +445,14 @@ def expand_mapping(
 
 def main() -> None:
     """Run the module's doctests."""
-    # import doctest
-    # doctest.testmod()
+    from lydata.loader import load_dataset
 
-    df = pd.DataFrame({
-        ('patient', '#', 'age'): [61, 52, 73, 61],
-        ('patient', '#', 'hpv_status'): [True, False, None, True],
-        ('tumor', '1', 't_stage'): [2, 3, 1, 2],
-    })
-    df.lydata.stats()   # doctest: +NORMALIZE_WHITESPACE
+    ds = load_dataset(institution="isb")
+    mods = [
+        Modality("CT", 0.8, 0.8),
+        Modality("pathology", 1.0, 1.0),
+    ]
+    res = ds.lydata.combine(mods)
 
 
 if __name__ == "__main__":

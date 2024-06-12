@@ -2,7 +2,7 @@
 import fnmatch
 import os
 from collections.abc import Generator
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from io import TextIOWrapper
 from pathlib import Path
 from typing import Literal
