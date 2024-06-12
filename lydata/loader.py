@@ -2,7 +2,7 @@
 import fnmatch
 import os
 from collections.abc import Generator
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict
 from io import TextIOWrapper
 from pathlib import Path
 from typing import Literal
@@ -182,12 +182,14 @@ def available_datasets(
 ) -> Generator[DatasetSpec, None, None]:
     """Generate names of available datasets.
 
-    >>> [ds.name for ds in available_datasets(where='disk')]   # doctest: +NORMALIZE_WHITESPACE
-    ['2021-usz-oropharynx',
-     '2021-clb-oropharynx',
+    >>> avail_gen = available_datasets(where='disk')
+    >>> sorted([ds.name for ds in avail_gen])   # doctest: +NORMALIZE_WHITESPACE
+    ['2021-clb-oropharynx',
+     '2021-usz-oropharynx',
      '2023-clb-multisite',
      '2023-isb-multisite']
-    >>> [ds.name for ds in available_datasets(where='github')]   # doctest: +NORMALIZE_WHITESPACE
+    >>> avail_gen = available_datasets(where='github')
+    >>> sorted([ds.name for ds in avail_gen])   # doctest: +NORMALIZE_WHITESPACE
     ['2021-clb-oropharynx',
      '2021-usz-oropharynx',
      '2023-clb-multisite',
@@ -209,7 +211,9 @@ def load_datasets(
 ) -> Generator[pd.DataFrame, None, None]:
     """Load matching datasets from the disk."""
     for dataset_spec in available_datasets(year, institution, subsite):
-        yield dataset_spec.load(**load_kwargs)
+        dataset = dataset_spec.load(**load_kwargs)
+        dataset.attrs.update(asdict(dataset_spec))
+        yield dataset
 
 
 def load_dataset(
@@ -218,7 +222,19 @@ def load_dataset(
     subsite: str = "*",
     **load_kwargs,
 ) -> pd.DataFrame:
-    """Load the first matching dataset from the disk."""
+    """Load the first matching dataset from the disk.
+
+    Note that datasets loaded (or fetched) with this function will have the
+    dataset specification stored in the ``attrs`` attribute. See below for an
+    example of how to access the dataset specification.
+
+    >>> ds = load_dataset(year=2021, institution='clb', subsite='oropharynx')
+    >>> ds.attrs["year"]
+    '2021'
+    >>> spec_from_ds = DatasetSpec(**ds.attrs)
+    >>> spec_from_ds.name
+    '2021-clb-oropharynx'
+    """
     return next(load_datasets(year, institution, subsite, **load_kwargs))
 
 
@@ -230,7 +246,9 @@ def fetch_datasets(
 ) -> Generator[pd.DataFrame, None, None]:
     """Fetch matching datasets from the web."""
     for dataset_spec in available_datasets(year, institution, subsite):
-        yield dataset_spec.fetch(**load_kwargs)
+        dataset = dataset_spec.fetch(**load_kwargs)
+        dataset.attrs.update(asdict(dataset_spec))
+        yield dataset
 
 
 def fetch_dataset(
@@ -241,3 +259,21 @@ def fetch_dataset(
 ) -> pd.DataFrame:
     """Fetch the first matching dataset from the web."""
     return next(fetch_datasets(year, institution, subsite, **load_kwargs))
+
+
+def join_datasets(
+    year: int | str = "*",
+    institution: str = "*",
+    subsite: str = "*",
+    method: Literal["fetch", "load"] = "load",
+    **load_or_fetch_kwargs,
+) -> pd.DataFrame:
+    """Join matching datasets from the disk."""
+    if method == "fetch":
+        gen = fetch_datasets(year, institution, subsite, **load_or_fetch_kwargs)
+    elif method == "load":
+        gen = load_datasets(year, institution, subsite, **load_or_fetch_kwargs)
+    else:
+        raise ValueError(f"Unknown method: {method}")
+
+    return pd.concat(list(gen), axis="index", ignore_index=True)
