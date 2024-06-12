@@ -56,7 +56,7 @@ def get_default_column_map() -> _ColumnMap:
 
 @dataclass
 class Modality:
-    """Diagnostic modaltiy storing sensitivity and specificity."""
+    """Diagnostic modality storing sensitivity and specificity."""
 
     name: str
     sens: float
@@ -86,8 +86,7 @@ def get_default_modalities() -> list[Modality]:
 
 def main() -> None:
     """Run the main function."""
-    for col in get_default_column_map():
-        print(col)
+    ...
 
 
 if __name__ == "__main__":

@@ -228,6 +228,84 @@ class QueryPortion:
         return self.match / self.total
 
 
+def align_diagnoses(
+    dataset: pd.DataFrame,
+    modalities: list[str],
+) -> list[pd.DataFrame]:
+    """Align columns of specified modalities in ``dataset``."""
+    diagnosis_stack = []
+    for modality in modalities:
+        this = dataset[modality].copy().drop(columns=["info"])
+
+        for i, other in enumerate(diagnosis_stack):
+            this, other = this.align(other, join="outer")
+            diagnosis_stack[i] = other
+
+        diagnosis_stack.append(this)
+
+    return diagnosis_stack
+
+
+def is_false(
+    obs: np.ndarray,
+    false_pos_probs: np.ndarray,
+    true_neg_probs: np.ndarray,
+) -> float:
+    """Compute probability of ``False``, given ``obs``."""
+    false_llhs = np.where(obs, false_pos_probs, true_neg_probs)
+    return np.prod(np.where(pd.isna(false_llhs), 1., false_llhs))
+
+
+def is_true(
+    obs: np.ndarray,
+    true_pos_probs: np.ndarray,
+    false_neg_probs: np.ndarray,
+) -> float:
+    """Compute probability of ``True``, given ``obs``."""
+    true_llhs = np.where(obs, true_pos_probs, false_neg_probs)
+    return np.prod(np.where(pd.isna(true_llhs), 1., true_llhs))
+
+
+def _max_llh(
+    diagnoses: np.ndarray,
+    sensitivities: np.ndarray,
+    specificities: np.ndarray,
+) -> bool:
+    """Compute the most likely diagnosis based on all ``diagnoses``.
+
+    >>> diagnoses = np.array([True, False, np.nan, None])
+    >>> sensitivities = np.array([0.9, 0.7, 0.7, 0.7])
+    >>> specificities = np.array([0.9, 0.7, 0.7, 0.7])
+    >>> _max_llh(diagnoses, sensitivities, specificities)
+    True
+    >>> diagnoses = np.array([True, False, False, False])
+    >>> _max_llh(diagnoses, sensitivities, specificities)
+    False
+    """
+    healthy_llh = is_false(diagnoses, 1 - specificities, specificities)
+    involved_llhs = is_true(diagnoses, sensitivities, 1 - sensitivities)
+    return healthy_llh < involved_llhs
+
+
+def expand_mapping(
+    short_map: dict[str, Any],
+    colname_map: dict[str | tuple[str, str, str], Any] | None = None,
+) -> dict[tuple[str, str, str], Any]:
+    """Expand the column map to full column names.
+
+    >>> expand_mapping({'age': 'foo', 'hpv': 'bar'})
+    {('patient', '#', 'age'): 'foo', ('patient', '#', 'hpv_status'): 'bar'}
+    """
+    colname_map = colname_map or get_default_column_map().from_short
+    expanded_map = {}
+
+    for colname, func in short_map.items():
+        expanded_colname = getattr(colname_map.get(colname), "long", colname)
+        expanded_map[expanded_colname] = func
+
+    return expanded_map
+
+
 AggFuncType = dict[str | tuple[str, str, str], Callable[[pd.Series], pd.Series]]
 
 @pd_ext.register_dataframe_accessor("lydata")
@@ -357,19 +435,9 @@ class LydataAccessor:
     ) -> pd.DataFrame:
         """Combine diagnoses of ``modalities`` using ``method``."""
         modalities = modalities or get_default_modalities()
-
-        diagnosis_stack = []
-        for modality in modalities:
-            this = self._obj[modality.name].copy().drop(columns=["info"])
-
-            for i, other in enumerate(diagnosis_stack):
-                this, other = this.align(other, join="outer")
-                diagnosis_stack[i] = other
-
-            diagnosis_stack.append(this)
-
-        columns = this.columns
-        diagnosis_stack = np.array(diagnosis_stack)
+        diagnosis_stack = align_diagnoses(self._obj, [mod.name for mod in modalities])
+        columns = diagnosis_stack[0].columns
+        diagnosis_stack = np.array([diagnosis_stack])
 
         if method == "max_llh":
             result = np.apply_along_axis(
@@ -383,76 +451,9 @@ class LydataAccessor:
         return pd.DataFrame(result, columns=columns)
 
 
-def _max_llh(
-    diagnoses: np.ndarray,
-    sensitivities: np.ndarray,
-    specificities: np.ndarray,
-) -> bool:
-    """Compute the most likely diagnosis based on all ``diagnoses``.
-
-    >>> diagnoses = np.array([True, False, np.nan, None])
-    >>> sensitivities = np.array([0.9, 0.7, 0.7, 0.7])
-    >>> specificities = np.array([0.9, 0.7, 0.7, 0.7])
-    >>> _max_llh(diagnoses, sensitivities, specificities)
-    True
-    >>> diagnoses = np.array([True, False, False, False])
-    >>> _max_llh(diagnoses, sensitivities, specificities)
-    False
-    """
-    healthy_llh = is_false(diagnoses, 1 - specificities, specificities)
-    involved_llhs = is_true(diagnoses, sensitivities, 1 - sensitivities)
-    return healthy_llh < involved_llhs
-
-
-def is_false(
-    obs: np.ndarray,
-    false_pos_probs: np.ndarray,
-    true_neg_probs: np.ndarray,
-) -> float:
-    """Compute probability of ``False``, given ``obs``."""
-    false_llhs = np.where(obs, false_pos_probs, true_neg_probs)
-    return np.prod(np.where(pd.isna(false_llhs), 1., false_llhs))
-
-
-def is_true(
-    obs: np.ndarray,
-    true_pos_probs: np.ndarray,
-    false_neg_probs: np.ndarray,
-) -> float:
-    """Compute probability of ``True``, given ``obs``."""
-    true_llhs = np.where(obs, true_pos_probs, false_neg_probs)
-    return np.prod(np.where(pd.isna(true_llhs), 1., true_llhs))
-
-
-def expand_mapping(
-    short_map: dict[str, Any],
-    colname_map: dict[str | tuple[str, str, str], Any] | None = None,
-) -> dict[tuple[str, str, str], Any]:
-    """Expand the column map to full column names.
-
-    >>> expand_mapping({'age': 'foo', 'hpv': 'bar'})
-    {('patient', '#', 'age'): 'foo', ('patient', '#', 'hpv_status'): 'bar'}
-    """
-    colname_map = colname_map or get_default_column_map().from_short
-    expanded_map = {}
-
-    for colname, func in short_map.items():
-        expanded_colname = getattr(colname_map.get(colname), "long", colname)
-        expanded_map[expanded_colname] = func
-
-    return expanded_map
-
-
 def main() -> None:
-    """Run the module's doctests."""
-    from lydata.loader import load_dataset
-
-    ds = load_dataset(institution="isb")
-    mods = [
-        Modality("CT", 0.8, 0.8),
-        Modality("pathology", 1.0, 1.0),
-    ]
-    res = ds.lydata.combine(mods)
+    """Run main function."""
+    ...
 
 
 if __name__ == "__main__":
