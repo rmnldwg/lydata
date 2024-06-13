@@ -9,7 +9,11 @@ import numpy as np
 import pandas as pd
 import pandas.api.extensions as pd_ext
 
-from lydata.utils import Modality, get_default_column_map, get_default_modalities
+from lydata.utils import (
+    Modality,
+    get_default_column_map,
+    get_default_modalities,
+)
 from lydata.validator import construct_schema
 
 

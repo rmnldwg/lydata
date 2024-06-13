@@ -7,7 +7,6 @@
 
 This folder contains the detailed patterns of lymphatic progression of 263 patients with squamous cell carcinomas (SCCs) in the oropharynx, treated at the Centre Léon Bérard (CLB) between 2014 and 2018.
 
-
 ## Table of Contents
 
 - [Cohort Characteristics](#cohort-characteristics)
@@ -19,41 +18,40 @@ This folder contains the detailed patterns of lymphatic progression of 263 patie
 - [Mapping Documentation](#mapping)
 - [References](#references)
 
-
 <a id="cohort-characteristics"></a>
+
 ## Cohort Characteristics
 
 Below we show some figures that aim to coarsely characterize the patient cohort in this directory.
 
 | ![age distribution](figures/age_and_sex.png)                               |
 | ---------------------------------------------------------------------------- |
-| **Figure 1:** _Distribution over age, stratified by sex and smoking status._ |
-
+| **Figure 1:** *Distribution over age, stratified by sex and smoking status.* |
 
 | ![T-category distribution](figures/t_category.png)                         | ![subsite distribution](figures/subsite.png)           |
 | ---------------------------------------------------------------------------- | -------------------------------------------------------- |
-| **Figure 2:** _Distribution over age, stratified by sex and smoking status._ | **Figure 3:** _Distribution over primary tumor subsite._ |
-
+| **Figure 2:** *Distribution over age, stratified by sex and smoking status.* | **Figure 3:** *Distribution over primary tumor subsite.* |
 
 <a id="curation"></a>
+
 ## Curation
 
 This is detailed in their publication [[1]](#1) and a we are planning to submit a manuscript describing to the data the *Data in Brief* journal.
 
-
 <a id="online-interface"></a>
+
 ## Online Interface
 
-We provide a user-friendly and intuitive graphical user interface to view the dataset, which is available at https://lyprox.org/. The GUI has two main functionalities: the patient list and the dashboard. The patient list allows for viewing the characteristics of a patient, corresponding to one row of the csv file, in a visually appealing and intuitive way. The dashboard allows for filtering of the dataset. For example, the user may select all patients with primary tumors extending over the mid-sagittal plane with involvement of ipsilateral level III. The dashboard will then display the number or percentage of patients with metastases in each of the other LNLs.
-
+We provide a user-friendly and intuitive graphical user interface to view the dataset, which is available at <https://lyprox.org/>. The GUI has two main functionalities: the patient list and the dashboard. The patient list allows for viewing the characteristics of a patient, corresponding to one row of the csv file, in a visually appealing and intuitive way. The dashboard allows for filtering of the dataset. For example, the user may select all patients with primary tumors extending over the mid-sagittal plane with involvement of ipsilateral level III. The dashboard will then display the number or percentage of patients with metastases in each of the other LNLs.
 
 <a id="data-description"></a>
+
 ## Data Description
 
 The data is provided as a CSV-table containing one row for each of the 263 patients. The table has a header with three levels that describe the columns. Below we explain each column in the form of a list with three levels. So, for example, list entry 1.i.g refers to a column with the three-level header `patient | # | hpv_status` and underneath it tha patients' HPV status is listed.
 
-
 <a id="documentation-of-columns"></a>
+
 ## Documentation of Columns
 
 1. **`patient:`** General information about the patient’s condition can be found under this top-level header.
@@ -113,9 +111,8 @@ The data is provided as a CSV-table containing one row for each of the 263 patie
         1. **`all:`** In analogy to the ipsilateral LNLs, this column states the total number of metastatic lymph nodes found in all contralateral LNLs.
         2. **`III:`** And this column reports the number of metastatic lymph nodes found in level III only.
 
-
-
 <a id="raw-data"></a>
+
 ## Raw Data
 
 We also provide the raw data as a CSV file that was used to collect the data in the first place. Because this dataset was collected in France, the columns in the raw data file are in French. Therefore, we provide a legend on some of the columns in the `raw.csv` table:
@@ -123,7 +120,7 @@ We also provide the raw data as a CSV file that was used to collect the data in 
 | Column Name                   | Explanation                                                                                                                                                     |
 | :---------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Num patient                   | ID of patient                                                                                                                                                   |
-| DDN                           | date of birth: dd/mm/aaaa. :warning: _This column has been deleted for privacy reasons._                                                                        |
+| DDN                           | date of birth: dd/mm/aaaa. :warning: *This column has been deleted for privacy reasons.*                                                                        |
 | date d'origine                | date of diagnosis: dd/mm/aaaa                                                                                                                                   |
 | age                           | age at diagnosis in years                                                                                                                                       |
 | sexe                          | sex: 0 (male), 1 (female)                                                                                                                                       |
@@ -189,12 +186,12 @@ We also provide the raw data as a CSV file that was used to collect the data in 
 <a id="mapping"></a>
 
 ## <kbd>module</kbd> `mapping`
+
 Map the `raw.csv` data from the 2021-clb-oropharynx cohort to the `data.csv` file.
 
 This module defines how the command `lyscripts data lyproxify` (see [here](rmnldwg.github.io/lyscripts) for the documentation of the `lyscripts` module) should handle the `raw.csv` data that was extracted at the Inselspital Bern in order to transform it into a [LyProX](https://lyprox.org)-compatible `data.csv` file.
 
 The most important definitions in here are the list `EXCLUDE` and the dictionary `COLUMN_MAP` that defines how to construct the new columns based on the `raw.csv` data. They are described in more detail below:
-
 
 ---
 
@@ -214,7 +211,6 @@ Essentially, a row is excluded, if for that row `check_function(raw_data[column_
 
 More information can be found in the [documentation](https://rmnldwg.github.io/lyscripts/lyscripts/data/lyproxify.html#exclude_patients) of the `lyproxify` function.
 
-
 ---
 
 ### <kbd>global</kbd> `COLUMN_MAP`
@@ -227,11 +223,11 @@ It contains a tree-like structure that is human-readable and mimics the tree of 
 
 It also contains a `__doc__` key for every sub-dictionary that describes what the respective column is about. This is used to generate the documentation for the `README.md` file of this data.
 
-
 ---
 
 **Global Variables**
 ---------------
+
 - **EXCLUDE**
 - **COLUMN_MAP**
 
@@ -245,7 +241,6 @@ robust_date(entry, *_args, **_kwargs)
 
 Robustly parse a date string.
 
-
 ---
 
 ### <kbd>function</kbd> `robust_int`
@@ -255,7 +250,6 @@ robust_int(entry, *_args, **_kwargs)
 ```
 
 Robustly convert a string to int, if possible.
-
 
 ---
 
@@ -267,7 +261,6 @@ get_subsite(entry, *_args, **_kwargs)
 
 Get human-readable subsite from ICD-10 code.
 
-
 ---
 
 ### <kbd>function</kbd> `parse_pathology`
@@ -278,7 +271,6 @@ parse_pathology(entry, *_args, **_kwargs)
 
 Transform number of positive nodes to `True`, `False` or `None`.
 
-
 ---
 
 ### <kbd>function</kbd> `strip_letters`
@@ -288,10 +280,6 @@ strip_letters(entry, *_args, **_kwargs)
 ```
 
 Remove letters following a number.
-
-
-
-
 
 ## References
 

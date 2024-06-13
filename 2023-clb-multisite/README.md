@@ -9,7 +9,6 @@ The `raw.csv` data does contain patients which are duplicates of the patient rec
 
 [Centre Léon Bérard]: https://www.centreleonberard.fr/en
 
-
 ## Table of Contents
 
 - [Cohort Characteristics](#cohort-characteristics)
@@ -19,41 +18,40 @@ The `raw.csv` data does contain patients which are duplicates of the patient rec
 - [Documentation of Columns](#documentation-of-columns)
 - [Mapping Documentation](#mapping)
 
-
 <a id="cohort-characteristics"></a>
+
 ## Cohort Characteristics
 
 Below we show some figures that aim to coarsely characterize the patient cohort in this directory.
 
 | ![age distribution](figures/age_and_sex.png)                               |
 | ---------------------------------------------------------------------------- |
-| **Figure 1:** _Distribution over age, stratified by sex and smoking status._ |
-
+| **Figure 1:** *Distribution over age, stratified by sex and smoking status.* |
 
 | ![T-category distribution](figures/t_category.png)                         | ![subsite distribution](figures/subsite.png)           |
 | ---------------------------------------------------------------------------- | -------------------------------------------------------- |
-| **Figure 2:** _Distribution over age, stratified by sex and smoking status._ | **Figure 3:** _Distribution over primary tumor subsite._ |
-
+| **Figure 2:** *Distribution over age, stratified by sex and smoking status.* | **Figure 3:** *Distribution over primary tumor subsite.* |
 
 <a id="curation"></a>
+
 ## Curation
 
 Curation and inclusion criteria will be published in a separate *Data in Brief* article that is currently under review.
 
-
 <a id="online-interface"></a>
+
 ## Online Interface
 
-We provide a user-friendly and intuitive graphical user interface to view the dataset, which is available at https://lyprox.org/. The GUI has two main functionalities: the patient list and the dashboard. The patient list allows for viewing the characteristics of a patient, corresponding to one row of the csv file, in a visually appealing and intuitive way. The dashboard allows for filtering of the dataset. For example, the user may select all patients with primary tumors extending over the mid-sagittal plane with involvement of ipsilateral level III. The dashboard will then display the number or percentage of patients with metastases in each of the other LNLs.
-
+We provide a user-friendly and intuitive graphical user interface to view the dataset, which is available at <https://lyprox.org/>. The GUI has two main functionalities: the patient list and the dashboard. The patient list allows for viewing the characteristics of a patient, corresponding to one row of the csv file, in a visually appealing and intuitive way. The dashboard allows for filtering of the dataset. For example, the user may select all patients with primary tumors extending over the mid-sagittal plane with involvement of ipsilateral level III. The dashboard will then display the number or percentage of patients with metastases in each of the other LNLs.
 
 <a id="data-description"></a>
+
 ## Data Description
 
 The data is provided as a CSV-table containing one row for each of the 373 patients. The table has a header with three levels that describe the columns. Below we explain each column in the form of a list with three levels. So, for example, list entry 1.i.g refers to a column with the three-level header `patient | # | alcohol_abuse` and underneath it we report each patient's history of alcohol abuse.
 
-
 <a id="documentation-of-columns"></a>
+
 ## Documentation of Columns
 
 1. **`patient:`** This top-level header contains general patient information.
@@ -114,19 +112,17 @@ The data is provided as a CSV-table containing one row for each of the 373 patie
         1. **`Ia:`** And this column reports the number of metastatic lymph nodes in contralateral LNL Ia.
         2. **`Ib_to_III:`** This column reports the number of metastatic dissected lymph nodes in contralateral LNL Ib to III. This column exists for convenience because we created a figure based on this.
 
-
 ---
-
 
 <a id="mapping"></a>
 
 ## <kbd>module</kbd> `mapping`
+
 Map the `raw.csv` data from the 2023-clb-multisite cohort to the `data.csv` file.
 
 This module defines how the command `lyscripts data lyproxify` (see [here](rmnldwg.github.io/lyscripts) for the documentation of the `lyscripts` module) should handle the `raw.csv` data that was extracted at the Centre Léon Bérard in order to transform it into a [LyProX](https://lyprox.org)-compatible `data.csv` file.
 
 The most important definitions in here are the list `EXCLUDE` and the dictionary `COLUMN_MAP` that defines how to construct the new columns based on the `raw.csv` data. They are described in more detail below:
-
 
 ---
 
@@ -146,7 +142,6 @@ Essentially, a row is excluded, if for that row `check_function(raw_data[column_
 
 More information can be found in the [documentation](https://rmnldwg.github.io/lyscripts/lyscripts/data/lyproxify.html#exclude_patients) of the `lyproxify` function.
 
-
 ---
 
 ### <kbd>global</kbd> `COLUMN_MAP`
@@ -159,11 +154,11 @@ It contains a tree-like structure that is human-readable and mimics the tree of 
 
 It also contains a `__doc__` key for every sub-dictionary that describes what the respective column is about. This is used to generate the documentation for the `README.md` file of this data.
 
-
 ---
 
 **Global Variables**
 ---------------
+
 - **TNM_COLS**
 - **IB_TO_III_DISSECTED**
 - **EXCLUDE**
@@ -179,7 +174,6 @@ smpl_date(entry: str) → str
 
 Parse date from string.
 
-
 ---
 
 ### <kbd>function</kbd> `smpl_diagnose`
@@ -189,7 +183,6 @@ smpl_diagnose(entry: str | int, *_args, **_kwargs) → bool
 ```
 
 Parse the diagnosis.
-
 
 ---
 
@@ -201,7 +194,6 @@ robust(func: collections.abc.Callable) → Optional[Any]
 
 Wrapper that makes any type-conversion function 'robust' by simply returning `None` whenever any exception is thrown.
 
-
 ---
 
 ### <kbd>function</kbd> `get_subsite`
@@ -211,7 +203,6 @@ get_subsite(entry: str, *_args, **_kwargs) → str | None
 ```
 
 Get human-readable subsite from ICD-10 code.
-
 
 ---
 
@@ -223,7 +214,6 @@ parse_pathology(entry, *_args, **_kwargs) → bool | None
 
 Transform number of positive nodes to `True`, `False` or `None`.
 
-
 ---
 
 ### <kbd>function</kbd> `set_diagnostic_consensus`
@@ -234,8 +224,7 @@ set_diagnostic_consensus(entry, *_args, **_kwargs)
 
 Return `False`, meaning 'healthy', when no entry about a resected LNL is available or when the pathology report says it was healhty. This is a hack to tackle the issue described here:
 
-https://github.com/rmnldwg/lyprox/issues/92
-
+<https://github.com/rmnldwg/lyprox/issues/92>
 
 ---
 
@@ -247,7 +236,6 @@ extract_hpv(value: int | None, *_args, **_kwargs) → bool | None
 
 Translate the HPV value to a boolean.
 
-
 ---
 
 ### <kbd>function</kbd> `strip_letters`
@@ -257,7 +245,6 @@ strip_letters(entry: str, *_args, **_kwargs) → int
 ```
 
 Remove letters following a number.
-
 
 ---
 
@@ -269,7 +256,6 @@ clean_cat(cat: str) → int
 
 Extract T or N category as integer from the respective string. I.e., turn 'pN2+' into 2.
 
-
 ---
 
 ### <kbd>function</kbd> `get_tnm_info`
@@ -279,7 +265,6 @@ get_tnm_info(ct7, cn7, pt7, pn7, ct8, cn8, pt8, pn8) → tuple[int, int, int, st
 ```
 
 Determine the TNM edition used based on which versions are available for T and/or N category.
-
 
 ---
 
@@ -291,7 +276,6 @@ get_t_category(*args, **_kwargs) → int
 
 Extract the T-category.
 
-
 ---
 
 ### <kbd>function</kbd> `get_n_category`
@@ -301,7 +285,6 @@ get_n_category(*args, **_kwargs) → int
 ```
 
 Extract the N-category.
-
 
 ---
 
@@ -313,7 +296,6 @@ get_tnm_version(*args, **_kwargs) → int
 
 Extract the TNM version.
 
-
 ---
 
 ### <kbd>function</kbd> `get_tnm_prefix`
@@ -323,7 +305,6 @@ get_tnm_prefix(*args, **_kwargs) → str
 ```
 
 Extract the TNM prefix.
-
 
 ---
 
@@ -336,7 +317,6 @@ check_excluded(column: pandas.core.series.Series) → Index
 Check if a patient/row is excluded based on the content of a `column`.
 
 For the 2022 CLB multisite dataset this is the case when the first column with the three-level header `("Bauwens", "Database", "0_lvl_2")` is not empty or does not contain the character `'n'`.
-
 
 ---
 

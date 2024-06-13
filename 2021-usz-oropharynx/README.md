@@ -14,35 +14,29 @@ You can find here
 * a jupyter notebook `figures.ipynb` for rendering figures visualizing different aspects of the data
 * the folder `figures` containing the already rendered figures which we also used in our publication for *Radiation & Oncology* [[1]](#1).
 
-
 ## Cohort Characteristics
 
 Below we show some figures that aim to coarsely characterize the patient cohort in this directory.
 
 | ![age distribution](figures/age_and_sex.png)                               |
 | ---------------------------------------------------------------------------- |
-| **Figure 1:** _Distribution over age, stratified by sex and smoking status._ |
-
+| **Figure 1:** *Distribution over age, stratified by sex and smoking status.* |
 
 | ![T-category distribution](figures/t_category.png)                         | ![subsite distribution](figures/subsite.png)           |
 | ---------------------------------------------------------------------------- | -------------------------------------------------------- |
-| **Figure 2:** _Distribution over age, stratified by sex and smoking status._ | **Figure 3:** _Distribution over primary tumor subsite._ |
-
+| **Figure 2:** *Distribution over age, stratified by sex and smoking status.* | **Figure 3:** *Distribution over primary tumor subsite.* |
 
 ## Curation
 
 We have detailed inclusion criteria and what was considered lymphatic involvement in our paper that has been published in the journal of [Radiotherapy & Oncology] (a preprint is also available on [medRxiv]). The data of this repository is also - and in somewhat more detail - described and provided in its own publication in [Data in Brief], enabling anyone to reuse and cite our dataset.
 
-
 ## Online Interface
 
-We provide a user-friendly and intuitive graphical user interface to view the dataset, which is available at https://2021-oropharynx.lyprox.org/. The GUI has two main functionalities: the patient list and the dashboard. The patient list allows for viewing the characteristics of a patient, corresponding to one row of the csv file, in a visually appealing and intuitive way. The dashboard allows for filtering of the dataset. For example, the user may select all patients with primary tumors extending over the mid-sagittal plane with involvement of ipsilateral level III. The dashboard will then display the number or percentage of patients with metastases in each of the other LNLs.
-
+We provide a user-friendly and intuitive graphical user interface to view the dataset, which is available at <https://2021-oropharynx.lyprox.org/>. The GUI has two main functionalities: the patient list and the dashboard. The patient list allows for viewing the characteristics of a patient, corresponding to one row of the csv file, in a visually appealing and intuitive way. The dashboard allows for filtering of the dataset. For example, the user may select all patients with primary tumors extending over the mid-sagittal plane with involvement of ipsilateral level III. The dashboard will then display the number or percentage of patients with metastases in each of the other LNLs.
 
 ## Description
 
 The data is provided as a CSV-table containing one row for each of the 287 patients. The table has a header with three levels that describe the columns. Below we explain each column in the form of a list with three levels. So, for example, list entry 1.i.g refers to a column with the three-level header `patient | # | hpv_status` and underneath it tha patients' HPV status is listed.
-
 
 ## Columns
 
@@ -78,7 +72,6 @@ The data is provided as a CSV-table containing one row for each of the 287 patie
     3. **`contra:`** Same as 3.ii but for the contralateral side of the patient’s neck
         1. **`<LNL>:`** same as under 3.ii.a
 
-
 ## References
 
 <a id="1">[1]</a>
@@ -100,7 +93,6 @@ Geneva: World Health Organization, 2004.
 A. G. Fritz, Ed.,
 "International classification of diseases for oncology: ICD-O, 3rd ed."
 Geneva: World Health Organization, 2000.
-
 
 [Radiotherapy & Oncology]: https://doi.org/10.1016/j.radonc.2022.01.035
 [Data in Brief]: https://doi.org/10.1016/j.dib.2022.108345

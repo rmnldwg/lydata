@@ -69,3 +69,9 @@ ensure_newline_before_comments = true
 
 [tool.pycln]
 all = true
+
+[tool.markdownlint]
+MD003 = false
+MD013 = false
+MD033 = false
+MD041 = false
