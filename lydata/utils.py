@@ -28,6 +28,19 @@ class _ColumnMap:
     from_short: dict[str, _ColumnSpec]
     from_long: dict[tuple[str, str, str], _ColumnSpec]
 
+    def __post_init__(self) -> None:
+        """Check ``from_short`` and ``from_long`` contain same ``_ColumnSpec``."""
+        for left, right in zip(
+            self.from_short.values(),
+            self.from_long.values(),
+            strict=True
+        ):
+            if left != right:
+                raise ValueError(
+                    "`from_short` and `from_long` contain different "
+                    "`_ColumnSpec` instances"
+                )
+
     @classmethod
     def from_list(cls, columns: list[_ColumnSpec]) -> "_ColumnMap":
         """Create a ColumnMap from a list of ColumnSpecs."""

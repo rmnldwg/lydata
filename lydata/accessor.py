@@ -47,14 +47,14 @@ class Q(CombineQMixin):
         "<=": lambda series, value: series <= value,
         ">":  lambda series, value: series >  value,
         ">=": lambda series, value: series >= value,
-        "!=": lambda series, value: series != value,    # same as ~Q(series, "==", value)
+        "!=": lambda series, value: series != value,    # same as ~Q("col", "==", value)
         "in": lambda series, value: series.isin(value), # value is a list
     }
 
     def __init__(
         self,
         column: str,
-        operator: Literal["==", "<", "<=", ">", ">="],
+        operator: Literal["==", "<", "<=", ">", ">=", "!=", "in"],
         value: Any,
     ) -> None:
         """Create query object that can compare a ``column`` with a ``value``."""
@@ -250,44 +250,103 @@ def align_diagnoses(
     return diagnosis_stack
 
 
-def is_false(
+def create_raising_func(method: str):
+    """Raise ValueError for wrong ``method``."""
+    def raise_value_err(*args, **kwargs):
+        raise ValueError(f"Unknown method {method}")
+
+    return raise_value_err
+
+
+def false_estimate(
     obs: np.ndarray,
     false_pos_probs: np.ndarray,
     true_neg_probs: np.ndarray,
+    method: Literal["prod", "max"],
 ) -> float:
-    """Compute probability of ``False``, given ``obs``."""
+    """Compute estimate of ``False``, given ``obs``.
+
+    >>> false_estimate([True, False], [0.1, 0.6], [0.4, 0.7], method="whatever")
+    Traceback (most recent call last):
+        ...
+    ValueError: Unknown method whatever
+    """
     false_llhs = np.where(obs, false_pos_probs, true_neg_probs)
-    return np.prod(np.where(pd.isna(false_llhs), 1., false_llhs))
+    nans_masked = np.where(
+        pd.isna(obs),
+        1. if method == "prod" else 0.,
+        false_llhs,
+    )
+    method = getattr(np, method, create_raising_func(method))
+    return method(nans_masked)
 
 
-def is_true(
+def true_estimate(
     obs: np.ndarray,
     true_pos_probs: np.ndarray,
     false_neg_probs: np.ndarray,
+    method: Literal["prod", "max"],
 ) -> float:
-    """Compute probability of ``True``, given ``obs``."""
+    """Compute estimate of ``True``, given ``obs``.
+
+    >>> obs = [True, False, np.nan]
+    >>> true_pos_probs = [0.8, 0.6, 0.9]
+    >>> false_neg_probs = [0.6, 0.7, 0.9]
+    >>> true_estimate(obs, true_pos_probs, false_neg_probs, method="max")
+    0.8
+    >>> tmp = true_estimate(obs, true_pos_probs, false_neg_probs, method="prod")
+    >>> np.isclose(tmp, 0.56)
+    True
+    """
     true_llhs = np.where(obs, true_pos_probs, false_neg_probs)
-    return np.prod(np.where(pd.isna(true_llhs), 1., true_llhs))
+    nans_masked = np.where(
+        pd.isna(obs),
+        1. if method == "prod" else 0.,
+        true_llhs,
+    )
+    method = getattr(np, method, create_raising_func(method))
+    return method(nans_masked)
 
 
-def _max_llh(
-    diagnoses: np.ndarray,
-    sensitivities: np.ndarray,
+def max_likelihood(
+    obs: np.ndarray,
     specificities: np.ndarray,
+    sensitivities: np.ndarray,
 ) -> bool:
-    """Compute the most likely diagnosis based on all ``diagnoses``.
+    """Compute most likely true state based on all ``obs``.
 
-    >>> diagnoses = np.array([True, False, np.nan, None])
+    >>> obs = np.array([True, False, np.nan, None])
     >>> sensitivities = np.array([0.9, 0.7, 0.7, 0.7])
     >>> specificities = np.array([0.9, 0.7, 0.7, 0.7])
-    >>> _max_llh(diagnoses, sensitivities, specificities)
+    >>> max_likelihood(obs, sensitivities, specificities)
     True
-    >>> diagnoses = np.array([True, False, False, False])
-    >>> _max_llh(diagnoses, sensitivities, specificities)
+    >>> obs = np.array([True, False, False, False])
+    >>> max_likelihood(obs, sensitivities, specificities)
     False
     """
-    healthy_llh = is_false(diagnoses, 1 - specificities, specificities)
-    involved_llhs = is_true(diagnoses, sensitivities, 1 - sensitivities)
+    healthy_llh = false_estimate(obs, 1 - specificities, specificities, method="prod")
+    involved_llhs = true_estimate(obs, sensitivities, 1 - sensitivities, method="prod")
+    return healthy_llh < involved_llhs
+
+
+def rank_trustworthy(
+    obs: np.ndarray,
+    specificities: np.ndarray,
+    sensitivities: np.ndarray,
+) -> bool:
+    """Estimate true state based on most trustworthy value in ``obs``.
+
+    >>> obs = np.array([True, False, np.nan, None])
+    >>> sensitivities = np.array([0.9, 0.7, 0.7, 0.7])
+    >>> specificities = np.array([0.9, 0.7, 0.7, 0.7])
+    >>> rank_trustworthy(obs, sensitivities, specificities)
+    True
+    >>> obs = np.array([True, False, False, False])
+    >>> rank_trustworthy(obs, sensitivities, specificities)
+    True
+    """
+    healthy_llh = false_estimate(obs, 1 - specificities, specificities, method="max")
+    involved_llhs = true_estimate(obs, sensitivities, 1 - sensitivities, method="max")
     return healthy_llh < involved_llhs
 
 
@@ -365,11 +424,7 @@ class LydataAccessor:
 
     def validate(self, modalities: list[str] | None = None) -> pd.DataFrame:
         """Validate the DataFrame against the lydata schema."""
-        if modalities is None:
-            modalities = self._obj.columns.get_level_values(0).unique().to_list()
-            modalities.remove("patient")
-            modalities.remove("tumor")
-
+        modalities = modalities or [m.name for m in get_default_modalities()]
         lydata_schema = construct_schema(modalities=modalities)
         return lydata_schema.validate(self._obj)
 
@@ -435,7 +490,7 @@ class LydataAccessor:
     def combine(
         self,
         modalities: list[Modality] | None = None,
-        method: Literal["max_llh", "rank", "AND", "OR"] = "max_llh",
+        method: Literal["max_llh", "rank"] = "max_llh",
     ) -> pd.DataFrame:
         """Combine diagnoses of ``modalities`` using ``method``."""
         modalities = modalities or get_default_modalities()
@@ -443,15 +498,14 @@ class LydataAccessor:
         columns = diagnosis_stack[0].columns
         diagnosis_stack = np.array([diagnosis_stack])
 
-        if method == "max_llh":
-            result = np.apply_along_axis(
-                func1d=_max_llh,
-                axis=0,
-                arr=diagnosis_stack,
-                sensitivities=np.array([mod.sens for mod in modalities]),
-                specificities=np.array([mod.spec for mod in modalities]),
-            )
-
+        funcs1d = {"max_llh": max_likelihood, "rank": rank_trustworthy}
+        result = np.apply_along_axis(
+            func1d=funcs1d[method],
+            axis=0,
+            arr=diagnosis_stack,
+            sensitivities=np.array([mod.sens for mod in modalities]),
+            specificities=np.array([mod.spec for mod in modalities]),
+        )
         return pd.DataFrame(result, columns=columns)
 
 
