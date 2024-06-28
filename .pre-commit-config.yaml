@@ -1,9 +1,12 @@
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.5.0
+  rev: v4.6.0
   hooks:
   - id: trailing-whitespace
   - id: end-of-file-fixer
+  - id: check-merge-conflict
+  - id: check-toml
+  - id: check-yaml
 - repo: https://github.com/hadialqattan/pycln
   rev: v2.4.0
   hooks:
@@ -16,7 +19,7 @@ repos:
     files: "\\.(py)$"
     args: [--settings-path=pyproject.toml]
 - repo: https://github.com/asottile/pyupgrade
-  rev: v3.15.2
+  rev: v3.16.0
   hooks:
   - id: pyupgrade
     args: [--py310-plus]
@@ -34,12 +37,12 @@ repos:
     - build       # changes of the build system or dependencies
     - change      # commit alters the implementation of an existing feature
     - chore       # technical or maintenance task not related to feature or user story
-    - ci          # edits to the cintinuous integration scripts/configuration
+    - ci          # edits to the continuous integration scripts/configuration
     - deprecate   # a feature or functionality will be deprecated
     - docs        # add, update of revise the documentation
     - feat        # a new feature was implemented (bump MINOR version)
     - fix         # an issue or bug has been fixed (bump PATCH version)
-    - perf        # performance improvements that do not alter existing behaviour
+    - perf        # performance improvements that do not alter existing behavior
     - refac       # update shuffles code around but does not alter functionality
     - remove      # a feature or functionality is removed
     - style       # source code is improved w.r.t. its code quality
