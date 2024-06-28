@@ -85,7 +85,11 @@ class Modality:
 
 
 def get_default_modalities() -> list[Modality]:
-    """Sensitivities and specificities of modalities. From de Bondt et al. (2007)."""
+    """Get defaults values for sensitivities and specificities of modalities.
+
+    Taken from [de Bondt et al. (2007)](https://doi.org/10.1016/j.ejrad.2007.02.037)
+    and [Kyzas et al. (2008)](https://doi.org/10.1093/jnci/djn125).
+    """
     return [
         Modality("CT", 0.76, 0.81),
         Modality("MRI", 0.63, 0.81),
