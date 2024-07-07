@@ -25,6 +25,35 @@ stages:
         - ${item.folder}/data.csv:
             cache: false
 
+  format-dates-insert-institution-and-remove-spaces:
+    desc: |
+      In the Vall d'Hebron dataset, dates are formatted as `dd/mm/YYYY`, which I will
+      change to `YYYY-mm-dd`.
+      Also, it contains the column `dataset`, which I will convert to `institution`
+      and replace all entries with the name of the hospital.
+      Next, the `hpv_status` column contains spaces instead of nothing when the
+      information is missing. This causes pandas to interpret all entries of that
+      column as strings instead of booleans.
+      Then, the A,B,C behind the N-stage is removed, as this cannot be parsed by LyProX
+      at the moment.
+      Furthermore, the 111th patient has `N VI` in the (MRI, ipsi, VII) column. I
+      assumed this should be FALSE. All this is fixed with a series of sed commands.
+      Finally, there are some occurences of `"C05,1"` instead of `C05.1`, which I will
+      replace.
+    cmd:
+      sed 's/\([0-9]\{2\}\)\/\([0-9]\{2\}\)\/\([0-9]\{4\}\)/\3-\2-\1/g' 2024-hvh-oropharynx/raw.csv |
+        sed 's/,dataset,/,institution,/g' |
+        sed "s/,2023_HVH_OROPHARYNX,/,Vall d'Hebron Barcelona Hospital,/g" |
+        sed 's/,\s,/,,/g' |
+        sed 's/,\([0-3]\)[A-C]*,/,\1,/g' |
+        sed 's/,N\sVI,/,FALSE,/g' |
+        sed 's/"C05,1"/C05.1/g' > 2024-hvh-oropharynx/data.csv
+    deps:
+      - 2024-hvh-oropharynx/raw.csv
+    outs:
+      - 2024-hvh-oropharynx/data.csv:
+          cache: false
+
   join:
     desc:
       Join together those datasets for which we want to create the showcase plot.
@@ -104,6 +133,7 @@ stages:
       - 2021-clb-oropharynx
       - 2023-clb-multisite
       - 2023-isb-multisite
+      - 2024-hvh-oropharynx
     do:
       deps:
         - scripts/t_category.py
@@ -117,6 +147,7 @@ stages:
       - 2021-clb-oropharynx
       - 2023-clb-multisite
       - 2023-isb-multisite
+      - 2024-hvh-oropharynx
     do:
       deps:
         - scripts/age_and_sex.py
@@ -130,6 +161,7 @@ stages:
       - 2021-clb-oropharynx
       - 2023-clb-multisite
       - 2023-isb-multisite
+      - 2024-hvh-oropharynx
     do:
       deps:
         - scripts/subsite.py

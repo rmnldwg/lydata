@@ -1,0 +1,11 @@
+numpy
+pandas
+matplotlib
+dvc
+jupyter
+jupyter-contrib-nbextensions
+icd10-cm
+lyscripts == 0.7.2
+lymph-model < 1
+lazydocs
+tueplots
