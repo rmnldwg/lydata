@@ -1,8 +1,8 @@
-# This CITATION.cff file was generated with cffinit.
-# Visit https://bit.ly/cffinit to generate yours today!
-
 cff-version: 1.2.0
-title: 2023 ISB Multisite
+title: "lyDATA: 2023 ISB Multisite"
+abstract: >-
+  Data about clinically and pathologically diagnosed lymphatic patterns of progression
+  from 332 patients treated at the Inselspital Bern between 2001 and 2018.
 message: >-
   If you use this dataset, please cite it using the metadata
   from this file.
@@ -15,6 +15,10 @@ authors:
     family-names: Elicin
     affiliation: Inselspital Bern
     orcid: 'https://orcid.org/0000-0002-6996-0646'
+  - given-names: Matthias
+    family-names: Dettmer
+    affiliation: University of Bern, Klinikum Stuttgart
+    orcid: 'https://orcid.org/0000-0003-0948-1392'
   - given-names: Roland
     family-names: Giger
     email: roland.giger@insel.ch
@@ -24,4 +28,9 @@ authors:
     family-names: Schubert
     affiliation: Inselspital Bern
 repository-code: 'https://github.com/rmnldwg/lyDATA/tree/main/2023-isb-multisite'
-license: MIT
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.10210423
+    description: "Zenodo indexed version of the dataset"
+license: CC BY-SA 4.0
+date-released: '2023-11-22'
