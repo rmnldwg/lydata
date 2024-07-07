@@ -34,31 +34,30 @@ We have published a paper about it in *Radiotherapy & Oncology* [[9]](#9) (a pre
 ### [:open_file_folder: 2021 CLB Oropharynx]
 
 [![Green Journal](https://img.shields.io/badge/Rad%20Onc-j.radonc.2021.01.028-3e6e0e)](https://doi.org/10.1016/j.radonc.2021.01.028)
+[![DiB badge](https://img.shields.io/badge/DiB-10.1016%2Fj.dib.2023.110020-orange)](https://doi.org/10.1016/j.dib.2023.110020)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10204085.svg)](https://doi.org/10.5281/zenodo.10204085)
 
 We are glad and thankful that the research group around Prof. Vincent Grégoire from the [Centre Léon Bérard] in Lyon (France) have joined our effort to create a database of lymphatic patterns of progression by providing us with the data underlying their publication [[6]](#6). If you use this data, don't forget to cite either said publication or use the `CITATION.cff` file inside the `2021-clb-oropharynx` folder, where the `data.csv` also resides and a description of the data named `README.md`.
-
-> [!WARNING]
-> The dataset in the form presented here has not yet been published in a peer-reviewed journal. It has, however, been submitted to *Data in Brief*. Until it has been accepted, this dataset may still change.
 
 [:open_file_folder: 2021 CLB Oropharynx]: https://github.com/rmnldwg/lyDATA/tree/main/2021-clb-oropharynx
 [Centre Léon Bérard]: https://www.centreleonberard.fr/en
 
 ### [:open_file_folder: 2023 ISB Multisite]
 
-As part of a collaboration with researchers from the [Inselspital Bern] (Switzerland) around Prof. Roland Giger, we are thankful and glad to be able to publish a large and exceptionally detailed dataset on lymphatic progression of HNSCC patients, assessed by pathology. In contrast to earlier datasets, this includes not only patients with oropharyngeal tumors, but also oral cavity, hypopharynx and larynx.
+[![DiB badge](https://img.shields.io/badge/DiB-10.1016%2Fj.dib.2023.110020-orange)](https://doi.org/10.1016/j.dib.2023.110020)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10210423.svg)](https://doi.org/10.5281/zenodo.10210423)
 
-> [!WARNING]
-> The dataset in the form presented here has not yet been published in a peer-reviewed journal. It has, however, been submitted to *Data in Brief* and parts of it are analyzed in a separate work under review. Until these papers have been accepted, this dataset may still change.
+As part of a collaboration with researchers from the [Inselspital Bern] (Switzerland) around Prof. Roland Giger, we are thankful and glad to be able to publish a large and exceptionally detailed dataset on lymphatic progression of HNSCC patients, assessed by pathology. In contrast to earlier datasets, this includes not only patients with oropharyngeal tumors, but also oral cavity, hypopharynx and larynx.
 
 [:open_file_folder: 2023 ISB Multisite]: https://github.com/rmnldwg/lyDATA/tree/main/2023-isb-multisite
 [Inselspital Bern]: https://www.insel.ch/de/
 
 ### [:open_file_folder: 2023 CLB Multisite]
 
-Completing the "2021 CLB Oropharynx" data table, these patient records detaul lymphatic involvement patterns in HNSCC patients with primary tumors beyond the oropharynx. Again, they are thankfully provided by researchers in Prof. Vincent Grégoire's group and the data was extracted at the [Centre Léon Bérard].
+[![DiB badge](https://img.shields.io/badge/DiB-10.1016%2Fj.dib.2023.110020-orange)](https://doi.org/10.1016/j.dib.2023.110020)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10210361.svg)](https://doi.org/10.5281/zenodo.10210361)
 
-> [!WARNING]
-> The dataset in the form presented here has not yet been published in a peer-reviewed journal. It has, however, been submitted to *Data in Brief* and parts of it are analyzed in a separate work under review. Until these papers have been accepted, this dataset may still change.
+Completing the "2021 CLB Oropharynx" data table, these patient records detaul lymphatic involvement patterns in HNSCC patients with primary tumors beyond the oropharynx. Again, they are thankfully provided by researchers in Prof. Vincent Grégoire's group and the data was extracted at the [Centre Léon Bérard].
 
 [:open_file_folder: 2023 CLB Multisite]: https://github.com/rmnldwg/lyDATA/tree/main/2023-clb-multisite
 

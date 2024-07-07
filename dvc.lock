@@ -23,8 +23,8 @@ stages:
     deps:
     - path: 2023-clb-multisite/README.template
       hash: md5
-      md5: c54e16da349dbdc1223f6bb9d76bccb8
-      size: 3335
+      md5: 4fee1faf0a125c4dc6a9462a6a93fcc4
+      size: 3295
     - path: 2023-clb-multisite/data.csv
       hash: md5
       md5: f64ab9bf04082148ce7a36d57ca3cfd6
@@ -40,16 +40,16 @@ stages:
     outs:
     - path: 2023-clb-multisite/README.md
       hash: md5
-      md5: 1df836755aeccb1cf6ce439018c3a6df
-      size: 14690
+      md5: 102db105c83a734a188dae03084a4de0
+      size: 14650
   description-and-docs@2023-isb-multisite:
     cmd: "python scripts/render.py -m 2023-isb-multisite/mapping.py -d 2023-isb-multisite/data.csv
       -t 2023-isb-multisite/README.template -o 2023-isb-multisite/README.md\n"
     deps:
     - path: 2023-isb-multisite/README.template
       hash: md5
-      md5: f1b18db234f07dec1b0af49bae29867d
-      size: 3104
+      md5: 289ed4bef464a64d84d93126403800a9
+      size: 3064
     - path: 2023-isb-multisite/data.csv
       hash: md5
       md5: 6135ac91c08b7518372488fb2e0f9b69
@@ -65,8 +65,8 @@ stages:
     outs:
     - path: 2023-isb-multisite/README.md
       hash: md5
-      md5: be8ad6cc46e96e116a43fab9bba40d99
-      size: 19616
+      md5: 060f60053fd4dac3e1212a72810ae001
+      size: 19576
   lyproxify@0:
     cmd: "lyscripts data lyproxify -i 2021-clb-oropharynx/raw.csv -o 2021-clb-oropharynx/data.csv
       -m 2021-clb-oropharynx/mapping.py -r 0\n"
@@ -107,8 +107,8 @@ stages:
     deps:
     - path: 2021-clb-oropharynx/README.template
       hash: md5
-      md5: 8c4d630962429c56322f317f8390e7d8
-      size: 16712
+      md5: edf345ea5b29efcee0923cd7fcc43077
+      size: 16726
     - path: 2021-clb-oropharynx/data.csv
       hash: md5
       md5: af05aeaa3fea122dd718b3dd9c6a22b1
@@ -124,8 +124,8 @@ stages:
     outs:
     - path: 2021-clb-oropharynx/README.md
       hash: md5
-      md5: 9d8779f5e937a75e298f3575d92c3578
-      size: 25532
+      md5: 8dc6c2dfcadc298fb6a6192a211bfc5f
+      size: 25546
   convert-to-docx@2021-clb-oropharynx:
     cmd: "pandoc -o ../2021-clb-oropharynx.docx 2021-clb-oropharynx/README.md\n"
     deps:
@@ -380,14 +380,14 @@ stages:
     outs:
     - path: enhanced.csv
       hash: md5
-      md5: 8778bd4cbe98609aeb08b23de466035c
+      md5: 8e708efcc67bc7ab35a610f54cd0fa03
       size: 644479
   scenario-showcase:
     cmd: "python scripts/scenario_showcase.py --data enhanced.csv --mplstyle scripts/.mplstyle\n"
     deps:
     - path: enhanced.csv
       hash: md5
-      md5: 8778bd4cbe98609aeb08b23de466035c
+      md5: 8e708efcc67bc7ab35a610f54cd0fa03
       size: 644479
     - path: scripts/.mplstyle
       hash: md5
@@ -400,5 +400,5 @@ stages:
     outs:
     - path: scenario_showcase.png
       hash: md5
-      md5: c9327243c7afdcdb0c8c6bcd8a9d53b2
+      md5: 8926ffc188c354cee7db03f1e8eeee24
       size: 86913
