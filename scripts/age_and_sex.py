@@ -31,26 +31,26 @@ if __name__ == "__main__":
     output_dir = args.data.parent / "figures"
     output_dir.mkdir(exist_ok=True)
 
+    is_male = data[("patient", "#", "sex")].str.lower() == "male"
+    is_female = data[("patient", "#", "sex")].str.lower() == "female"
 
     male_ages = data.loc[
-        data[("patient", "#", "sex")] == "male",
+        is_male,
         ("patient", "#", "age")
     ].values
     male_smoker_ages = data.loc[
-        (data[("patient", "#", "sex")] == "male")
-        & data[("patient", "#", "nicotine_abuse")],
+        is_male & data[("patient", "#", "nicotine_abuse")],
         ("patient", "#", "age")
     ]
     male_percent = 100 * len(male_ages) / len(data)
     male_smoker_percent = 100 * len(male_smoker_ages) / len(data)
 
     female_ages = data.loc[
-        data[("patient", "#", "sex")] == "female",
+        is_female,
         ("patient", "#", "age")
     ].values
     female_smoker_ages = data.loc[
-        (data[("patient", "#", "sex")] == "female")
-        & data[("patient", "#", "nicotine_abuse")],
+        is_female & data[("patient", "#", "nicotine_abuse")],
         ("patient", "#", "age")
     ]
     female_percent = 100 * len(female_ages) / len(data)
