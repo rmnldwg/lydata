@@ -165,8 +165,8 @@ stages:
       size: 123938
     - path: scripts/age_and_sex.py
       hash: md5
-      md5: acd161580d93b39eda4c46e5fb54a79d
-      size: 3214
+      md5: 07930bd03715f206c2613dd303eb1546
+      size: 3202
   plot-t-category@2023-clb-multisite:
     cmd: "python scripts/t_category.py 2023-clb-multisite/data.csv\n"
     deps:
@@ -198,8 +198,8 @@ stages:
       size: 92742
     - path: scripts/age_and_sex.py
       hash: md5
-      md5: acd161580d93b39eda4c46e5fb54a79d
-      size: 3214
+      md5: 07930bd03715f206c2613dd303eb1546
+      size: 3202
   plot-age-and-sex@2023-isb-multisite:
     cmd: "python scripts/age_and_sex.py 2023-isb-multisite/data.csv\n"
     deps:
@@ -209,8 +209,8 @@ stages:
       size: 204323
     - path: scripts/age_and_sex.py
       hash: md5
-      md5: acd161580d93b39eda4c46e5fb54a79d
-      size: 3214
+      md5: 07930bd03715f206c2613dd303eb1546
+      size: 3202
   plot-t-category@2021-clb-oropharynx:
     cmd: "python scripts/t_category.py 2021-clb-oropharynx/data.csv\n"
     deps:
@@ -242,8 +242,8 @@ stages:
       size: 166961
     - path: scripts/age_and_sex.py
       hash: md5
-      md5: acd161580d93b39eda4c46e5fb54a79d
-      size: 3214
+      md5: 07930bd03715f206c2613dd303eb1546
+      size: 3202
   plot-subsite@2021-usz-oropharynx:
     cmd: "python scripts/subsite.py --data 2021-usz-oropharynx/data.csv\n"
     deps:
@@ -380,14 +380,14 @@ stages:
     outs:
     - path: enhanced.csv
       hash: md5
-      md5: eba7b0ecbd72d293378bf8952335c86b
+      md5: b0158131bd513e0764592aeb95f94a62
       size: 644105
   scenario-showcase:
     cmd: "python scripts/scenario_showcase.py --data enhanced.csv --mplstyle scripts/.mplstyle\n"
     deps:
     - path: enhanced.csv
       hash: md5
-      md5: eba7b0ecbd72d293378bf8952335c86b
+      md5: b0158131bd513e0764592aeb95f94a62
       size: 644105
     - path: scripts/.mplstyle
       hash: md5
@@ -400,7 +400,7 @@ stages:
     outs:
     - path: scenario_showcase.png
       hash: md5
-      md5: 2ce86261eac36207428e832fc452cadb
+      md5: 8926ffc188c354cee7db03f1e8eeee24
       size: 86913
   remove-spaces:
     cmd: "sed 's/,\\s,/,,/' 2023-hvh-oropharynx/raw.csv > 2023-hvh-oropharynx/data.csv\n"
@@ -418,7 +418,7 @@ stages:
     cmd: sed 's/\([0-9]\{2\}\)\/\([0-9]\{2\}\)\/\([0-9]\{4\}\)/\3-\2-\1/g' 2023-hvh-oropharynx/raw.csv
       | sed 's/,dataset,/,institution,/g' | sed "s/,2023_HVH_OROPHARYNX,/,Vall d'Hebron
       Barcelona Hospital,/g" | sed 's/,\s,/,,/g' | sed 's/,\([0-3]\)[A-C]*,/,\1,/g'
-      | sed 's/,N\sVI,/,FALSE,/g' > 2023-hvh-oropharynx/data.csv
+      | sed 's/,N\sVI,/,FALSE,/g' | sed 's/"C05,1"/C05.1/g' > 2023-hvh-oropharynx/data.csv
     deps:
     - path: 2023-hvh-oropharynx/raw.csv
       hash: md5
@@ -427,5 +427,38 @@ stages:
     outs:
     - path: 2023-hvh-oropharynx/data.csv
       hash: md5
-      md5: be0fd6f7e8728b12d8b03a5efc36a701
-      size: 82571
+      md5: 7baa8021efbff0126fcf297e52106168
+      size: 82567
+  plot-t-category@2023-hvh-oropharynx:
+    cmd: "python scripts/t_category.py 2023-hvh-oropharynx/data.csv\n"
+    deps:
+    - path: 2023-hvh-oropharynx/data.csv
+      hash: md5
+      md5: 7baa8021efbff0126fcf297e52106168
+      size: 82567
+    - path: scripts/t_category.py
+      hash: md5
+      md5: 525ea786589ede53c4b9bb7e5f9d8d42
+      size: 1648
+  plot-age-and-sex@2023-hvh-oropharynx:
+    cmd: "python scripts/age_and_sex.py 2023-hvh-oropharynx/data.csv\n"
+    deps:
+    - path: 2023-hvh-oropharynx/data.csv
+      hash: md5
+      md5: 7baa8021efbff0126fcf297e52106168
+      size: 82567
+    - path: scripts/age_and_sex.py
+      hash: md5
+      md5: 07930bd03715f206c2613dd303eb1546
+      size: 3202
+  plot-subsite@2023-hvh-oropharynx:
+    cmd: "python scripts/subsite.py --data 2023-hvh-oropharynx/data.csv\n"
+    deps:
+    - path: 2023-hvh-oropharynx/data.csv
+      hash: md5
+      md5: 7baa8021efbff0126fcf297e52106168
+      size: 82567
+    - path: scripts/subsite.py
+      hash: md5
+      md5: 3bc7a351a634211ca9f8382b7d71bd96
+      size: 4704
