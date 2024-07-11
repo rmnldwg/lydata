@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+title: "lyDATA: 2024 HVH Oropharynx"
+abstract: >-
+  Data about clinically diagnosed lymphatic patterns in 164 patients treated at the
+  Hospital Vall d'Hebron in Barcelona (Spain) between 2007 and 2021.
+message: >-
+  If you use this dataset, please cite it using the metadata
+  from this file.
+type: dataset
+authors:
+  - given-names: Sergi
+    family-names: Benavente
+    affiliation: Hospital Vall d'Hebron
+repository-code: 'https://github.com/rmnldwg/lyDATA/tree/main/2024-hvh-oropharynx'
+license: CC BY-SA 4.0
+date-released: '2024-07-11'
