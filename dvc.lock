@@ -6,8 +6,8 @@ stages:
     deps:
     - path: 2023-clb-multisite/mapping.py
       hash: md5
-      md5: c6288835d865c1eab11edcd678387098
-      size: 28320
+      md5: b209d8ed8668fb76fd45a253a57544ed
+      size: 28369
     - path: 2023-clb-multisite/raw.csv
       hash: md5
       md5: 07fb62f160142252fe11e1738de6331f
@@ -15,8 +15,8 @@ stages:
     outs:
     - path: 2023-clb-multisite/data.csv
       hash: md5
-      md5: 9d72ee96af2c51033a2fb0bb8551e318
-      size: 123938
+      md5: f64ab9bf04082148ce7a36d57ca3cfd6
+      size: 124311
   description-and-docs@2023-clb-multisite:
     cmd: "python scripts/render.py -m 2023-clb-multisite/mapping.py -d 2023-clb-multisite/data.csv
       -t 2023-clb-multisite/README.template -o 2023-clb-multisite/README.md\n"
@@ -27,21 +27,21 @@ stages:
       size: 3295
     - path: 2023-clb-multisite/data.csv
       hash: md5
-      md5: 9d72ee96af2c51033a2fb0bb8551e318
-      size: 123938
+      md5: f64ab9bf04082148ce7a36d57ca3cfd6
+      size: 124311
     - path: 2023-clb-multisite/mapping.py
       hash: md5
-      md5: c6288835d865c1eab11edcd678387098
-      size: 28320
+      md5: b209d8ed8668fb76fd45a253a57544ed
+      size: 28369
     - path: scripts/render.py
       hash: md5
-      md5: 6d41cb47a8c326a558958693b08004f1
-      size: 2005
+      md5: f288e59e2380a86708df57be8961d6ed
+      size: 2004
     outs:
     - path: 2023-clb-multisite/README.md
       hash: md5
-      md5: 0f174c3c636e9e3089cbc8f0d0a805ba
-      size: 14612
+      md5: 102db105c83a734a188dae03084a4de0
+      size: 14650
   description-and-docs@2023-isb-multisite:
     cmd: "python scripts/render.py -m 2023-isb-multisite/mapping.py -d 2023-isb-multisite/data.csv
       -t 2023-isb-multisite/README.template -o 2023-isb-multisite/README.md\n"
@@ -56,25 +56,25 @@ stages:
       size: 204322
     - path: 2023-isb-multisite/mapping.py
       hash: md5
-      md5: b12195246e7d014b2afca09d6d057ed9
-      size: 52919
+      md5: 9dd3fdaf92c8cb820f5d32098f833f72
+      size: 52945
     - path: scripts/render.py
       hash: md5
-      md5: 6d41cb47a8c326a558958693b08004f1
-      size: 2005
+      md5: f288e59e2380a86708df57be8961d6ed
+      size: 2004
     outs:
     - path: 2023-isb-multisite/README.md
       hash: md5
-      md5: 59b9f179e3dcd4a49faa2933378b42da
-      size: 19560
+      md5: 060f60053fd4dac3e1212a72810ae001
+      size: 19576
   lyproxify@0:
     cmd: "lyscripts data lyproxify -i 2021-clb-oropharynx/raw.csv -o 2021-clb-oropharynx/data.csv
       -m 2021-clb-oropharynx/mapping.py -r 0\n"
     deps:
     - path: 2021-clb-oropharynx/mapping.py
       hash: md5
-      md5: 9af923f8347ab62eaf5eb29d7708f52e
-      size: 21377
+      md5: da65d51377e1204ed366ce28bf9ef944
+      size: 21401
     - path: 2021-clb-oropharynx/raw.csv
       hash: md5
       md5: ca6413b63f277e4f6bb40b50294b0ff0
@@ -82,20 +82,20 @@ stages:
     outs:
     - path: 2021-clb-oropharynx/data.csv
       hash: md5
-      md5: d40c0a1ae967a6983d60a0a809cf3972
-      size: 92742
+      md5: af05aeaa3fea122dd718b3dd9c6a22b1
+      size: 92744
   lyproxify@2:
     cmd: "lyscripts data lyproxify -i 2023-isb-multisite/raw.csv -o 2023-isb-multisite/data.csv
       -m 2023-isb-multisite/mapping.py -r 0\n"
     deps:
     - path: 2023-isb-multisite/mapping.py
       hash: md5
-      md5: b12195246e7d014b2afca09d6d057ed9
-      size: 52919
+      md5: 9dd3fdaf92c8cb820f5d32098f833f72
+      size: 52945
     - path: 2023-isb-multisite/raw.csv
       hash: md5
-      md5: 79379a8045c42e5efeb0c528ad7da9e9
-      size: 167141
+      md5: 0546a71875f357e0210425407dedf426
+      size: 167129
     outs:
     - path: 2023-isb-multisite/data.csv
       hash: md5
@@ -107,25 +107,25 @@ stages:
     deps:
     - path: 2021-clb-oropharynx/README.template
       hash: md5
-      md5: 1ee54d3ca78a570bda0d262e3c83aa03
-      size: 16732
+      md5: edf345ea5b29efcee0923cd7fcc43077
+      size: 16726
     - path: 2021-clb-oropharynx/data.csv
       hash: md5
-      md5: d40c0a1ae967a6983d60a0a809cf3972
-      size: 92742
+      md5: af05aeaa3fea122dd718b3dd9c6a22b1
+      size: 92744
     - path: 2021-clb-oropharynx/mapping.py
       hash: md5
-      md5: 9af923f8347ab62eaf5eb29d7708f52e
-      size: 21377
+      md5: da65d51377e1204ed366ce28bf9ef944
+      size: 21401
     - path: scripts/render.py
       hash: md5
-      md5: 6d41cb47a8c326a558958693b08004f1
-      size: 2005
+      md5: f288e59e2380a86708df57be8961d6ed
+      size: 2004
     outs:
     - path: 2021-clb-oropharynx/README.md
       hash: md5
-      md5: 260641ad85850004bd5c76cc2cd1dc1f
-      size: 25529
+      md5: 8dc6c2dfcadc298fb6a6192a211bfc5f
+      size: 25546
   convert-to-docx@2021-clb-oropharynx:
     cmd: "pandoc -o ../2021-clb-oropharynx.docx 2021-clb-oropharynx/README.md\n"
     deps:
@@ -161,23 +161,23 @@ stages:
     deps:
     - path: 2023-clb-multisite/data.csv
       hash: md5
-      md5: 9d72ee96af2c51033a2fb0bb8551e318
-      size: 123938
+      md5: f64ab9bf04082148ce7a36d57ca3cfd6
+      size: 124311
     - path: scripts/age_and_sex.py
       hash: md5
-      md5: acd161580d93b39eda4c46e5fb54a79d
-      size: 3214
+      md5: e837a45727dd17cb4350ee4c1b1e5676
+      size: 3212
   plot-t-category@2023-clb-multisite:
     cmd: "python scripts/t_category.py 2023-clb-multisite/data.csv\n"
     deps:
     - path: 2023-clb-multisite/data.csv
       hash: md5
-      md5: 9d72ee96af2c51033a2fb0bb8551e318
-      size: 123938
+      md5: f64ab9bf04082148ce7a36d57ca3cfd6
+      size: 124311
     - path: scripts/t_category.py
       hash: md5
-      md5: 525ea786589ede53c4b9bb7e5f9d8d42
-      size: 1648
+      md5: 9cd603d2c51bbdb9b9c78f5d6c292914
+      size: 1647
   plot-t-category@2023-isb-multisite:
     cmd: "python scripts/t_category.py 2023-isb-multisite/data.csv\n"
     deps:
@@ -187,19 +187,19 @@ stages:
       size: 204322
     - path: scripts/t_category.py
       hash: md5
-      md5: 525ea786589ede53c4b9bb7e5f9d8d42
-      size: 1648
+      md5: 9cd603d2c51bbdb9b9c78f5d6c292914
+      size: 1647
   plot-age-and-sex@2021-clb-oropharynx:
     cmd: "python scripts/age_and_sex.py 2021-clb-oropharynx/data.csv\n"
     deps:
     - path: 2021-clb-oropharynx/data.csv
       hash: md5
-      md5: d40c0a1ae967a6983d60a0a809cf3972
-      size: 92742
+      md5: af05aeaa3fea122dd718b3dd9c6a22b1
+      size: 92744
     - path: scripts/age_and_sex.py
       hash: md5
-      md5: acd161580d93b39eda4c46e5fb54a79d
-      size: 3214
+      md5: e837a45727dd17cb4350ee4c1b1e5676
+      size: 3212
   plot-age-and-sex@2023-isb-multisite:
     cmd: "python scripts/age_and_sex.py 2023-isb-multisite/data.csv\n"
     deps:
@@ -209,63 +209,63 @@ stages:
       size: 204322
     - path: scripts/age_and_sex.py
       hash: md5
-      md5: acd161580d93b39eda4c46e5fb54a79d
-      size: 3214
+      md5: e837a45727dd17cb4350ee4c1b1e5676
+      size: 3212
   plot-t-category@2021-clb-oropharynx:
     cmd: "python scripts/t_category.py 2021-clb-oropharynx/data.csv\n"
     deps:
     - path: 2021-clb-oropharynx/data.csv
       hash: md5
-      md5: d40c0a1ae967a6983d60a0a809cf3972
-      size: 92742
+      md5: af05aeaa3fea122dd718b3dd9c6a22b1
+      size: 92744
     - path: scripts/t_category.py
       hash: md5
-      md5: 525ea786589ede53c4b9bb7e5f9d8d42
-      size: 1648
+      md5: 9cd603d2c51bbdb9b9c78f5d6c292914
+      size: 1647
   plot-t-category@2021-usz-oropharynx:
     cmd: "python scripts/t_category.py 2021-usz-oropharynx/data.csv\n"
     deps:
     - path: 2021-usz-oropharynx/data.csv
       hash: md5
-      md5: f5ddc8334a2bee6e8457885a9f75a7d0
-      size: 166961
+      md5: a9e4043ed6a273c609fa16523bcae455
+      size: 166966
     - path: scripts/t_category.py
       hash: md5
-      md5: 525ea786589ede53c4b9bb7e5f9d8d42
-      size: 1648
+      md5: 9cd603d2c51bbdb9b9c78f5d6c292914
+      size: 1647
   plot-age-and-sex@2021-usz-oropharynx:
     cmd: "python scripts/age_and_sex.py 2021-usz-oropharynx/data.csv\n"
     deps:
     - path: 2021-usz-oropharynx/data.csv
       hash: md5
-      md5: f5ddc8334a2bee6e8457885a9f75a7d0
-      size: 166961
+      md5: a9e4043ed6a273c609fa16523bcae455
+      size: 166966
     - path: scripts/age_and_sex.py
       hash: md5
-      md5: acd161580d93b39eda4c46e5fb54a79d
-      size: 3214
+      md5: e837a45727dd17cb4350ee4c1b1e5676
+      size: 3212
   plot-subsite@2021-usz-oropharynx:
     cmd: "python scripts/subsite.py --data 2021-usz-oropharynx/data.csv\n"
     deps:
     - path: 2021-usz-oropharynx/data.csv
       hash: md5
-      md5: f5ddc8334a2bee6e8457885a9f75a7d0
-      size: 166961
+      md5: a9e4043ed6a273c609fa16523bcae455
+      size: 166966
     - path: scripts/subsite.py
       hash: md5
-      md5: 3bc7a351a634211ca9f8382b7d71bd96
-      size: 4704
+      md5: 5f8736beb002a5fd9da22714a9129bf5
+      size: 4680
   plot-subsite@2021-clb-oropharynx:
     cmd: "python scripts/subsite.py --data 2021-clb-oropharynx/data.csv\n"
     deps:
     - path: 2021-clb-oropharynx/data.csv
       hash: md5
-      md5: d40c0a1ae967a6983d60a0a809cf3972
-      size: 92742
+      md5: af05aeaa3fea122dd718b3dd9c6a22b1
+      size: 92744
     - path: scripts/subsite.py
       hash: md5
-      md5: 3bc7a351a634211ca9f8382b7d71bd96
-      size: 4704
+      md5: 5f8736beb002a5fd9da22714a9129bf5
+      size: 4680
   plot-subsite@2023-isb-multisite:
     cmd: "python scripts/subsite.py --data 2023-isb-multisite/data.csv\n"
     deps:
@@ -275,41 +275,41 @@ stages:
       size: 204322
     - path: scripts/subsite.py
       hash: md5
-      md5: 3bc7a351a634211ca9f8382b7d71bd96
-      size: 4704
+      md5: 5f8736beb002a5fd9da22714a9129bf5
+      size: 4680
   plot-subsite@2023-clb-multisite:
     cmd: "python scripts/subsite.py --data 2023-clb-multisite/data.csv\n"
     deps:
     - path: 2023-clb-multisite/data.csv
       hash: md5
-      md5: 9d72ee96af2c51033a2fb0bb8551e318
-      size: 123938
+      md5: f64ab9bf04082148ce7a36d57ca3cfd6
+      size: 124311
     - path: scripts/subsite.py
       hash: md5
-      md5: 3bc7a351a634211ca9f8382b7d71bd96
-      size: 4704
+      md5: 5f8736beb002a5fd9da22714a9129bf5
+      size: 4680
   bar-plot@2021-clb-oropharynx:
     cmd: python scripts/bar_plot.py 2021-clb-oropharynx/data.csv
     deps:
     - path: 2021-clb-oropharynx/data.csv
       hash: md5
-      md5: d40c0a1ae967a6983d60a0a809cf3972
-      size: 92742
+      md5: af05aeaa3fea122dd718b3dd9c6a22b1
+      size: 92744
     - path: scripts/bar_plot.py
       hash: md5
-      md5: 65c6304694688261ce7cf1de97b18b47
-      size: 2627
+      md5: 9d4f3f0c12f69d4bee3306c37d2f112c
+      size: 2585
   bar-plot@2023-clb-multisite:
     cmd: python scripts/bar_plot.py 2023-clb-multisite/data.csv
     deps:
     - path: 2023-clb-multisite/data.csv
       hash: md5
-      md5: 9d72ee96af2c51033a2fb0bb8551e318
-      size: 123938
+      md5: f64ab9bf04082148ce7a36d57ca3cfd6
+      size: 124311
     - path: scripts/bar_plot.py
       hash: md5
-      md5: 65c6304694688261ce7cf1de97b18b47
-      size: 2627
+      md5: 9d4f3f0c12f69d4bee3306c37d2f112c
+      size: 2585
   bar-plot@2023-isb-multisite:
     cmd: python scripts/bar_plot.py 2023-isb-multisite/data.csv
     deps:
@@ -319,20 +319,20 @@ stages:
       size: 204322
     - path: scripts/bar_plot.py
       hash: md5
-      md5: 65c6304694688261ce7cf1de97b18b47
-      size: 2627
+      md5: 9d4f3f0c12f69d4bee3306c37d2f112c
+      size: 2585
   join:
     cmd: "lyscripts data join --inputs 2021-clb-oropharynx/data.csv 2023-isb-multisite/data.csv
       2023-clb-multisite/data.csv --output joined.csv\n"
     deps:
     - path: 2021-clb-oropharynx/data.csv
       hash: md5
-      md5: d40c0a1ae967a6983d60a0a809cf3972
-      size: 92742
+      md5: af05aeaa3fea122dd718b3dd9c6a22b1
+      size: 92744
     - path: 2023-clb-multisite/data.csv
       hash: md5
-      md5: 9d72ee96af2c51033a2fb0bb8551e318
-      size: 123938
+      md5: f64ab9bf04082148ce7a36d57ca3cfd6
+      size: 124311
     - path: 2023-isb-multisite/data.csv
       hash: md5
       md5: 6135ac91c08b7518372488fb2e0f9b69
@@ -340,16 +340,16 @@ stages:
     outs:
     - path: joined.csv
       hash: md5
-      md5: 5174550157caddc62fb84d2b67d0c9f6
-      size: 520212
+      md5: 4830e924e047464f42690c01e54782f8
+      size: 520587
   enhance:
     cmd: "lyscripts data enhance --consensus max_llh --params modalities.yaml joined.csv
       enhanced.csv\n"
     deps:
     - path: joined.csv
       hash: md5
-      md5: 5174550157caddc62fb84d2b67d0c9f6
-      size: 520212
+      md5: 4830e924e047464f42690c01e54782f8
+      size: 520587
     params:
       modalities.yaml:
         modalities:
@@ -387,7 +387,7 @@ stages:
     deps:
     - path: enhanced.csv
       hash: md5
-      md5: 936fb94f42081824f3b5e14b722bd6e1
+      md5: bcaf6d8b71e3de52261598a7da0533f1
       size: 644104
     - path: scripts/.mplstyle
       hash: md5
@@ -395,10 +395,10 @@ stages:
       size: 2151
     - path: scripts/scenario_showcase.py
       hash: md5
-      md5: 0f9bfd6d539308d71ff468e861977dae
-      size: 5106
+      md5: 1731456a8b37391a4c4ecaa7d939ebc6
+      size: 5104
     outs:
     - path: scenario_showcase.png
       hash: md5
-      md5: 8926ffc188c354cee7db03f1e8eeee24
+      md5: c9327243c7afdcdb0c8c6bcd8a9d53b2
       size: 86913

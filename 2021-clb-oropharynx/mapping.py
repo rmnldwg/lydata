@@ -57,10 +57,10 @@ respective column is about. This is used to generate the documentation for the
 ---
 """
 import re
-from dateutil.parser import ParserError, parse
-import numpy as np
 
 import icd10
+import numpy as np
+from dateutil.parser import ParserError, parse
 
 
 def robust_date(entry, *_args, **_kwargs):
@@ -223,9 +223,9 @@ COLUMN_MAP = {
             "m_stage": {
                 "__doc__": (
                     "The M category of the patient, encoding the presence of distant"
-                    " metastases."
+                    " metastases. `-1` represents `'X'`."
                 ),
-                "func": lambda x, *a, **k: 2 if x == "x" else int(x),
+                "func": lambda x, *a, **k: -1 if x == "x" else int(x),
                 "columns": ["cM"],
             },
         },

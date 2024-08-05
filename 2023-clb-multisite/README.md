@@ -70,7 +70,7 @@ The data is provided as a CSV-table containing one row for each of the 373 patie
         10. **`neck_dissection:`** Whether the patient underwent a neck dissection. In this dataset, all patients underwent a neck dissection.
         11. **`tnm_edition:`** The edition of the TNM classification used.
         12. **`n_stage:`** The pN category of the patient (pathologically assessed).
-        13. **`m_stage:`** The M category of the patient.
+        13. **`m_stage:`** The M category of the patient. `-1` refers to `'X'`.
         14. **`extracapsular:`** Whether the patient had extracapsular spread. In this dataset, this information is only globally available, not for each individual lymph node level.
 2. **`tumor:`** This top-level header contains general tumor information.
     1. **`1:`** The second level header enumerates synchronous tumors.
@@ -196,7 +196,7 @@ Parse the diagnosis.
 ### <kbd>function</kbd> `robust`
 
 ```python
-robust(func: Callable) → Optional[Any]
+robust(func: collections.abc.Callable) → Optional[Any]
 ```
 
 Wrapper that makes any type-conversion function 'robust' by simply returning `None` whenever any exception is thrown. 

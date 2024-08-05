@@ -1,0 +1,11 @@
+numpy == 1.26.4
+pandas == 2.2.2
+matplotlib == 3.9.0
+dvc == 3.51.2
+jupyter
+jupyter-contrib-nbextensions
+icd10-cm == 0.0.5
+lyscripts == 0.7.2
+lymph-model == 0.4.3
+lazydocs == 0.4.8
+tueplots == 0.0.14

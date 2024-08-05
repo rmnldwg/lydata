@@ -14,35 +14,29 @@ You can find here
 * a jupyter notebook `figures.ipynb` for rendering figures visualizing different aspects of the data
 * the folder `figures` containing the already rendered figures which we also used in our publication for *Radiation & Oncology* [[1]](#1).
 
-
 ## Cohort Characteristics
 
 Below we show some figures that aim to coarsely characterize the patient cohort in this directory.
 
 | ![age distribution](figures/age_and_sex.png)                               |
 | ---------------------------------------------------------------------------- |
-| **Figure 1:** _Distribution over age, stratified by sex and smoking status._ |
-
+| **Figure 1:** *Distribution over age, stratified by sex and smoking status.* |
 
 | ![T-category distribution](figures/t_category.png)                         | ![subsite distribution](figures/subsite.png)           |
 | ---------------------------------------------------------------------------- | -------------------------------------------------------- |
-| **Figure 2:** _Distribution over age, stratified by sex and smoking status._ | **Figure 3:** _Distribution over primary tumor subsite._ |
-
+| **Figure 2:** *Distribution over age, stratified by sex and smoking status.* | **Figure 3:** *Distribution over primary tumor subsite.* |
 
 ## Curation
 
 We have detailed inclusion criteria and what was considered lymphatic involvement in our paper that has been published in the journal of [Radiotherapy & Oncology] (a preprint is also available on [medRxiv]). The data of this repository is also - and in somewhat more detail - described and provided in its own publication in [Data in Brief], enabling anyone to reuse and cite our dataset.
 
-
 ## Online Interface
 
-We provide a user-friendly and intuitive graphical user interface to view the dataset, which is available at https://2021-oropharynx.lyprox.org/. The GUI has two main functionalities: the patient list and the dashboard. The patient list allows for viewing the characteristics of a patient, corresponding to one row of the csv file, in a visually appealing and intuitive way. The dashboard allows for filtering of the dataset. For example, the user may select all patients with primary tumors extending over the mid-sagittal plane with involvement of ipsilateral level III. The dashboard will then display the number or percentage of patients with metastases in each of the other LNLs.
-
+We provide a user-friendly and intuitive graphical user interface to view the dataset, which is available at <https://2021-oropharynx.lyprox.org/>. The GUI has two main functionalities: the patient list and the dashboard. The patient list allows for viewing the characteristics of a patient, corresponding to one row of the csv file, in a visually appealing and intuitive way. The dashboard allows for filtering of the dataset. For example, the user may select all patients with primary tumors extending over the mid-sagittal plane with involvement of ipsilateral level III. The dashboard will then display the number or percentage of patients with metastases in each of the other LNLs.
 
 ## Description
 
 The data is provided as a CSV-table containing one row for each of the 287 patients. The table has a header with three levels that describe the columns. Below we explain each column in the form of a list with three levels. So, for example, list entry 1.i.g refers to a column with the three-level header `patient | # | hpv_status` and underneath it tha patients' HPV status is listed.
-
 
 ## Columns
 
@@ -71,36 +65,34 @@ The data is provided as a CSV-table containing one row for each of the 287 patie
         7. **`stage_prefix:`** Prefix modifier of the T-category. Can be `“c”` or `“p”`
         8. **`t_stage:`** T-category of the tumor, according to TNM staging
 3. **`<diagnostic modality>:`** Each recorded diagnostic modality is indicated by its own top-level header. In this file FNA, CT, MRI, PET, pathology and pCT (planning CT) are provided
-    1. **`info:`** 
+    1. **`info:`**
         1. **`date:`** Day on which a diagnose with the respective modality was performed
     2. **`ipsi:`** All findings of involved lymph nodes on the ipsilateral side of the patient’s neck
         1. **`<LNL>:`** One column is provided for each recorded lymph node level. For each level `true` indicates at least one finding diagnosed as malignant lymph node in the respective LNL, `false` means no malignant lymph node has been found and an empty field indicates that no diagnosis is available for this LNL according to the respective diagnostic modality. `<LNL>` can be: I, Ia, Ib, II, IIa, IIb, III, IV, V, VI, VII, VIII, IX, X.
     3. **`contra:`** Same as 3.ii but for the contralateral side of the patient’s neck
         1. **`<LNL>:`** same as under 3.ii.a
 
-
 ## References
 
 <a id="1">[1]</a>
-R. Ludwig, B. Pouymayou, J.-M. Hoffmann *et al*, 
-"Detailed patient-individual reporting of lymph node involvement in oropharyngeal squamous cell carcinoma with an online interface." 
+R. Ludwig, B. Pouymayou, J.-M. Hoffmann *et al*,
+"Detailed patient-individual reporting of lymph node involvement in oropharyngeal squamous cell carcinoma with an online interface."
 Radiotherapy & Oncology, 2021, DOI: [10.1016/j.radonc.2022.01.035][Radiotherapy & Oncology]
 
 <a id="2">[2]</a>
-J. D. Brierley, M. K. Gospodarowicz, and C. Wittekind, 
-"TNM Classification of Malignant Tumours." 
+J. D. Brierley, M. K. Gospodarowicz, and C. Wittekind,
+"TNM Classification of Malignant Tumours."
 John Wiley & Sons, 2017.
 
 <a id="3">[3]</a>
-World Health Organization, Ed., 
-"International statistical classification of diseases and related health problems, 10th revision, 2nd edition." 
+World Health Organization, Ed.,
+"International statistical classification of diseases and related health problems, 10th revision, 2nd edition."
 Geneva: World Health Organization, 2004.
 
 <a id="4">[4]</a>
-A. G. Fritz, Ed., 
-"International classification of diseases for oncology: ICD-O, 3rd ed." 
+A. G. Fritz, Ed.,
+"International classification of diseases for oncology: ICD-O, 3rd ed."
 Geneva: World Health Organization, 2000.
-
 
 [Radiotherapy & Oncology]: https://doi.org/10.1016/j.radonc.2022.01.035
 [Data in Brief]: https://doi.org/10.1016/j.dib.2022.108345

@@ -226,7 +226,7 @@ smpl_diagnose(entry, *_args, **_kwargs)
 ### <kbd>function</kbd> `robust`
 
 ```python
-robust(func: Callable) → Optional[Any]
+robust(func: collections.abc.Callable) → Optional[Any]
 ```
 
 Wrapper that makes any type-conversion function 'robust' by simply returning `None` whenever any exception is thrown. 
