@@ -35,4 +35,4 @@ jobs:
           python3 -m pip install .[tests]
       - name: Run tests
         run: |
-          python3 -m pytest --doctest-modules
+          python3 -m pytest --doctest-modules lydata
