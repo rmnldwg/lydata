@@ -1,13 +1,14 @@
 [build-system]
 requires = [
-	"setuptools >= 61",
+	"setuptools >= 64",
+    "setuptools_scm",
 	"wheel"
 ]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "lydata"
-version = "0.1.0"
+dynamic = ["version"]
 description = "Library for handling lymphatic involvement data"
 authors = [
 	{name = "Roman Ludwig", email = "roman.ludwig@usz.ch"}
@@ -49,6 +50,10 @@ include = ["lydata"]
 
 [tool.setuptools.package-data]
 "lydata" = ["../*/data.csv"]
+
+[tool.setuptools_scm]
+write_to = "lydata/_version.py"
+local_scheme = "no-local-version"
 
 [tool.pytest.ini_options]
 testpaths = "."
