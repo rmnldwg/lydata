@@ -33,9 +33,6 @@ source = "https://github.com/rmnldwg/lydata"
 [project.optional-dependencies]
 dev = [
     "pre-commit",
-    "isort",
-    "pycln",
-    "pylint",
 ]
 docs = [
     "sphinx",

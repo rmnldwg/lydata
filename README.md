@@ -71,6 +71,35 @@ We are in the process of collecting more data that we might publish soon. If you
 
 Every folder that corresponds to a dataset also contains a `CITATION.cff` file which may be used to cite the respective dataset. To cite the entire repository with all datasets inside, use the `CITATION.cff` at the root of the repository (or just click the *Cite this repository* button on the right).
 
+## Requirements
+
+Besides the data, this repository provides a Python library for loading, manipulating, and validating the available datasets.
+
+> [!CAUTION]
+> This Python library is still highly experimental!
+
+If you want to install this library, clone the repo and install it. You can do so by executing these commands:
+
+```bash
+git clone https://github.com/rmnldwg/lydata
+cd lydata
+python -m venv .venv
+source .venv/bin/activate
+pip install -U pip
+pip install .
+```
+
+You may have noticed that there are also `requirements.*` files here. These are independent of this library and instead related to reproducing the output of the Python files in the `scripts/` folder. To reproduce these, run the following commands:
+
+```bash
+git clone https://github.com/rmnldwg/lydata
+cd lydata
+python -m venv .venv
+source .venv/bin/activate
+pip install -U pip
+pip install -r requirements.txt
+```
+
 ## See also
 
 ### LyProX Interface
