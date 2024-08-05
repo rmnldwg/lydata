@@ -34,5 +34,7 @@ jobs:
           python3 -m pip install -U pip setuptools setuptools-scm wheel
           python3 -m pip install .[tests]
       - name: Run tests
+        env:
+          GITHUB_TOKEN: ${{ secrets.READONLY_TOKEN }}
         run: |
-          python3 -m pytest --doctest-modules
+          python3 -m pytest --doctest-modules lydata

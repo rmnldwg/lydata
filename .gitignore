@@ -138,3 +138,6 @@ dmypy.json
 /scenario_showcase.png
 /joined.csv
 /enhanced.csv
+
+# SCM
+**/_version.py

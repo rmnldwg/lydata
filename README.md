@@ -78,6 +78,10 @@ Besides the data, this repository provides a Python library for loading, manipul
 > [!CAUTION]
 > This Python library is still highly experimental!
 
+[![Build](https://github.com/rmnldwg/lydata/actions/workflows/build.yml/badge.svg)](https://github.com/rmnldwg/lydata/actions/workflows/build.yml)
+[![Tests](https://github.com/rmnldwg/lydata/actions/workflows/tests.yml/badge.svg)](https://github.com/rmnldwg/lydata/actions/workflows/tests.yml)
+[![Documentation Status](https://readthedocs.org/projects/lydata/badge/?version=latest)](https://lydata.readthedocs.io/en/latest/?badge=latest)
+
 If you want to install this library, clone the repo and install it. You can do so by executing these commands:
 
 ```bash
