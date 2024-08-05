@@ -39,7 +39,7 @@ docs = [
     "sphinx",
     "sphinx-book-theme",
     "sphinx-autodoc-typehints",
-    "m2r",
+    "myst-parser[linkify]",
 ]
 tests = [
     "pytest",

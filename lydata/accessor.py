@@ -293,10 +293,10 @@ def true_estimate(
     >>> true_pos_probs = [0.8, 0.6, 0.9]
     >>> false_neg_probs = [0.6, 0.7, 0.9]
     >>> true_estimate(obs, true_pos_probs, false_neg_probs, method="max")
-    0.8
+    np.float64(0.8)
     >>> tmp = true_estimate(obs, true_pos_probs, false_neg_probs, method="prod")
     >>> np.isclose(tmp, 0.56)
-    True
+    np.True_
     """
     true_llhs = np.where(obs, true_pos_probs, false_neg_probs)
     nans_masked = np.where(
@@ -319,10 +319,10 @@ def max_likelihood(
     >>> sensitivities = np.array([0.9, 0.7, 0.7, 0.7])
     >>> specificities = np.array([0.9, 0.7, 0.7, 0.7])
     >>> max_likelihood(obs, sensitivities, specificities)
-    True
+    np.True_
     >>> obs = np.array([True, False, False, False])
     >>> max_likelihood(obs, sensitivities, specificities)
-    False
+    np.False_
     """
     healthy_llh = false_estimate(obs, 1 - specificities, specificities, method="prod")
     involved_llhs = true_estimate(obs, sensitivities, 1 - sensitivities, method="prod")
@@ -340,10 +340,10 @@ def rank_trustworthy(
     >>> sensitivities = np.array([0.9, 0.7, 0.7, 0.7])
     >>> specificities = np.array([0.9, 0.7, 0.7, 0.7])
     >>> rank_trustworthy(obs, sensitivities, specificities)
-    True
+    np.True_
     >>> obs = np.array([True, False, False, False])
     >>> rank_trustworthy(obs, sensitivities, specificities)
-    True
+    np.True_
     """
     healthy_llh = false_estimate(obs, 1 - specificities, specificities, method="max")
     involved_llhs = true_estimate(obs, sensitivities, 1 - sensitivities, method="max")
@@ -441,9 +441,9 @@ class LydataAccessor:
 
         >>> df = pd.DataFrame({'x': [1, 2, 3]})
         >>> df.lydata.portion(query=Q('x', '==', 2), given=Q('x', '>', 1))
-        QueryPortion(match=1, total=2)
+        QueryPortion(match=np.int64(1), total=np.int64(2))
         >>> df.lydata.portion(query=Q('x', '==', 2), given=Q('x', '>', 3))
-        QueryPortion(match=0, total=0)
+        QueryPortion(match=np.int64(0), total=np.int64(0))
         """
         given_mask = (given or NoneQ()).execute(self._obj)
         query_mask = (query or NoneQ()).execute(self._obj)
