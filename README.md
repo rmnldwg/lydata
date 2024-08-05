@@ -78,6 +78,8 @@ Besides the data, this repository provides a Python library for loading, manipul
 > [!CAUTION]
 > This Python library is still highly experimental!
 
+[![Tests](https://github.com/rmnldwg/lydata/actions/workflows/tests.yml/badge.svg)](https://github.com/rmnldwg/lydata/actions/workflows/tests.yml)
+
 If you want to install this library, clone the repo and install it. You can do so by executing these commands:
 
 ```bash
