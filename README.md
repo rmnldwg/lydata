@@ -8,13 +8,13 @@ lyDATA is a repository for datasets that report detailed patterns of lymphatic p
 
 HNSCC spreads though the lymphatic system of the neck and forms metastases in regional lymph nodes. Macroscopic metastases can be detected with imaging modalities like MRI, PET and CT scans. They are then consequently included in the target volume, when radiotherapy is chosen as part of the treatment. However, microscopic metastases are too small be diagnosed with current imaging techniques.
 
-To account for this microscopic involvement, parts of the lymphatic system are often irradiated electively to increase tumor control. Which parts are included in this elective clinical target volume is curretnly decided based on guidelines like [[1]](#1), [[2]](#2), [[3]](#3) and [[4]](#4). These in turn are derived from reports of the prevalence of involvement per lymph node level (LNL), i.e. the portion of patients that were diagnosed with metastases in any given LNL, stratified by primary tumor location. It is recommended to include a LNL in the elective target volume if 10 - 15% of patients showed involvement in that particular level.
+To account for this microscopic involvement, parts of the lymphatic system are often irradiated electively to increase tumor control. Which parts are included in this elective clinical target volume is currently decided based on guidelines like [[1]](#1), [[2]](#2), [[3]](#3) and [[4]](#4). These in turn are derived from reports of the prevalence of involvement per lymph node level (LNL), i.e. the portion of patients that were diagnosed with metastases in any given LNL, stratified by primary tumor location. It is recommended to include a LNL in the elective target volume if 10 - 15% of patients showed involvement in that particular level.
 
 However, while the prevalence of involvement has been reported in the literature, e.g. in [[5]](#5) and [[6]](#6), and the general lymph drainage pathways are understood well, the detailed progression patterns of HNSCC remain poorly quantified. We believe that the risk for microscopic involvement in an LNL depends highly on the specific diagnose of a particular patient and their treatment can hence be personalized if the progression patterns were better quantified.
 
 ## Our Goal
 
-In this repository we aim to provide data on the detailed lymphatic progression patterns extracted from patients of the University Hospital Zurch (USZ). The data can be used freely and we hope clincians in the field find it useful as well. Ideally, we can motivate other researchers to share their data in similar detail and openness, so that large multicentric datasets can be built.
+In this repository we aim to provide data on the detailed lymphatic progression patterns extracted from patients of the University Hospital Zurich (USZ). The data can be used freely and we hope clinicians in the field find it useful as well. Ideally, we can motivate other researchers to share their data in similar detail and openness, so that large multi-centric datasets can be built.
 
 ## Available datasets
 
@@ -57,7 +57,7 @@ As part of a collaboration with researchers from the [Inselspital Bern] (Switzer
 [![DiB badge](https://img.shields.io/badge/DiB-10.1016%2Fj.dib.2023.110020-orange)](https://doi.org/10.1016/j.dib.2023.110020)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10210361.svg)](https://doi.org/10.5281/zenodo.10210361)
 
-Completing the "2021 CLB Oropharynx" data table, these patient records detaul lymphatic involvement patterns in HNSCC patients with primary tumors beyond the oropharynx. Again, they are thankfully provided by researchers in Prof. Vincent Grégoire's group and the data was extracted at the [Centre Léon Bérard].
+Completing the "2021 CLB Oropharynx" data table, these patient records detail lymphatic involvement patterns in HNSCC patients with primary tumors beyond the oropharynx. Again, they are thankfully provided by researchers in Prof. Vincent Grégoire's group and the data was extracted at the [Centre Léon Bérard].
 
 [:open_file_folder: 2023 CLB Multisite]: https://github.com/rmnldwg/lyDATA/tree/main/2023-clb-multisite
 
