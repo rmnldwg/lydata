@@ -380,14 +380,14 @@ stages:
     outs:
     - path: enhanced.csv
       hash: md5
-      md5: bcaf6d8b71e3de52261598a7da0533f1
+      md5: 936fb94f42081824f3b5e14b722bd6e1
       size: 644104
   scenario-showcase:
     cmd: "python scripts/scenario_showcase.py --data enhanced.csv --mplstyle scripts/.mplstyle\n"
     deps:
     - path: enhanced.csv
       hash: md5
-      md5: bcaf6d8b71e3de52261598a7da0533f1
+      md5: 936fb94f42081824f3b5e14b722bd6e1
       size: 644104
     - path: scripts/.mplstyle
       hash: md5
