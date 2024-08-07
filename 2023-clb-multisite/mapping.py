@@ -164,15 +164,12 @@ def parse_pathology(entry, *_args, **_kwargs) -> bool | None:
 
 def set_diagnostic_consensus(entry, *_args, **_kwargs):
     """
-    Return `False`, meaning 'healthy', when no entry about a resected LNL is available
-    or when the pathology report says it was healhty. This is a hack to tackle the
-    issue described here:
+    Return `False`, meaning 'healthy', when no entry about a resected LNL is available.
+    This is a hack to tackle theissue described here:
 
     https://github.com/rmnldwg/lyprox/issues/92
     """
-    if np.isnan(entry) or entry == 0:
-        return False
-    return None
+    return False if np.isnan(entry) else None
 
 
 def extract_hpv(value: int | None, *_args, **_kwargs) -> bool | None:

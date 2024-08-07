@@ -75,12 +75,12 @@ Every folder that corresponds to a dataset also contains a `CITATION.cff` file w
 
 Besides the data, this repository provides a Python library for loading, manipulating, and validating the available datasets.
 
-> [!CAUTION]
+> [!WARNING]
 > This Python library is still highly experimental!
 
 [![Build](https://github.com/rmnldwg/lydata/actions/workflows/build.yml/badge.svg)](https://github.com/rmnldwg/lydata/actions/workflows/build.yml)
 [![Tests](https://github.com/rmnldwg/lydata/actions/workflows/tests.yml/badge.svg)](https://github.com/rmnldwg/lydata/actions/workflows/tests.yml)
-[![Documentation Status](https://readthedocs.org/projects/lydata/badge/?version=latest)](https://lydata.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/lydata/badge/?version=stable)](https://lydata.readthedocs.io/en/stable/?badge=stable)
 
 If you want to install this library, clone the repo and install it. You can do so by executing these commands:
 
