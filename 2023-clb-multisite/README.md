@@ -232,7 +232,7 @@ Transform number of positive nodes to `True`, `False` or `None`.
 set_diagnostic_consensus(entry, *_args, **_kwargs)
 ```
 
-Return `False`, meaning 'healthy', when no entry about a resected LNL is available or when the pathology report says it was healhty. This is a hack to tackle the issue described here: 
+Return `False`, meaning 'healthy', when no entry about a resected LNL is available. This is a hack to tackle theissue described here: 
 
 https://github.com/rmnldwg/lyprox/issues/92 
 
