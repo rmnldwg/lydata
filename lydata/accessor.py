@@ -1,4 +1,5 @@
 """Module containing a custom accessor and helpers for querying lydata."""
+
 from __future__ import annotations
 
 from collections.abc import Callable
@@ -10,7 +11,7 @@ import pandas as pd
 import pandas.api.extensions as pd_ext
 
 from lydata.utils import (
-    Modality,
+    ModalityConfig,
     get_default_column_map,
     get_default_modalities,
 )
@@ -43,12 +44,12 @@ class Q(CombineQMixin):
 
     _OPERATOR_MAP: dict[str, Callable[[pd.Series, Any], pd.Series]] = {
         "==": lambda series, value: series == value,
-        "<":  lambda series, value: series <  value,
+        "<": lambda series, value: series < value,
         "<=": lambda series, value: series <= value,
-        ">":  lambda series, value: series >  value,
+        ">": lambda series, value: series > value,
         ">=": lambda series, value: series >= value,
-        "!=": lambda series, value: series != value,    # same as ~Q("col", "==", value)
-        "in": lambda series, value: series.isin(value), # value is a list
+        "!=": lambda series, value: series != value,  # same as ~Q("col", "==", value)
+        "in": lambda series, value: series.isin(value),  # value is a list
     }
 
     def __init__(
@@ -252,6 +253,7 @@ def align_diagnoses(
 
 def create_raising_func(method: str):
     """Raise ValueError for wrong ``method``."""
+
     def raise_value_err(*args, **kwargs):
         raise ValueError(f"Unknown method {method}")
 
@@ -274,7 +276,7 @@ def false_estimate(
     false_llhs = np.where(obs, false_pos_probs, true_neg_probs)
     nans_masked = np.where(
         pd.isna(obs),
-        1. if method == "prod" else 0.,
+        1.0 if method == "prod" else 0.0,
         false_llhs,
     )
     method = getattr(np, method, create_raising_func(method))
@@ -301,7 +303,7 @@ def true_estimate(
     true_llhs = np.where(obs, true_pos_probs, false_neg_probs)
     nans_masked = np.where(
         pd.isna(obs),
-        1. if method == "prod" else 0.,
+        1.0 if method == "prod" else 0.0,
         true_llhs,
     )
     method = getattr(np, method, create_raising_func(method))
@@ -370,6 +372,7 @@ def expand_mapping(
 
 
 AggFuncType = dict[str | tuple[str, str, str], Callable[[pd.Series], pd.Series]]
+
 
 @pd_ext.register_dataframe_accessor("lydata")
 class LydataAccessor:
@@ -489,7 +492,7 @@ class LydataAccessor:
 
     def combine(
         self,
-        modalities: list[Modality] | None = None,
+        modalities: list[ModalityConfig] | None = None,
         method: Literal["max_llh", "rank"] = "max_llh",
     ) -> pd.DataFrame:
         """Combine diagnoses of ``modalities`` using ``method``."""
