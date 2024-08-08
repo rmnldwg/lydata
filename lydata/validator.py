@@ -1,9 +1,13 @@
 """Module to validate the CSV schema of the lydata datasets."""
 
+import logging
+
 from pandera import Check, Column, DataFrameSchema
 from pandera.errors import SchemaError
 
 from lydata.loader import available_datasets
+
+logger = logging.getLogger(__name__)
 
 _NULLABLE_OPTIONAL = {"required": False, "nullable": True}
 _NULLABLE_OPTIONAL_BOOLEAN_COLUMN = Column(
@@ -88,10 +92,11 @@ def validate() -> None:
         dataset = data_spec.load()
         try:
             lydata_schema.validate(dataset)
+            logger.info(f"Schema validation passed for {data_spec!r}.")
         except SchemaError as schema_err:
-            raise Exception(
-                f"Schema validation failed for {data_spec!r}."
-            ) from schema_err
+            message = f"Schema validation failed for {data_spec!r}."
+            logger.error(message, exc_info=schema_err)
+            raise Exception(message) from schema_err
 
 
 if __name__ == "__main__":

@@ -1,7 +1,8 @@
 """Module for loading the lydata datasets."""
 import fnmatch
+import logging
 import os
-from collections.abc import Generator
+from collections.abc import Generator, Iterable
 from dataclasses import asdict, dataclass, field
 from io import TextIOWrapper
 from pathlib import Path
@@ -12,8 +13,11 @@ import pandas as pd
 from github import Auth, Github
 from mistletoe.block_token import Heading
 from mistletoe.markdown_renderer import MarkdownRenderer
+from mistletoe.token import Token
 
 from lydata import _repo
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -55,7 +59,9 @@ class DatasetSpec:
     def _load_or_fetch(self, loc: Path | str, **load_kwargs) -> pd.DataFrame:
         kwargs = {"header": [0, 1, 2]}
         kwargs.update(load_kwargs)
-        return pd.read_csv(loc, **kwargs)
+        df = pd.read_csv(loc, **kwargs)
+        df.attrs.update(asdict(self))
+        return df
 
     def load(self, **load_kwargs) -> pd.DataFrame:
         """Load the dataset."""
@@ -69,7 +75,7 @@ class DatasetSpec:
         return self._load_or_fetch(self.url, **load_kwargs)
 
 
-def remove_subheadings(elements: list, min_level: int = 1) -> list:
+def remove_subheadings(elements: Iterable[Token], min_level: int = 1) -> list[Token]:
     """Remove anything under ``min_level`` headings."""
     filtered_elements = []
 
@@ -211,9 +217,7 @@ def load_datasets(
 ) -> Generator[pd.DataFrame, None, None]:
     """Load matching datasets from the disk."""
     for dataset_spec in available_datasets(year, institution, subsite):
-        dataset = dataset_spec.load(**load_kwargs)
-        dataset.attrs.update(asdict(dataset_spec))
-        yield dataset
+        yield dataset_spec.load(**load_kwargs)
 
 
 def load_dataset(
@@ -246,9 +250,7 @@ def fetch_datasets(
 ) -> Generator[pd.DataFrame, None, None]:
     """Fetch matching datasets from the web."""
     for dataset_spec in available_datasets(year, institution, subsite):
-        dataset = dataset_spec.fetch(**load_kwargs)
-        dataset.attrs.update(asdict(dataset_spec))
-        yield dataset
+        yield dataset_spec.fetch(**load_kwargs)
 
 
 def fetch_dataset(
