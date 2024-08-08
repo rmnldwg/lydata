@@ -1,6 +1,6 @@
 repos:
 - repo: https://github.com/kynan/nbstripout
-  rev: 0.6.0
+  rev: 0.7.1
   hooks:
     - id: nbstripout
 - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -12,13 +12,13 @@ repos:
   - id: check-toml
   - id: check-yaml
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.4.10
+  rev: v0.5.6
   hooks:
     - id: ruff
       args: [ --fix ]
     - id: ruff-format
 - repo: https://github.com/asottile/pyupgrade
-  rev: v3.16.0
+  rev: v3.17.0
   hooks:
   - id: pyupgrade
     args: [--py310-plus]
@@ -28,7 +28,7 @@ repos:
   - id: markdownlint-fix
     args: [--config, pyproject.toml, --configPointer, /tool/markdownlint]
 - repo: https://github.com/compilerla/conventional-pre-commit
-  rev: v3.2.0
+  rev: v3.4.0
   hooks:
   - id: conventional-pre-commit
     stages: [commit-msg]
