@@ -32,7 +32,7 @@ jobs:
       - name: install dependencies
         run: |
           python3 -m pip install -U pip setuptools setuptools-scm wheel
-          python3 -m pip install .[tests]
+          python3 -m pip install .[test]
       - name: Run tests
         env:
           GITHUB_TOKEN: ${{ secrets.READONLY_TOKEN }}
