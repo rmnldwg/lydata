@@ -7,9 +7,9 @@ from collections.abc import Generator, Iterable
 from datetime import datetime
 from io import TextIOWrapper
 from pathlib import Path
-from typing import Literal
 
 import mistletoe
+import numpy as np  # noqa: F401
 import pandas as pd
 from github import Auth, Github
 from mistletoe.block_token import Heading
@@ -22,6 +22,13 @@ from lydata import _repo
 logger = logging.getLogger(__name__)
 
 low_min1_str = constr(to_lower=True, min_length=1)
+
+
+class SkipDiskError(Exception):
+    """Raised when the user wants to skip loading from disk."""
+
+class SkipGithubError(Exception):
+    """Raised when the user wants to skip loading from GitHub."""
 
 
 class LyDatasetConfig(BaseModel):
@@ -63,19 +70,22 @@ class LyDatasetConfig(BaseModel):
         install_loc = Path(__file__).parent.parent
         return install_loc / self.name / "data.csv"
 
-    @property
-    def url(self) -> str:
-        """Get the URL to the dataset.
+    def get_url(self, file: str) -> str:
+        """Get the URL to the dataset's directory, CSV file, or README file.
 
-        >>> conf = LyDatasetConfig(year=2023, institution="isb", subsite="multisite")
-        >>> conf.url
-        'https://raw.githubusercontent.com/rmnldwg/lydata/main/2023-isb-multisite/data.csv'
+        >>> conf = LyDatasetConfig(year=2021, institution="clb", subsite="oropharynx")
+        >>> conf.get_url("")
+        'https://raw.githubusercontent.com/rmnldwg/lydata/main/2021-clb-oropharynx/'
+        >>> conf.get_url("data.csv")
+        'https://raw.githubusercontent.com/rmnldwg/lydata/main/2021-clb-oropharynx/data.csv'
+        >>> conf.get_url("README.md")
+        'https://raw.githubusercontent.com/rmnldwg/lydata/main/2021-clb-oropharynx/README.md'
         """
         return (
             "https://raw.githubusercontent.com/"
             f"{self.repo}/{self.revision}/"
-            f"{self.year}-{self.institution}-{self.subsite}/data.csv"
-        )
+            f"{self.year}-{self.institution}-{self.subsite}/"
+        ) + file
 
     def get_description(self) -> str:
         """Get the description of the dataset.
@@ -100,23 +110,53 @@ class LyDatasetConfig(BaseModel):
         readme = repo.get_contents(f"{self.name}/README.md").decoded_content.decode()
         return format_description(readme, short=True)
 
-    def _load_or_fetch(self, loc: Path | str, **load_kwargs) -> pd.DataFrame:
+    def load(
+        self,
+        skip_disk: bool = False,
+        skip_github: bool = False,
+        **load_kwargs,
+    ) -> pd.DataFrame:
+        """Load the ``data.csv`` file from disk or from GitHub.
+
+        One can also choose to ``skip_disk`` or ``skip_github``. The latter means that
+        a ``SkipGithubError`` will be raised from whatever error was raised when trying
+        to load from disk. Any keyword arguments are passed to ``pd.read_csv``.
+
+        The method will store the output of ``model_dump()`` in the ``attrs`` attribute
+        of the returned ``pd.DataFrame``.
+
+        >>> conf = LyDatasetConfig(year=2021, institution="clb", subsite="oropharynx")
+        >>> df_from_disk = conf.load()
+        >>> df_from_disk.shape
+        (263, 82)
+        >>> df_from_github = conf.load(skip_disk=True)
+        >>> np.all(df_from_disk.fillna(0) == df_from_github.fillna(0))
+        np.True_
+        >>> _ = conf.load(skip_disk=True, skip_github=True)   # doctest: +ELLIPSIS
+        Traceback (most recent call last):
+            ...
+        loader.SkipGithubError
+        """
         kwargs = {"header": [0, 1, 2]}
         kwargs.update(load_kwargs)
-        df = pd.read_csv(loc, **kwargs)
+
+        try:
+            if skip_disk:
+                logger.info(f"Skipping loading from {self.path}.")
+                raise SkipDiskError
+            df = pd.read_csv(self.path, **kwargs)
+
+        except (FileNotFoundError, pd.errors.ParserError, SkipDiskError) as err:
+            if skip_github:
+                raise SkipGithubError from err
+
+            if isinstance(err, FileNotFoundError | pd.errors.ParserError):
+                logger.info(f"Could not load from {self.path}. Trying GitHub...")
+
+            df = pd.read_csv(self.get_url("data.csv"), **kwargs)
+
         df.attrs.update(self.model_dump())
         return df
-
-    def load(self, **load_kwargs) -> pd.DataFrame:
-        """Load the dataset."""
-        if self.path is None:
-            raise ValueError("Cannot load dataset: Path not known.")
-
-        return self._load_or_fetch(self.path, **load_kwargs)
-
-    def fetch(self, **load_kwargs) -> pd.DataFrame:
-        """Fetch the dataset from the web."""
-        return self._load_or_fetch(self.url, **load_kwargs)
 
 
 def remove_subheadings(tokens: Iterable[Token], min_level: int = 1) -> list[Token]:
@@ -210,53 +250,75 @@ def available_datasets(
     year: int | str = "*",
     institution: str = "*",
     subsite: str = "*",
-    where: Literal["disk", "github"] = "disk",
+    skip_disk: bool = False,
+    skip_github: bool = False,
 ) -> Generator[LyDatasetConfig, None, None]:
     """Generate names of available datasets.
 
-    >>> avail_gen = available_datasets(where='disk')
+    The arguments ``year``, ``institution``, and ``subsite`` represent glob patterns
+    and all datasets matching these patterns can be iterated over using the returned
+    generator.
+
+    With ``skip_disk`` set to ``True``, the function will not look for datasets on disk.
+
+    >>> avail_gen = available_datasets(skip_github=True)
     >>> sorted([ds.name for ds in avail_gen])   # doctest: +NORMALIZE_WHITESPACE
     ['2021-clb-oropharynx',
      '2021-usz-oropharynx',
      '2023-clb-multisite',
      '2023-isb-multisite']
-    >>> avail_gen = available_datasets(where='github')
+    >>> avail_gen = available_datasets(skip_disk=True)
     >>> sorted([ds.name for ds in avail_gen])   # doctest: +NORMALIZE_WHITESPACE
     ['2021-clb-oropharynx',
      '2021-usz-oropharynx',
      '2023-clb-multisite',
      '2023-isb-multisite']
     """
-    if where == "disk":
+    if not skip_disk:
         yield from _available_datasets_on_disk(year, institution, subsite)
-    elif where == "github":
+    elif not skip_github:
         yield from _available_datasets_on_github(year, institution, subsite)
     else:
-        raise ValueError(f"Unknown source: {where}")
+        raise ValueError("Both skip_disk and skip_github are set to True.")
 
 
 def load_datasets(
     year: int | str = "*",
     institution: str = "*",
     subsite: str = "*",
-    **load_kwargs,
+    skip_disk: bool = False,
+    skip_github: bool = False,
+    **kwargs,
 ) -> Generator[pd.DataFrame, None, None]:
-    """Load matching datasets from the disk."""
-    for dataset_conf in available_datasets(year, institution, subsite):
-        yield dataset_conf.load(**load_kwargs)
+    """Load matching datasets from the disk.
+
+    The arguments ``skip_disk`` and ``skip_github`` are passed to both the
+    ``available_datasets()`` function to check for what can be loaded and to the
+    ``LyDatasetConfig.load()`` method to decide whether to load from disk or
+    from GitHub.
+    """
+    dset_confs = available_datasets(
+        year=year,
+        institution=institution,
+        subsite=subsite,
+        skip_disk=skip_disk,
+        skip_github=skip_github,
+    )
+    for dset_conf in dset_confs:
+        yield dset_conf.load(skip_disk=skip_disk, skip_github=skip_github, **kwargs)
 
 
 def load_dataset(
     year: int | str = "*",
     institution: str = "*",
     subsite: str = "*",
-    **load_kwargs,
+    skip_disk: bool = False,
+    skip_github: bool = False,
+    **kwargs,
 ) -> pd.DataFrame:
-    """Load the first matching dataset from the disk.
+    """Load the first matching dataset.
 
-    Note that datasets loaded (or fetched) with this function will have the
-    dataset config stored in the ``attrs`` attribute. See below for an
-    example of how to access the dataset config.
+    ``skip_disk`` and ``skip_github`` are passed to the ``load_datasets()`` function.
 
     >>> ds = load_dataset(year="2021", institution='clb', subsite='oropharynx')
     >>> ds.attrs["year"]
@@ -265,43 +327,35 @@ def load_dataset(
     >>> conf_from_ds.name
     '2021-clb-oropharynx'
     """
-    return next(load_datasets(year, institution, subsite, **load_kwargs))
-
-
-def fetch_datasets(
-    year: int | str = "*",
-    institution: str = "*",
-    subsite: str = "*",
-    **load_kwargs,
-) -> Generator[pd.DataFrame, None, None]:
-    """Fetch matching datasets from the web."""
-    for dataset_conf in available_datasets(year, institution, subsite):
-        yield dataset_conf.fetch(**load_kwargs)
-
-
-def fetch_dataset(
-    year: int | str = "*",
-    institution: str = "*",
-    subsite: str = "*",
-    **load_kwargs,
-) -> pd.DataFrame:
-    """Fetch the first matching dataset from the web."""
-    return next(fetch_datasets(year, institution, subsite, **load_kwargs))
+    return next(load_datasets(
+        year=year,
+        institution=institution,
+        subsite=subsite,
+        skip_disk=skip_disk,
+        skip_github=skip_github,
+        **kwargs
+    ))
 
 
 def join_datasets(
     year: int | str = "*",
     institution: str = "*",
     subsite: str = "*",
-    method: Literal["fetch", "load"] = "load",
-    **load_or_fetch_kwargs,
+    skip_disk: bool = False,
+    skip_github: bool = False,
+    **kwargs,
 ) -> pd.DataFrame:
-    """Join matching datasets from the disk."""
-    if method == "fetch":
-        gen = fetch_datasets(year, institution, subsite, **load_or_fetch_kwargs)
-    elif method == "load":
-        gen = load_datasets(year, institution, subsite, **load_or_fetch_kwargs)
-    else:
-        raise ValueError(f"Unknown method: {method}")
+    """Join matching datasets from the disk.
 
+    This uses the ``load_datasets()`` function to load the datasets and then
+    concatenates them along the index axis.
+    """
+    gen = load_datasets(
+        year=year,
+        institution=institution,
+        subsite=subsite,
+        skip_disk=skip_disk,
+        skip_github=skip_github,
+        **kwargs,
+    )
     return pd.concat(list(gen), axis="index", ignore_index=True)
