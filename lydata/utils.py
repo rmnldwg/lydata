@@ -82,8 +82,8 @@ class ModalityConfig(BaseModel):
 def get_default_modalities() -> list[ModalityConfig]:
     """Get defaults values for sensitivities and specificities of modalities.
 
-    Taken from [de Bondt et al. (2007)](https://doi.org/10.1016/j.ejrad.2007.02.037)
-    and [Kyzas et al. (2008)](https://doi.org/10.1093/jnci/djn125).
+    Taken from `de Bondt et al. (2007) <https://doi.org/10.1016/j.ejrad.2007.02.037>`_
+    and `Kyzas et al. (2008) <https://doi.org/10.1093/jnci/djn125>`_.
     """
     return [
         ModalityConfig("CT", 0.76, 0.81),

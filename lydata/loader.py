@@ -90,9 +90,9 @@ class LyDatasetConfig(BaseModel):
     def get_description(self) -> str:
         """Get the description of the dataset.
 
-        First, try to load it from the `README.md` file that should sit right next to
-        the `data.csv` file. If that fails, try to look for the `README.md` file in the
-        GitHub repository.
+        First, try to load it from the ``README.md`` file that should sit right next to
+        the ``data.csv`` file. If that fails, try to look for the ``README.md`` file in
+        the GitHub repository.
 
         >>> conf = LyDatasetConfig(year=2021, institution="clb", subsite="oropharynx")
         >>> print(conf.get_description())   # doctest: +ELLIPSIS
@@ -119,11 +119,13 @@ class LyDatasetConfig(BaseModel):
         """Load the ``data.csv`` file from disk or from GitHub.
 
         One can also choose to ``skip_disk`` or ``skip_github``. The latter means that
-        a ``SkipGithubError`` will be raised from whatever error was raised when trying
-        to load from disk. Any keyword arguments are passed to ``pd.read_csv``.
+        a :py:class:`.SkipGithubError` will be raised from whatever error was raised
+        when trying to load from disk. Any keyword arguments are passed to
+        :py:func:`pandas.read_csv`.
 
-        The method will store the output of ``model_dump()`` in the ``attrs`` attribute
-        of the returned ``pd.DataFrame``.
+        The method will store the output of :py:meth:`~pydantic.BaseModel.model_dump`
+        in the :py:attr:`~pandas.DataFrame.attrs` attribute of the returned
+        :py:class:`~pandas.DataFrame`.
 
         >>> conf = LyDatasetConfig(year=2021, institution="clb", subsite="oropharynx")
         >>> df_from_disk = conf.load()
@@ -293,8 +295,8 @@ def load_datasets(
     """Load matching datasets from the disk.
 
     The arguments ``skip_disk`` and ``skip_github`` are passed to both the
-    ``available_datasets()`` function to check for what can be loaded and to the
-    ``LyDatasetConfig.load()`` method to decide whether to load from disk or
+    :py:func:`.available_datasets` function to check for what can be loaded and to the
+    :py:meth:`.LyDatasetConfig.load` method to decide whether to load from disk or
     from GitHub.
     """
     dset_confs = available_datasets(
@@ -318,7 +320,7 @@ def load_dataset(
 ) -> pd.DataFrame:
     """Load the first matching dataset.
 
-    ``skip_disk`` and ``skip_github`` are passed to the ``load_datasets()`` function.
+    ``skip_disk`` and ``skip_github`` are passed to :py:func:`load_datasets` function.
 
     >>> ds = load_dataset(year="2021", institution='clb', subsite='oropharynx')
     >>> ds.attrs["year"]
@@ -347,7 +349,7 @@ def join_datasets(
 ) -> pd.DataFrame:
     """Join matching datasets from the disk.
 
-    This uses the ``load_datasets()`` function to load the datasets and then
+    This uses the :py:func:`.load_datasets` function to load the datasets and then
     concatenates them along the index axis.
     """
     gen = load_datasets(
