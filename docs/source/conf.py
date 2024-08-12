@@ -41,7 +41,7 @@ autodoc_typehints = 'signature'
 # create links to other projects
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3.10', None),
-    'lymph': ('https://lymph-model.readthedocs.io/en/latest/', None),
+    'lymph': ('https://lymph-model.readthedocs.io/latest/', None),
     'pandas': ('https://pandas.pydata.org/pandas-docs/stable/', None),
     'numpy': ('https://numpy.org/doc/stable/', None),
 }

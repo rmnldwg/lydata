@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from typing import Any, Literal
 
 import pandas as pd
+from pydantic import BaseModel, Field
 
 
 @dataclass
@@ -31,9 +32,7 @@ class _ColumnMap:
     def __post_init__(self) -> None:
         """Check ``from_short`` and ``from_long`` contain same ``_ColumnSpec``."""
         for left, right in zip(
-            self.from_short.values(),
-            self.from_long.values(),
-            strict=True
+            self.from_short.values(), self.from_long.values(), strict=True
         ):
             if left != right:
                 raise ValueError(
@@ -55,49 +54,45 @@ class _ColumnMap:
 
 def get_default_column_map() -> _ColumnMap:
     """Get the default column map."""
-    return _ColumnMap.from_list([
-        _ColumnSpec("age", ("patient", "#", "age")),
-        _ColumnSpec("hpv", ("patient", "#", "hpv_status")),
-        _ColumnSpec("smoke", ("patient", "#", "nicotine_abuse")),
-        _ColumnSpec("alcohol", ("patient", "#", "alcohol_abuse")),
-        _ColumnSpec("t_stage", ("tumor"  , "1", "t_stage")),
-        _ColumnSpec("n_stage", ("patient", "#", "n_stage")),
-        _ColumnSpec("m_stage", ("patient", "#", "m_stage")),
-        _ColumnSpec("midext", ("tumor"  , "1", "extension")),
-    ])
+    return _ColumnMap.from_list(
+        [
+            _ColumnSpec("age", ("patient", "#", "age")),
+            _ColumnSpec("hpv", ("patient", "#", "hpv_status")),
+            _ColumnSpec("smoke", ("patient", "#", "nicotine_abuse")),
+            _ColumnSpec("alcohol", ("patient", "#", "alcohol_abuse")),
+            _ColumnSpec("t_stage", ("tumor", "1", "t_stage")),
+            _ColumnSpec("n_stage", ("patient", "#", "n_stage")),
+            _ColumnSpec("m_stage", ("patient", "#", "m_stage")),
+            _ColumnSpec("midext", ("tumor", "1", "extension")),
+        ]
+    )
 
 
-@dataclass
-class Modality:
-    """Diagnostic modality storing sensitivity and specificity."""
+class ModalityConfig(BaseModel):
+    """Define a diagnostic or pathological modality."""
 
-    name: str
-    sens: float
-    spec: float
-    kind: Literal["clinical", "pathological"] = "clinical"
-
-    def __post_init__(self):
-        """Check that sensitivity and specificity are in [0, 1]."""
-        if not 0 <= self.sens <= 1:
-            raise ValueError("Sensitivity must be in [0, 1].")
-        if not 0 <= self.spec <= 1:
-            raise ValueError("Specificity must be in [0, 1].")
+    spec: float = Field(ge=0.5, le=1.0, description="Specificity of the modality.")
+    sens: float = Field(ge=0.5, le=1.0, description="Sensitivity of the modality.")
+    kind: Literal["clinical", "pathological"] = Field(
+        default="clinical",
+        description="Clinical modalities cannot detect microscopic disease.",
+    )
 
 
-def get_default_modalities() -> list[Modality]:
+def get_default_modalities() -> list[ModalityConfig]:
     """Get defaults values for sensitivities and specificities of modalities.
 
-    Taken from [de Bondt et al. (2007)](https://doi.org/10.1016/j.ejrad.2007.02.037)
-    and [Kyzas et al. (2008)](https://doi.org/10.1093/jnci/djn125).
+    Taken from `de Bondt et al. (2007) <https://doi.org/10.1016/j.ejrad.2007.02.037>`_
+    and `Kyzas et al. (2008) <https://doi.org/10.1093/jnci/djn125>`_.
     """
     return [
-        Modality("CT", 0.76, 0.81),
-        Modality("MRI", 0.63, 0.81),
-        Modality("PET", 0.86, 0.79),
-        Modality("FNA", 0.98, 0.80, "pathological"),
-        Modality("diagnostic_consensus", 0.86, 0.81),
-        Modality("pathology", 1.0, 1.0, "pathological"),
-        Modality("pCT", 0.86, 0.81),
+        ModalityConfig("CT", 0.76, 0.81),
+        ModalityConfig("MRI", 0.63, 0.81),
+        ModalityConfig("PET", 0.86, 0.79),
+        ModalityConfig("FNA", 0.98, 0.80, "pathological"),
+        ModalityConfig("diagnostic_consensus", 0.86, 0.81),
+        ModalityConfig("pathology", 1.0, 1.0, "pathological"),
+        ModalityConfig("pCT", 0.86, 0.81),
     ]
 
 
