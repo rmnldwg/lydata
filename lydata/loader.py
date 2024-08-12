@@ -137,7 +137,7 @@ class LyDatasetConfig(BaseModel):
         >>> _ = conf.load(skip_disk=True, skip_github=True)   # doctest: +ELLIPSIS
         Traceback (most recent call last):
             ...
-        loader.SkipGithubError
+        lydata.loader.SkipGithubError
         """
         kwargs = {"header": [0, 1, 2]}
         kwargs.update(load_kwargs)

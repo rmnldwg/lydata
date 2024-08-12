@@ -237,7 +237,7 @@ def align_diagnoses(
     dataset: pd.DataFrame,
     modalities: list[str],
 ) -> list[pd.DataFrame]:
-    """Align columns of specified modalities in ``dataset``."""
+    """Stack aligned diagnosis tables in ``dataset`` for each of ``modalities``."""
     diagnosis_stack = []
     for modality in modalities:
         this = dataset[modality].copy().drop(columns=["info"])
@@ -374,8 +374,8 @@ def expand_mapping(
 AggFuncType = dict[str | tuple[str, str, str], Callable[[pd.Series], pd.Series]]
 
 
-@pd_ext.register_dataframe_accessor("lydata")
-class LydataAccessor:
+@pd_ext.register_dataframe_accessor("ly")
+class LyDataAccessor:
     """Custom accessor for handling lymphatic involvement data."""
 
     def __init__(self, obj: pd.DataFrame) -> None:
@@ -387,11 +387,11 @@ class LydataAccessor:
         """Check if a column is contained in the DataFrame.
 
         >>> df = pd.DataFrame({("patient", "#", "age"): [61, 52, 73]})
-        >>> "age" in df.lydata
+        >>> "age" in df.ly
         True
-        >>> "foo" in df.lydata
+        >>> "foo" in df.ly
         False
-        >>> ("patient", "#", "age") in df.lydata
+        >>> ("patient", "#", "age") in df.ly
         True
         """
         key = self._get_safe_long(key)
@@ -406,12 +406,12 @@ class LydataAccessor:
         """Access columns also by short name.
 
         >>> df = pd.DataFrame({("patient", "#", "age"): [61, 52, 73]})
-        >>> df.lydata.age
+        >>> df.ly.age
         0    61
         1    52
         2    73
         Name: (patient, #, age), dtype: int64
-        >>> df.lydata.foo
+        >>> df.ly.foo
         Traceback (most recent call last):
             ...
         AttributeError: Attribute 'foo' not found.
@@ -439,13 +439,10 @@ class LydataAccessor:
     def portion(self, query: QTypes = None, given: QTypes = None) -> QueryPortion:
         """Compute how many rows satisfy a ``query``, ``given`` some other conditions.
 
-        Returns a tuple with the number of matches and the number of total rows, such
-        that the ratio of the two is the portion of interest.
-
         >>> df = pd.DataFrame({'x': [1, 2, 3]})
-        >>> df.lydata.portion(query=Q('x', '==', 2), given=Q('x', '>', 1))
+        >>> df.ly.portion(query=Q('x', '==', 2), given=Q('x', '>', 1))
         QueryPortion(match=np.int64(1), total=np.int64(2))
-        >>> df.lydata.portion(query=Q('x', '==', 2), given=Q('x', '>', 3))
+        >>> df.ly.portion(query=Q('x', '==', 2), given=Q('x', '>', 3))
         QueryPortion(match=np.int64(0), total=np.int64(0))
         """
         given_mask = (given or NoneQ()).execute(self._obj)
@@ -469,7 +466,7 @@ class LydataAccessor:
         ...     ('patient', '#', 'hpv_status'): [True, False, None, True],
         ...     ('tumor', '1', 't_stage'): [2, 3, 1, 2],
         ... })
-        >>> df.lydata.stats()   # doctest: +NORMALIZE_WHITESPACE
+        >>> df.ly.stats()   # doctest: +NORMALIZE_WHITESPACE
         {'age': {61: 2, 52: 1, 73: 1},
          'hpv': {True: 2, False: 1, None: 1},
          't_stage': {2: 2, 3: 1, 1: 1}}
