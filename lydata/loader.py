@@ -351,6 +351,11 @@ def join_datasets(
 
     This uses the :py:func:`.load_datasets` function to load the datasets and then
     concatenates them along the index axis.
+
+    >>> join_datasets(year="2023").shape
+    (705, 219)
+    >>> join_datasets(year="2023", skip_disk=True).shape
+    (705, 219)
     """
     gen = load_datasets(
         year=year,
