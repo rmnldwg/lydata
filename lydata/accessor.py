@@ -189,7 +189,7 @@ class NoneQ(CombineQMixin):
         return get_all_true(df)
 
 
-QTypes = Q | AndQ | OrQ | NotQ
+QTypes = Q | AndQ | OrQ | NotQ | None
 
 
 @dataclass
@@ -231,6 +231,23 @@ class QueryPortion:
         0.4
         """
         return self.match / self.total
+
+    @property
+    def percent(self) -> float:
+        """Get the percentage of matches over the total.
+
+        >>> QueryPortion(2, 5).percent
+        40.0
+        """
+        return self.ratio * 100
+
+    def invert(self) -> QueryPortion:
+        """Return the inverted portion.
+
+        >>> QueryPortion(2, 5).invert()
+        QueryPortion(match=3, total=5)
+        """
+        return QueryPortion(match=self.fail, total=self.total)
 
 
 def align_diagnoses(
@@ -427,7 +444,7 @@ class LyDataAccessor:
 
     def validate(self, modalities: list[str] | None = None) -> pd.DataFrame:
         """Validate the DataFrame against the lydata schema."""
-        modalities = modalities or [m.name for m in get_default_modalities()]
+        modalities = modalities or list(get_default_modalities().keys())
         lydata_schema = construct_schema(modalities=modalities)
         return lydata_schema.validate(self._obj)
 
@@ -493,8 +510,9 @@ class LyDataAccessor:
         method: Literal["max_llh", "rank"] = "max_llh",
     ) -> pd.DataFrame:
         """Combine diagnoses of ``modalities`` using ``method``."""
-        modalities = modalities or get_default_modalities()
-        diagnosis_stack = align_diagnoses(self._obj, [mod.name for mod in modalities])
+        modalities = modalities or list(get_default_modalities().values())
+        modality_names = list(get_default_modalities().keys())
+        diagnosis_stack = align_diagnoses(self._obj, modality_names)
         columns = diagnosis_stack[0].columns
         diagnosis_stack = np.array([diagnosis_stack])
 

@@ -79,21 +79,21 @@ class ModalityConfig(BaseModel):
     )
 
 
-def get_default_modalities() -> list[ModalityConfig]:
+def get_default_modalities() -> dict[str, ModalityConfig]:
     """Get defaults values for sensitivities and specificities of modalities.
 
     Taken from `de Bondt et al. (2007) <https://doi.org/10.1016/j.ejrad.2007.02.037>`_
     and `Kyzas et al. (2008) <https://doi.org/10.1093/jnci/djn125>`_.
     """
-    return [
-        ModalityConfig("CT", 0.76, 0.81),
-        ModalityConfig("MRI", 0.63, 0.81),
-        ModalityConfig("PET", 0.86, 0.79),
-        ModalityConfig("FNA", 0.98, 0.80, "pathological"),
-        ModalityConfig("diagnostic_consensus", 0.86, 0.81),
-        ModalityConfig("pathology", 1.0, 1.0, "pathological"),
-        ModalityConfig("pCT", 0.86, 0.81),
-    ]
+    return {
+        "CT": ModalityConfig(spec=0.76, sens=0.81),
+        "MRI": ModalityConfig(spec=0.63, sens=0.81),
+        "PET": ModalityConfig(spec=0.86, sens=0.79),
+        "FNA": ModalityConfig(spec=0.98, sens=0.80, kind="pathological"),
+        "diagnostic_consensus": ModalityConfig(spec=0.86, sens=0.81),
+        "pathology": ModalityConfig(spec=1.0, sens=1.0, kind="pathological"),
+        "pCT": ModalityConfig(spec=0.86, sens=0.81),
+    }
 
 
 def main() -> None:
