@@ -52,12 +52,12 @@ stages:
       size: 3064
     - path: 2023-isb-multisite/data.csv
       hash: md5
-      md5: 6135ac91c08b7518372488fb2e0f9b69
-      size: 204322
+      md5: 24c25eedd6a832e595b12bd6b822a25c
+      size: 204462
     - path: 2023-isb-multisite/mapping.py
       hash: md5
-      md5: 9dd3fdaf92c8cb820f5d32098f833f72
-      size: 52945
+      md5: 077ee8c837b587e3fc5b5ee810d0265c
+      size: 52984
     - path: scripts/render.py
       hash: md5
       md5: f288e59e2380a86708df57be8961d6ed
@@ -65,8 +65,8 @@ stages:
     outs:
     - path: 2023-isb-multisite/README.md
       hash: md5
-      md5: 060f60053fd4dac3e1212a72810ae001
-      size: 19576
+      md5: 5648913555b260ef67efaca4f9b7f331
+      size: 19642
   lyproxify@0:
     cmd: "lyscripts data lyproxify -i 2021-clb-oropharynx/raw.csv -o 2021-clb-oropharynx/data.csv
       -m 2021-clb-oropharynx/mapping.py -r 0\n"
@@ -90,8 +90,8 @@ stages:
     deps:
     - path: 2023-isb-multisite/mapping.py
       hash: md5
-      md5: 9dd3fdaf92c8cb820f5d32098f833f72
-      size: 52945
+      md5: 077ee8c837b587e3fc5b5ee810d0265c
+      size: 52984
     - path: 2023-isb-multisite/raw.csv
       hash: md5
       md5: 0546a71875f357e0210425407dedf426
@@ -99,8 +99,8 @@ stages:
     outs:
     - path: 2023-isb-multisite/data.csv
       hash: md5
-      md5: 6135ac91c08b7518372488fb2e0f9b69
-      size: 204322
+      md5: 24c25eedd6a832e595b12bd6b822a25c
+      size: 204462
   description-and-docs@2021-clb-oropharynx:
     cmd: "python scripts/render.py -m 2021-clb-oropharynx/mapping.py -d 2021-clb-oropharynx/data.csv
       -t 2021-clb-oropharynx/README.template -o 2021-clb-oropharynx/README.md\n"
@@ -183,8 +183,8 @@ stages:
     deps:
     - path: 2023-isb-multisite/data.csv
       hash: md5
-      md5: 6135ac91c08b7518372488fb2e0f9b69
-      size: 204322
+      md5: 24c25eedd6a832e595b12bd6b822a25c
+      size: 204462
     - path: scripts/t_category.py
       hash: md5
       md5: 9cd603d2c51bbdb9b9c78f5d6c292914
@@ -205,8 +205,8 @@ stages:
     deps:
     - path: 2023-isb-multisite/data.csv
       hash: md5
-      md5: 6135ac91c08b7518372488fb2e0f9b69
-      size: 204322
+      md5: 24c25eedd6a832e595b12bd6b822a25c
+      size: 204462
     - path: scripts/age_and_sex.py
       hash: md5
       md5: e837a45727dd17cb4350ee4c1b1e5676
@@ -271,8 +271,8 @@ stages:
     deps:
     - path: 2023-isb-multisite/data.csv
       hash: md5
-      md5: 6135ac91c08b7518372488fb2e0f9b69
-      size: 204322
+      md5: 24c25eedd6a832e595b12bd6b822a25c
+      size: 204462
     - path: scripts/subsite.py
       hash: md5
       md5: 5f8736beb002a5fd9da22714a9129bf5
@@ -315,8 +315,8 @@ stages:
     deps:
     - path: 2023-isb-multisite/data.csv
       hash: md5
-      md5: 6135ac91c08b7518372488fb2e0f9b69
-      size: 204322
+      md5: 24c25eedd6a832e595b12bd6b822a25c
+      size: 204462
     - path: scripts/bar_plot.py
       hash: md5
       md5: 9d4f3f0c12f69d4bee3306c37d2f112c
@@ -335,21 +335,21 @@ stages:
       size: 113116
     - path: 2023-isb-multisite/data.csv
       hash: md5
-      md5: 6135ac91c08b7518372488fb2e0f9b69
-      size: 204322
+      md5: 24c25eedd6a832e595b12bd6b822a25c
+      size: 204462
     outs:
     - path: joined.csv
       hash: md5
-      md5: 6cc62d08c7e4f5a7c0987ec7b89c0c88
-      size: 509392
+      md5: ff3bb9aee56c1a154c48ff193e5081a5
+      size: 509532
   enhance:
     cmd: "lyscripts data enhance --consensus max_llh --params modalities.yaml joined.csv
       enhanced.csv\n"
     deps:
     - path: joined.csv
       hash: md5
-      md5: 6cc62d08c7e4f5a7c0987ec7b89c0c88
-      size: 509392
+      md5: ff3bb9aee56c1a154c48ff193e5081a5
+      size: 509532
     params:
       modalities.yaml:
         modalities:
@@ -380,15 +380,15 @@ stages:
     outs:
     - path: enhanced.csv
       hash: md5
-      md5: 89e37987243b81a015679217c5a0d2ec
-      size: 633284
+      md5: 2484477724436b9d1cc5f1a61434c093
+      size: 633424
   scenario-showcase:
     cmd: "python scripts/scenario_showcase.py --data enhanced.csv --mplstyle scripts/.mplstyle\n"
     deps:
     - path: enhanced.csv
       hash: md5
-      md5: 89e37987243b81a015679217c5a0d2ec
-      size: 633284
+      md5: 2484477724436b9d1cc5f1a61434c093
+      size: 633424
     - path: scripts/.mplstyle
       hash: md5
       md5: 1dd8e65e1d2705d5c02ec977b8e7ca0d
