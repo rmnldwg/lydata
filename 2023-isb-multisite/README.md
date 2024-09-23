@@ -229,7 +229,7 @@ smpl_diagnose(entry, *_args, **_kwargs)
 robust(func: collections.abc.Callable) → Optional[Any]
 ```
 
-Wrapper that makes any type-conversion function 'robust' by simply returning `None` whenever any exception is thrown. 
+Make casting function 'robust' by returning `None` when an error is thrown. 
 
 
 ---
@@ -352,7 +352,9 @@ Call `robust(smpl_diagnose)` if the patient has an MRI diagnose.
 from_pathology(entry) → tuple[dict[str, int], bool]
 ```
 
-Infer how many nodes in an LNL where investigated/positive per resection. And if the LNL showed signs of extracapsular extension (ECE). 
+Infer how many nodes in an LNL where investigated/positive per resection. 
+
+If the LNL showed signs of extracapsular extension (ECE). 
 
 The way the data was collected is a bit tricky: Generally, they report the number of nodes in an LNL that were investigated or positive (depending on the column one looks at). But if multiple levels were resected and investigated en bloc, they wrote the finding in each LNL and appended a letter to the number. So, if LNL I was resected together with LNL II and they found in total 10 nodes, they would write `LNL I: 10a` and `LNL II: 10a`. 
 
@@ -389,7 +391,7 @@ Infer binary involvement from pathology report.
 num_super_from_pathology(*lnl_entries, lnl='I', side='left') → int | None
 ```
 
-Infer number of involved lymph nodes in super LNL (e.g. I, II and V) from pathology. 
+Infer number of involved nodes in super LNL (e.g. I, II and V) from pathology. 
 
 This involves checking if other LNLs have been resected with the LNL in question. In that case, we do not know if the LNL in question was involved or if it was only one of the co-resected LNLs. 
 
@@ -402,7 +404,7 @@ This involves checking if other LNLs have been resected with the LNL in question
 get_index(side: str, lnl: str) → int
 ```
 
-For a side of the neck and an LNL, return the index of the LNL in the `PATHOLOGY_COLS_INVESTIGATED` array. 
+Return the index of the LNL in the `PATHOLOGY_COLS_INVESTIGATED` array. 
 
 
 ---
@@ -446,7 +448,7 @@ Return number and symbol of co-resected LNLs.
 map_ece(*lnl_entries, **_kwargs)
 ```
 
-Infer from the provided columns if the patient had LNL involvement with extra-capsular extension. 
+Infer if the patient had LNL involvement with extra-capsular extension. 
 
 In the data, this is encoded by the value 100 being added to the number of positive LNLs. 
 
@@ -456,10 +458,12 @@ In the data, this is encoded by the value 100 being added to the number of posit
 ### <kbd>function</kbd> `get_ct_date`
 
 ```python
-get_ct_date(entry, mri_or_ct, *_args, **_kwargs)
+get_ct_date(entry, mri_or_ct, diagnose_date_col, *_args, **_kwargs)
 ```
 
 Determine the date of the CT diagnose. 
+
+If the date is missing, the date of diagnosis is used as a fallback. 
 
 
 ---
