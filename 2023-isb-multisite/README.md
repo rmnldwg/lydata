@@ -81,7 +81,7 @@ The data is provided as a CSV-table containing one row for each of the 332 patie
         8. **`t_stage:`** The T category of the tumor.
 3. **`CT:`** This top-level header contains involvement information from the CT scan.
     1. **`info:`** This second-level header contains general information about the CT scan.
-        1. **`date:`** The date of the CT scan.
+        1. **`date:`** The date of the CT scan. This was missing for some patients where the date of diagnosis was used as a fallback.
     2. **`left:`** This describes the observed involvement of the left LNLs.
         1. **`Va:`** As an example, this describes the clinical involvement of the left LNL Va, as observed in a CT scan.
     3. **`right:`** This describes the observed involvement of the right LNLs.

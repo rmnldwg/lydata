@@ -610,7 +610,10 @@ COLUMN_MAP = {
                 " scan."
             ),
             "date": {
-                "__doc__": "The date of the CT scan.",
+                "__doc__": (
+                    "The date of the CT scan. This was missing for some patients "
+                    "where the date of diagnosis was used as a fallback."
+                ),
                 "func": get_ct_date,
                 "columns": [
                     "Date of preoperativ  CT Thorax",
