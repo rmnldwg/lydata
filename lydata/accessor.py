@@ -1,4 +1,5 @@
 """Module containing a custom accessor and helpers for querying lydata."""
+
 from __future__ import annotations
 
 from collections.abc import Callable
@@ -10,7 +11,7 @@ import pandas as pd
 import pandas.api.extensions as pd_ext
 
 from lydata.utils import (
-    Modality,
+    ModalityConfig,
     get_default_column_map,
     get_default_modalities,
 )
@@ -43,12 +44,12 @@ class Q(CombineQMixin):
 
     _OPERATOR_MAP: dict[str, Callable[[pd.Series, Any], pd.Series]] = {
         "==": lambda series, value: series == value,
-        "<":  lambda series, value: series <  value,
+        "<": lambda series, value: series < value,
         "<=": lambda series, value: series <= value,
-        ">":  lambda series, value: series >  value,
+        ">": lambda series, value: series > value,
         ">=": lambda series, value: series >= value,
-        "!=": lambda series, value: series != value,    # same as ~Q("col", "==", value)
-        "in": lambda series, value: series.isin(value), # value is a list
+        "!=": lambda series, value: series != value,  # same as ~Q("col", "==", value)
+        "in": lambda series, value: series.isin(value),  # value is a list
     }
 
     def __init__(
@@ -188,7 +189,7 @@ class NoneQ(CombineQMixin):
         return get_all_true(df)
 
 
-QTypes = Q | AndQ | OrQ | NotQ
+QTypes = Q | AndQ | OrQ | NotQ | None
 
 
 @dataclass
@@ -231,12 +232,29 @@ class QueryPortion:
         """
         return self.match / self.total
 
+    @property
+    def percent(self) -> float:
+        """Get the percentage of matches over the total.
+
+        >>> QueryPortion(2, 5).percent
+        40.0
+        """
+        return self.ratio * 100
+
+    def invert(self) -> QueryPortion:
+        """Return the inverted portion.
+
+        >>> QueryPortion(2, 5).invert()
+        QueryPortion(match=3, total=5)
+        """
+        return QueryPortion(match=self.fail, total=self.total)
+
 
 def align_diagnoses(
     dataset: pd.DataFrame,
     modalities: list[str],
 ) -> list[pd.DataFrame]:
-    """Align columns of specified modalities in ``dataset``."""
+    """Stack aligned diagnosis tables in ``dataset`` for each of ``modalities``."""
     diagnosis_stack = []
     for modality in modalities:
         this = dataset[modality].copy().drop(columns=["info"])
@@ -252,6 +270,7 @@ def align_diagnoses(
 
 def create_raising_func(method: str):
     """Raise ValueError for wrong ``method``."""
+
     def raise_value_err(*args, **kwargs):
         raise ValueError(f"Unknown method {method}")
 
@@ -274,7 +293,7 @@ def false_estimate(
     false_llhs = np.where(obs, false_pos_probs, true_neg_probs)
     nans_masked = np.where(
         pd.isna(obs),
-        1. if method == "prod" else 0.,
+        1.0 if method == "prod" else 0.0,
         false_llhs,
     )
     method = getattr(np, method, create_raising_func(method))
@@ -301,7 +320,7 @@ def true_estimate(
     true_llhs = np.where(obs, true_pos_probs, false_neg_probs)
     nans_masked = np.where(
         pd.isna(obs),
-        1. if method == "prod" else 0.,
+        1.0 if method == "prod" else 0.0,
         true_llhs,
     )
     method = getattr(np, method, create_raising_func(method))
@@ -371,8 +390,9 @@ def expand_mapping(
 
 AggFuncType = dict[str | tuple[str, str, str], Callable[[pd.Series], pd.Series]]
 
-@pd_ext.register_dataframe_accessor("lydata")
-class LydataAccessor:
+
+@pd_ext.register_dataframe_accessor("ly")
+class LyDataAccessor:
     """Custom accessor for handling lymphatic involvement data."""
 
     def __init__(self, obj: pd.DataFrame) -> None:
@@ -384,11 +404,11 @@ class LydataAccessor:
         """Check if a column is contained in the DataFrame.
 
         >>> df = pd.DataFrame({("patient", "#", "age"): [61, 52, 73]})
-        >>> "age" in df.lydata
+        >>> "age" in df.ly
         True
-        >>> "foo" in df.lydata
+        >>> "foo" in df.ly
         False
-        >>> ("patient", "#", "age") in df.lydata
+        >>> ("patient", "#", "age") in df.ly
         True
         """
         key = self._get_safe_long(key)
@@ -403,12 +423,12 @@ class LydataAccessor:
         """Access columns also by short name.
 
         >>> df = pd.DataFrame({("patient", "#", "age"): [61, 52, 73]})
-        >>> df.lydata.age
+        >>> df.ly.age
         0    61
         1    52
         2    73
         Name: (patient, #, age), dtype: int64
-        >>> df.lydata.foo
+        >>> df.ly.foo
         Traceback (most recent call last):
             ...
         AttributeError: Attribute 'foo' not found.
@@ -424,7 +444,7 @@ class LydataAccessor:
 
     def validate(self, modalities: list[str] | None = None) -> pd.DataFrame:
         """Validate the DataFrame against the lydata schema."""
-        modalities = modalities or [m.name for m in get_default_modalities()]
+        modalities = modalities or list(get_default_modalities().keys())
         lydata_schema = construct_schema(modalities=modalities)
         return lydata_schema.validate(self._obj)
 
@@ -436,13 +456,10 @@ class LydataAccessor:
     def portion(self, query: QTypes = None, given: QTypes = None) -> QueryPortion:
         """Compute how many rows satisfy a ``query``, ``given`` some other conditions.
 
-        Returns a tuple with the number of matches and the number of total rows, such
-        that the ratio of the two is the portion of interest.
-
         >>> df = pd.DataFrame({'x': [1, 2, 3]})
-        >>> df.lydata.portion(query=Q('x', '==', 2), given=Q('x', '>', 1))
+        >>> df.ly.portion(query=Q('x', '==', 2), given=Q('x', '>', 1))
         QueryPortion(match=np.int64(1), total=np.int64(2))
-        >>> df.lydata.portion(query=Q('x', '==', 2), given=Q('x', '>', 3))
+        >>> df.ly.portion(query=Q('x', '==', 2), given=Q('x', '>', 3))
         QueryPortion(match=np.int64(0), total=np.int64(0))
         """
         given_mask = (given or NoneQ()).execute(self._obj)
@@ -466,7 +483,7 @@ class LydataAccessor:
         ...     ('patient', '#', 'hpv_status'): [True, False, None, True],
         ...     ('tumor', '1', 't_stage'): [2, 3, 1, 2],
         ... })
-        >>> df.lydata.stats()   # doctest: +NORMALIZE_WHITESPACE
+        >>> df.ly.stats()   # doctest: +NORMALIZE_WHITESPACE
         {'age': {61: 2, 52: 1, 73: 1},
          'hpv': {True: 2, False: 1, None: 1},
          't_stage': {2: 2, 3: 1, 1: 1}}
@@ -489,12 +506,13 @@ class LydataAccessor:
 
     def combine(
         self,
-        modalities: list[Modality] | None = None,
+        modalities: list[ModalityConfig] | None = None,
         method: Literal["max_llh", "rank"] = "max_llh",
     ) -> pd.DataFrame:
         """Combine diagnoses of ``modalities`` using ``method``."""
-        modalities = modalities or get_default_modalities()
-        diagnosis_stack = align_diagnoses(self._obj, [mod.name for mod in modalities])
+        modalities = modalities or list(get_default_modalities().values())
+        modality_names = list(get_default_modalities().keys())
+        diagnosis_stack = align_diagnoses(self._obj, modality_names)
         columns = diagnosis_stack[0].columns
         diagnosis_stack = np.array([diagnosis_stack])
 

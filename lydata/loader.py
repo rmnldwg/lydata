@@ -1,87 +1,180 @@
 """Module for loading the lydata datasets."""
+
 import fnmatch
+import logging
 import os
-from collections.abc import Generator
-from dataclasses import asdict, dataclass, field
+from collections.abc import Generator, Iterable
+from datetime import datetime
 from io import TextIOWrapper
 from pathlib import Path
-from typing import Literal
 
 import mistletoe
+import numpy as np  # noqa: F401
 import pandas as pd
 from github import Auth, Github
 from mistletoe.block_token import Heading
 from mistletoe.markdown_renderer import MarkdownRenderer
+from mistletoe.token import Token
+from pydantic import BaseModel, Field, constr
 
 from lydata import _repo
 
+logger = logging.getLogger(__name__)
 
-@dataclass
-class DatasetSpec:
+low_min1_str = constr(to_lower=True, min_length=1)
+
+
+class SkipDiskError(Exception):
+    """Raised when the user wants to skip loading from disk."""
+
+class SkipGithubError(Exception):
+    """Raised when the user wants to skip loading from GitHub."""
+
+
+class LyDatasetConfig(BaseModel):
     """Specification of a dataset."""
 
-    year: int | str
-    institution: str
-    subsite: str
-    path: Path | None = None
-    description: str = field(default="", repr=False)
-    repo: str = field(default=_repo, repr=False)
-    revision: str = field(default="main", repr=False)
+    year: int = Field(
+        gt=0,
+        lt=datetime.now().year,
+        description="Release year of dataset.",
+    )
+    institution: low_min1_str = Field(
+        description="Institution's short code. E.g., University Hospital Zurich: `usz`."
+    )
+    subsite: low_min1_str = Field(description="Subsite(s) this dataset covers.")
+    repo: low_min1_str = Field(default=_repo, description="GitHub `repository/owner`.")
+    revision: low_min1_str = Field(
+        default="main",
+        description="Branch/tag/commit of the repo.",
+    )
 
     @property
     def name(self) -> str:
         """Get the name of the dataset.
 
-        >>> spec = DatasetSpec(2023, "clb", "multisite", Path("path"), "description")
-        >>> spec.name
+        >>> conf = LyDatasetConfig(year=2023, institution="clb", subsite="multisite")
+        >>> conf.name
         '2023-clb-multisite'
         """
         return f"{self.year}-{self.institution}-{self.subsite}"
 
     @property
-    def url(self) -> str:
-        """Get the URL to the dataset.
+    def path(self) -> Path:
+        """Get the path to the dataset.
 
-        >>> spec = DatasetSpec(2023, "clb", "multisite", Path("path"), "description")
-        >>> spec.url
-        'https://raw.githubusercontent.com/rmnldwg/lydata/main/2023-clb-multisite/data.csv'
+        >>> conf = LyDatasetConfig(year="2021", institution="usz", subsite="oropharynx")
+        >>> conf.path.exists()
+        True
+        """
+        install_loc = Path(__file__).parent.parent
+        return install_loc / self.name / "data.csv"
+
+    def get_url(self, file: str) -> str:
+        """Get the URL to the dataset's directory, CSV file, or README file.
+
+        >>> conf = LyDatasetConfig(year=2021, institution="clb", subsite="oropharynx")
+        >>> conf.get_url("")
+        'https://raw.githubusercontent.com/rmnldwg/lydata/main/2021-clb-oropharynx/'
+        >>> conf.get_url("data.csv")
+        'https://raw.githubusercontent.com/rmnldwg/lydata/main/2021-clb-oropharynx/data.csv'
+        >>> conf.get_url("README.md")
+        'https://raw.githubusercontent.com/rmnldwg/lydata/main/2021-clb-oropharynx/README.md'
         """
         return (
             "https://raw.githubusercontent.com/"
             f"{self.repo}/{self.revision}/"
-            f"{self.year}-{self.institution}-{self.subsite}/data.csv"
-        )
+            f"{self.year}-{self.institution}-{self.subsite}/"
+        ) + file
 
-    def _load_or_fetch(self, loc: Path | str, **load_kwargs) -> pd.DataFrame:
+    def get_description(self) -> str:
+        """Get the description of the dataset.
+
+        First, try to load it from the ``README.md`` file that should sit right next to
+        the ``data.csv`` file. If that fails, try to look for the ``README.md`` file in
+        the GitHub repository.
+
+        >>> conf = LyDatasetConfig(year=2021, institution="clb", subsite="oropharynx")
+        >>> print(conf.get_description())   # doctest: +ELLIPSIS
+        # 2021 CLB Oropharynx
+        ...
+        """
+        readme_path = self.path.with_name("README.md")
+        if readme_path.exists():
+            with open(readme_path, encoding="utf-8") as readme:
+                return format_description(readme, short=True)
+
+        logger.info(f"Readme not found at {readme_path}. Searching on GitHub...")
+        gh = Github(auth=_get_github_auth())
+        repo = gh.get_repo(self.repo)
+        readme = repo.get_contents(f"{self.name}/README.md").decoded_content.decode()
+        return format_description(readme, short=True)
+
+    def load(
+        self,
+        skip_disk: bool = False,
+        skip_github: bool = False,
+        **load_kwargs,
+    ) -> pd.DataFrame:
+        """Load the ``data.csv`` file from disk or from GitHub.
+
+        One can also choose to ``skip_disk`` or ``skip_github``. The latter means that
+        a :py:class:`.SkipGithubError` will be raised from whatever error was raised
+        when trying to load from disk. Any keyword arguments are passed to
+        :py:func:`pandas.read_csv`.
+
+        The method will store the output of :py:meth:`~pydantic.BaseModel.model_dump`
+        in the :py:attr:`~pandas.DataFrame.attrs` attribute of the returned
+        :py:class:`~pandas.DataFrame`.
+
+        >>> conf = LyDatasetConfig(year=2021, institution="clb", subsite="oropharynx")
+        >>> df_from_disk = conf.load()
+        >>> df_from_disk.shape
+        (263, 82)
+        >>> df_from_github = conf.load(skip_disk=True)
+        >>> np.all(df_from_disk.fillna(0) == df_from_github.fillna(0))
+        np.True_
+        >>> _ = conf.load(skip_disk=True, skip_github=True)   # doctest: +ELLIPSIS
+        Traceback (most recent call last):
+            ...
+        lydata.loader.SkipGithubError
+        """
         kwargs = {"header": [0, 1, 2]}
         kwargs.update(load_kwargs)
-        return pd.read_csv(loc, **kwargs)
 
-    def load(self, **load_kwargs) -> pd.DataFrame:
-        """Load the dataset."""
-        if self.path is None:
-            raise ValueError("Cannot load dataset: Path not known.")
+        try:
+            if skip_disk:
+                logger.info(f"Skipping loading from {self.path}.")
+                raise SkipDiskError
+            df = pd.read_csv(self.path, **kwargs)
 
-        return self._load_or_fetch(self.path, **load_kwargs)
+        except (FileNotFoundError, pd.errors.ParserError, SkipDiskError) as err:
+            if skip_github:
+                raise SkipGithubError from err
 
-    def fetch(self, **load_kwargs) -> pd.DataFrame:
-        """Fetch the dataset from the web."""
-        return self._load_or_fetch(self.url, **load_kwargs)
+            if isinstance(err, FileNotFoundError | pd.errors.ParserError):
+                logger.info(f"Could not load from {self.path}. Trying GitHub...")
 
+            df = pd.read_csv(self.get_url("data.csv"), **kwargs)
 
-def remove_subheadings(elements: list, min_level: int = 1) -> list:
-    """Remove anything under ``min_level`` headings."""
-    filtered_elements = []
-
-    for element in elements:
-        if isinstance(element, Heading) and element.level > min_level:
-            break
-        filtered_elements.append(element)
-
-    return filtered_elements
+        df.attrs.update(self.model_dump())
+        return df
 
 
-def get_description(
+def remove_subheadings(tokens: Iterable[Token], min_level: int = 1) -> list[Token]:
+    """Remove anything under ``min_level`` headings.
+
+    With this, one can truncate markdown content to e.g. to the top-level heading and
+    the text that follows immediately after. Any subheadings after that will be removed.
+    """
+    for i, token in enumerate(tokens):
+        if isinstance(token, Heading) and token.level > min_level:
+            return tokens[:i]
+
+    return list(tokens)
+
+
+def format_description(
     readme: TextIOWrapper | str,
     short: bool = False,
     max_line_length: int = 60,
@@ -107,25 +200,14 @@ def _available_datasets_on_disk(
     year: int | str = "*",
     institution: str = "*",
     subsite: str = "*",
-) -> Generator[DatasetSpec, None, None]:
+) -> Generator[LyDatasetConfig, None, None]:
     year = str(year)
     search_path = Path(__file__).parent.parent
 
     for match in search_path.glob(f"{year}-{institution}-{subsite}"):
         if match.is_dir() and (match / "data.csv").exists():
             year, institution, subsite = match.name.split("-")
-
-            readme_path = match / "README.md"
-            with open(readme_path) as readme_file:
-                description = get_description(readme_file, short=True)
-
-            yield DatasetSpec(
-                year=year,
-                institution=institution,
-                subsite=subsite,
-                path=match / "data.csv",
-                description=description,
-            )
+            yield LyDatasetConfig(year=year, institution=institution, subsite=subsite)
 
 
 def _get_github_auth() -> Auth:
@@ -148,132 +230,139 @@ def _available_datasets_on_github(
     subsite: str = "*",
     repo: str = _repo,
     # revision: str = "main",   # TODO: Add revision parameter
-) -> Generator[DatasetSpec, None, None]:
-    github = Github(auth=_get_github_auth())
+) -> Generator[LyDatasetConfig, None, None]:
+    gh = Github(auth=_get_github_auth())
 
-    repo = github.get_repo(repo)
+    repo = gh.get_repo(repo)
     contents = repo.get_contents("")
 
     matches = []
     for content in contents:
-        if (
-            content.type == "dir"
-            and fnmatch.fnmatch(content.name, f"{year}-{institution}-{subsite}")
+        if content.type == "dir" and fnmatch.fnmatch(
+            content.name, f"{year}-{institution}-{subsite}"
         ):
             matches.append(content)
 
     for match in matches:
         year, institution, subsite = match.name.split("-")
-        readme = repo.get_contents(f"{match.path}/README.md").decoded_content.decode()
-        yield DatasetSpec(
-            year=year,
-            institution=institution,
-            subsite=subsite,
-            description=get_description(readme, short=True),
-            repo=_repo,
-        )
+        yield LyDatasetConfig(year=year, institution=institution, subsite=subsite)
 
 
 def available_datasets(
     year: int | str = "*",
     institution: str = "*",
     subsite: str = "*",
-    where: Literal["disk", "github"] = "disk",
-) -> Generator[DatasetSpec, None, None]:
+    skip_disk: bool = False,
+    skip_github: bool = False,
+) -> Generator[LyDatasetConfig, None, None]:
     """Generate names of available datasets.
 
-    >>> avail_gen = available_datasets(where='disk')
+    The arguments ``year``, ``institution``, and ``subsite`` represent glob patterns
+    and all datasets matching these patterns can be iterated over using the returned
+    generator.
+
+    With ``skip_disk`` set to ``True``, the function will not look for datasets on disk.
+
+    >>> avail_gen = available_datasets(skip_github=True)
     >>> sorted([ds.name for ds in avail_gen])   # doctest: +NORMALIZE_WHITESPACE
     ['2021-clb-oropharynx',
      '2021-usz-oropharynx',
      '2023-clb-multisite',
      '2023-isb-multisite']
-    >>> avail_gen = available_datasets(where='github')
+    >>> avail_gen = available_datasets(skip_disk=True)
     >>> sorted([ds.name for ds in avail_gen])   # doctest: +NORMALIZE_WHITESPACE
     ['2021-clb-oropharynx',
      '2021-usz-oropharynx',
      '2023-clb-multisite',
      '2023-isb-multisite']
     """
-    if where == "disk":
+    if not skip_disk:
         yield from _available_datasets_on_disk(year, institution, subsite)
-    elif where == "github":
+    elif not skip_github:
         yield from _available_datasets_on_github(year, institution, subsite)
     else:
-        raise ValueError(f"Unknown source: {where}")
+        raise ValueError("Both skip_disk and skip_github are set to True.")
 
 
 def load_datasets(
     year: int | str = "*",
     institution: str = "*",
     subsite: str = "*",
-    **load_kwargs,
+    skip_disk: bool = False,
+    skip_github: bool = False,
+    **kwargs,
 ) -> Generator[pd.DataFrame, None, None]:
-    """Load matching datasets from the disk."""
-    for dataset_spec in available_datasets(year, institution, subsite):
-        dataset = dataset_spec.load(**load_kwargs)
-        dataset.attrs.update(asdict(dataset_spec))
-        yield dataset
+    """Load matching datasets from the disk.
+
+    The arguments ``skip_disk`` and ``skip_github`` are passed to both the
+    :py:func:`.available_datasets` function to check for what can be loaded and to the
+    :py:meth:`.LyDatasetConfig.load` method to decide whether to load from disk or
+    from GitHub.
+    """
+    dset_confs = available_datasets(
+        year=year,
+        institution=institution,
+        subsite=subsite,
+        skip_disk=skip_disk,
+        skip_github=skip_github,
+    )
+    for dset_conf in dset_confs:
+        yield dset_conf.load(skip_disk=skip_disk, skip_github=skip_github, **kwargs)
 
 
 def load_dataset(
     year: int | str = "*",
     institution: str = "*",
     subsite: str = "*",
-    **load_kwargs,
+    skip_disk: bool = False,
+    skip_github: bool = False,
+    **kwargs,
 ) -> pd.DataFrame:
-    """Load the first matching dataset from the disk.
+    """Load the first matching dataset.
 
-    Note that datasets loaded (or fetched) with this function will have the
-    dataset specification stored in the ``attrs`` attribute. See below for an
-    example of how to access the dataset specification.
+    ``skip_disk`` and ``skip_github`` are passed to :py:func:`load_datasets` function.
 
-    >>> ds = load_dataset(year=2021, institution='clb', subsite='oropharynx')
+    >>> ds = load_dataset(year="2021", institution='clb', subsite='oropharynx')
     >>> ds.attrs["year"]
-    '2021'
-    >>> spec_from_ds = DatasetSpec(**ds.attrs)
-    >>> spec_from_ds.name
+    2021
+    >>> conf_from_ds = LyDatasetConfig(**ds.attrs)
+    >>> conf_from_ds.name
     '2021-clb-oropharynx'
     """
-    return next(load_datasets(year, institution, subsite, **load_kwargs))
-
-
-def fetch_datasets(
-    year: int | str = "*",
-    institution: str = "*",
-    subsite: str = "*",
-    **load_kwargs,
-) -> Generator[pd.DataFrame, None, None]:
-    """Fetch matching datasets from the web."""
-    for dataset_spec in available_datasets(year, institution, subsite):
-        dataset = dataset_spec.fetch(**load_kwargs)
-        dataset.attrs.update(asdict(dataset_spec))
-        yield dataset
-
-
-def fetch_dataset(
-    year: int | str = "*",
-    institution: str = "*",
-    subsite: str = "*",
-    **load_kwargs,
-) -> pd.DataFrame:
-    """Fetch the first matching dataset from the web."""
-    return next(fetch_datasets(year, institution, subsite, **load_kwargs))
+    return next(load_datasets(
+        year=year,
+        institution=institution,
+        subsite=subsite,
+        skip_disk=skip_disk,
+        skip_github=skip_github,
+        **kwargs
+    ))
 
 
 def join_datasets(
     year: int | str = "*",
     institution: str = "*",
     subsite: str = "*",
-    method: Literal["fetch", "load"] = "load",
-    **load_or_fetch_kwargs,
+    skip_disk: bool = False,
+    skip_github: bool = False,
+    **kwargs,
 ) -> pd.DataFrame:
-    """Join matching datasets from the disk."""
-    if method == "fetch":
-        gen = fetch_datasets(year, institution, subsite, **load_or_fetch_kwargs)
-    elif method == "load":
-        gen = load_datasets(year, institution, subsite, **load_or_fetch_kwargs)
-    else:
-        raise ValueError(f"Unknown method: {method}")
+    """Join matching datasets from the disk.
 
+    This uses the :py:func:`.load_datasets` function to load the datasets and then
+    concatenates them along the index axis.
+
+    >>> join_datasets(year="2023").shape
+    (705, 219)
+    >>> join_datasets(year="2023", skip_disk=True).shape
+    (705, 219)
+    """
+    gen = load_datasets(
+        year=year,
+        institution=institution,
+        subsite=subsite,
+        skip_disk=skip_disk,
+        skip_github=skip_github,
+        **kwargs,
+    )
     return pd.concat(list(gen), axis="index", ignore_index=True)
