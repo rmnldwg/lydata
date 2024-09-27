@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass
+from itertools import product
 from typing import Any, Literal
 
 import numpy as np
@@ -526,11 +527,73 @@ class LyDataAccessor:
         )
         return pd.DataFrame(result, columns=columns)
 
+    def infer_sublevels(
+        self,
+        modalities: list[str] | None = None,
+        sides: list[Literal["ipsi", "contra"]] | None = None,
+        subdivisions: dict[str, list[str]] | None = None,
+    ) -> pd.DataFrame:
+        """Determine involvement status of an LNL's sublevels (e.g., IIa and IIb).
+
+        Some LNLs have sublevels, e.g., IIa and IIb. However, this sublevel info is not
+        always reported, but only the superlevel's status. This function infers the
+        status of the sublevels from the superlevel.
+
+        The sublevel's status is computed for the specified ``modalities``. If and what
+        sublevels a superlevel has, is specified in ``subdivisions``.
+
+        The resulting DataFrame will only contain the newly inferred sublevel columns.
+
+        >>> df = pd.DataFrame({
+        ...     ('MRI', 'ipsi',   'I'):  [True , False, False, None],
+        ...     ('MRI', 'contra', 'I'):  [False, True , False, None],
+        ...     ('MRI', 'ipsi',   'II'): [False, False, True , None],
+        ... })
+        >>> df.ly.infer_sublevels()   # doctest: +NORMALIZE_WHITESPACE
+             MRI
+            ipsi                      contra
+              Ia     Ib    IIa    IIb     Ia     Ib
+        0   None   None  False  False  False  False
+        1  False  False  False  False   None   None
+        2  False  False   None   None  False  False
+        3   None   None   None   None   None   None
+        """
+        modalities = modalities or list(get_default_modalities().keys())
+        sides = sides or ["ipsi", "contra"]
+        subdivisions = subdivisions or {
+            "I": ["a", "b"],
+            "II": ["a", "b"],
+            "V": ["a", "b"],
+        }
+
+        result = self._obj.copy().drop(self._obj.columns, axis=1)
+
+        loop_combinations = product(modalities, sides, subdivisions.items())
+        for modality, side, (superlevel, subids) in loop_combinations:
+            try:
+                is_healthy = self._obj[modality, side, superlevel] == False  # noqa
+            except KeyError:
+                continue
+
+            for subid in subids:
+                sublevel = superlevel + subid
+                result.loc[is_healthy, (modality, side, sublevel)] = False
+                result.loc[~is_healthy, (modality, side, sublevel)] = None
+
+        return result
+
 
 def main() -> None:
     """Run main function."""
     ...
 
 
+def run_doctests() -> None:
+    """Run the module doctests."""
+    import doctest
+
+    doctest.testmod()
+
+
 if __name__ == "__main__":
-    main()
+    run_doctests()
