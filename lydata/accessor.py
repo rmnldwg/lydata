@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import warnings
 from collections.abc import Callable
 from dataclasses import dataclass
 from itertools import product
@@ -258,7 +259,11 @@ def align_diagnoses(
     """Stack aligned diagnosis tables in ``dataset`` for each of ``modalities``."""
     diagnosis_stack = []
     for modality in modalities:
-        this = dataset[modality].copy().drop(columns=["info"])
+        try:
+            this = dataset[modality].copy().drop(columns=["info"], errors="ignore")
+        except KeyError:
+            warnings.warn(f"Did not find modality {modality}, cannot align. Skipping.")  # noqa
+            continue
 
         for i, other in enumerate(diagnosis_stack):
             this, other = this.align(other, join="outer")
@@ -510,12 +515,30 @@ class LyDataAccessor:
         modalities: list[ModalityConfig] | None = None,
         method: Literal["max_llh", "rank"] = "max_llh",
     ) -> pd.DataFrame:
-        """Combine diagnoses of ``modalities`` using ``method``."""
+        """Combine diagnoses of ``modalities`` using ``method``.
+
+        The details of what the ``method`` does and how can be found in their
+        respective documentations: :py:func:`max_likelihood` and
+        :py:func:`rank_trustworthy`.
+
+        >>> df = pd.DataFrame({
+        ...     ('MRI'      , 'ipsi', 'I'): [False, True , True , None],
+        ...     ('CT'       , 'ipsi', 'I'): [False, True , False, True],
+        ...     ('pathology', 'ipsi', 'I'): [True , None , False, None],
+        ... })
+        >>> df.ly.combine()   # doctest: +NORMALIZE_WHITESPACE
+             ipsi
+                I
+        0    True
+        1    True
+        2   False
+        3    True
+        """
         modalities = modalities or list(get_default_modalities().values())
         modality_names = list(get_default_modalities().keys())
         diagnosis_stack = align_diagnoses(self._obj, modality_names)
         columns = diagnosis_stack[0].columns
-        diagnosis_stack = np.array([diagnosis_stack])
+        diagnosis_stack = np.array(diagnosis_stack)
 
         funcs1d = {"max_llh": max_likelihood, "rank": rank_trustworthy}
         result = np.apply_along_axis(
