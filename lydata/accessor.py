@@ -399,7 +399,11 @@ AggFuncType = dict[str | tuple[str, str, str], Callable[[pd.Series], pd.Series]]
 
 @pd_ext.register_dataframe_accessor("ly")
 class LyDataAccessor:
-    """Custom accessor for handling lymphatic involvement data."""
+    """Custom accessor for handling lymphatic involvement data.
+
+    This aims to provide an easy and user-friendly interface to the most commonly needed
+    operations on the lymphatic involvement data we publish in the lydata project.
+    """
 
     def __init__(self, obj: pd.DataFrame) -> None:
         """Initialize the accessor with a DataFrame."""
@@ -449,17 +453,30 @@ class LyDataAccessor:
         return getattr(self._column_map.from_short.get(key), "long", key)
 
     def validate(self, modalities: list[str] | None = None) -> pd.DataFrame:
-        """Validate the DataFrame against the lydata schema."""
+        """Validate the DataFrame against the lydata schema.
+
+        The schema is constructed by the :py:func:`construct_schema` function using
+        the ``modalities`` provided or it will :py:func:`get_default_modalities` if
+        ``None`` are provided.
+        """
         modalities = modalities or list(get_default_modalities().keys())
         lydata_schema = construct_schema(modalities=modalities)
         return lydata_schema.validate(self._obj)
 
-    def get_modalities(self) -> list[str]:
-        """Return the modalities present in this DataFrame."""
+    def get_modalities(self, _filter: list[str] | None = None) -> list[str]:
+        """Return the modalities present in this DataFrame.
+
+        .. warning::
+
+            This method assumes that all top-level columns are modalities, except for
+            some predefined non-modality columns. For some custom dataset, this may not
+            be correct. In that case, you should provide a list of columns to
+            ``_filter``, i.e., the columns that are *not* modalities.
+        """
         top_level_cols = self._obj.columns.get_level_values(0)
         modalities = top_level_cols.unique().tolist()
 
-        for non_modality_col in [
+        for non_modality_col in _filter or [
             "patient",
             "tumor",
             "total_dissected",
@@ -475,12 +492,20 @@ class LyDataAccessor:
         return modalities
 
     def query(self, query: QTypes = None) -> pd.DataFrame:
-        """Return a DataFrame with rows that satisfy the ``query``."""
+        """Return a DataFrame with rows that satisfy the ``query``.
+
+        A query is a :py:class:`Q` object that can be combined with logical operators.
+        See this class' documentation for more information.
+        """
         mask = (query or NoneQ()).execute(self._obj)
         return self._obj[mask]
 
     def portion(self, query: QTypes = None, given: QTypes = None) -> QueryPortion:
         """Compute how many rows satisfy a ``query``, ``given`` some other conditions.
+
+        This returns a :py:class:`QueryPortion` object that contains the number of rows
+        satisfying the ``query`` and ``given`` :py:class:`Q` object divided by the
+        number of rows satisfying only the ``given`` condition.
 
         >>> df = pd.DataFrame({'x': [1, 2, 3]})
         >>> df.ly.portion(query=Q('x', '==', 2), given=Q('x', '>', 1))
@@ -503,6 +528,18 @@ class LyDataAccessor:
         out_format: str = "dict",
     ) -> Any:
         """Compute statistics.
+
+        The ``agg_funcs`` argument is a mapping of column names to functions that
+        receive a :py:class:`pd.Series` and return a :py:class:`pd.Series`. The default
+        is a useful selection of statistics for the most common columns. E.g., for the
+        column ``('patient', '#', 'age')`` (or its short column name ``age``), the
+        default function returns the value counts.
+
+        The ``use_shortnames`` argument determines whether the output should use the
+        short column names or the long ones. The default is to use the short names.
+
+        With ``out_format`` one can specify the output format. Available options are
+        those formats for which pandas has a ``to_<format>`` method.
 
         >>> df = pd.DataFrame({
         ...     ('patient', '#', 'age'): [61, 52, 73, 61],
@@ -540,6 +577,8 @@ class LyDataAccessor:
         The details of what the ``method`` does and how can be found in their
         respective documentations: :py:func:`max_likelihood` and
         :py:func:`rank_trustworthy`.
+
+        The result contains only the combined columns.
 
         >>> df = pd.DataFrame({
         ...     ('MRI'      , 'ipsi', 'I'): [False, True , True , None],
@@ -583,12 +622,21 @@ class LyDataAccessor:
     ) -> pd.DataFrame:
         """Determine involvement status of an LNL's sublevels (e.g., IIa and IIb).
 
-        Some LNLs have sublevels, e.g., IIa and IIb. However, this sublevel info is not
-        always reported, but only the superlevel's status. This function infers the
-        status of the sublevels from the superlevel.
+        Some LNLs have sublevels, e.g., IIa and IIb. The involvement of these sublevels
+        is not always reported, but only the superlevel's status. This function infers
+        the status of the sublevels from the superlevel.
 
         The sublevel's status is computed for the specified ``modalities``. If and what
-        sublevels a superlevel has, is specified in ``subdivisions``.
+        sublevels a superlevel has, is specified in ``subdivisions``. The default
+        ``subdivisions`` argument looks like this:
+
+        .. code-block:: python
+
+            {
+                "I": ["a", "b"],
+                "II": ["a", "b"],
+                "V": ["a", "b"],
+            }
 
         The resulting DataFrame will only contain the newly inferred sublevel columns.
 
