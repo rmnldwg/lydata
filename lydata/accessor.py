@@ -578,7 +578,8 @@ class LyDataAccessor:
         respective documentations: :py:func:`max_likelihood` and
         :py:func:`rank_trustworthy`.
 
-        The result contains only the combined columns.
+        The result contains only the combined columns. The intended use is to
+        :py:meth:`~pandas.DataFrame.update` the original DataFrame with the result.
 
         >>> df = pd.DataFrame({
         ...     ('MRI'      , 'ipsi', 'I'): [False, True , True , None],
@@ -639,6 +640,8 @@ class LyDataAccessor:
             }
 
         The resulting DataFrame will only contain the newly inferred sublevel columns.
+        Thus, one can simply :py:meth:`~pandas.DataFrame.update` the original DataFrame
+        with the result.
 
         >>> df = pd.DataFrame({
         ...     ('MRI', 'ipsi'  , 'I' ): [True , False, False, None],
@@ -696,6 +699,8 @@ class LyDataAccessor:
         what sublevels a superlevel has, is specified in ``subdivisions``.
 
         The resulting DataFrame will only contain the newly inferred superlevel columns.
+        This way, it is straightformward to :py:meth:`~pandas.DataFrame.update` the
+        original DataFrame.
 
         >>> df = pd.DataFrame({
         ...     ('MRI', 'ipsi'  , 'Ia' ): [True , False, False, None],
