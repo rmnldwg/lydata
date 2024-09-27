@@ -680,7 +680,7 @@ class LyDataAccessor:
 
         return result
 
-    def infer_superlevel(
+    def infer_superlevels(
         self,
         modalities: list[str] | None = None,
         sides: list[Literal["ipsi", "contra"]] | None = None,
