@@ -545,11 +545,13 @@ class LyDataAccessor:
         The resulting DataFrame will only contain the newly inferred sublevel columns.
 
         >>> df = pd.DataFrame({
-        ...     ('MRI', 'ipsi',   'I'):  [True , False, False, None],
-        ...     ('MRI', 'contra', 'I'):  [False, True , False, None],
-        ...     ('MRI', 'ipsi',   'II'): [False, False, True , None],
+        ...     ('MRI', 'ipsi'  , 'I' ): [True , False, False, None],
+        ...     ('MRI', 'contra', 'I' ): [False, True , False, None],
+        ...     ('MRI', 'ipsi'  , 'II'): [False, False, True , None],
+        ...     ('MRI', 'ipsi'  , 'IV'): [False, False, True , None],
+        ...     ('CT' , 'ipsi'  , 'I' ): [True , False, False, None],
         ... })
-        >>> df.ly.infer_sublevels()   # doctest: +NORMALIZE_WHITESPACE
+        >>> df.ly.infer_sublevels(modalities=["MRI"])   # doctest: +NORMALIZE_WHITESPACE
              MRI
             ipsi                      contra
               Ia     Ib    IIa    IIb     Ia     Ib
@@ -579,6 +581,67 @@ class LyDataAccessor:
                 sublevel = superlevel + subid
                 result.loc[is_healthy, (modality, side, sublevel)] = False
                 result.loc[~is_healthy, (modality, side, sublevel)] = None
+
+        return result
+
+    def infer_superlevel(
+        self,
+        modalities: list[str] | None = None,
+        sides: list[Literal["ipsi", "contra"]] | None = None,
+        subdivisions: dict[str, list[str]] | None = None,
+    ) -> pd.DataFrame:
+        """Determine involvement status of an LNL's superlevel (e.g., II).
+
+        Some LNLs have sublevels, e.g., IIa and IIb. In real data, sometimes the
+        sublevels are reported, sometimes only the superlevel. This function infers the
+        status of the superlevel from the sublevels.
+
+        The superlevel's status is computed for the specified ``modalities``. If and
+        what sublevels a superlevel has, is specified in ``subdivisions``.
+
+        The resulting DataFrame will only contain the newly inferred superlevel columns.
+
+        >>> df = pd.DataFrame({
+        ...     ('MRI', 'ipsi'  , 'Ia' ): [True , False, False, None],
+        ...     ('MRI', 'ipsi'  , 'Ib' ): [False, True , False, None],
+        ...     ('MRI', 'contra', 'IIa'): [False, False, None , None],
+        ...     ('MRI', 'contra', 'IIb'): [False, True , True , None],
+        ...     ('CT' , 'ipsi'  , 'I'  ): [True , False, False, None],
+        ... })
+        >>> df.ly.infer_superlevel(modalities=["MRI"])  # doctest: +NORMALIZE_WHITESPACE
+             MRI
+            ipsi contra
+               I     II
+        0   True  False
+        1   True   True
+        2  False   True
+        3   None   None
+        """
+        modalities = modalities or list(get_default_modalities().keys())
+        sides = sides or ["ipsi", "contra"]
+        subdivisions = subdivisions or {
+            "I": ["a", "b"],
+            "II": ["a", "b"],
+            "V": ["a", "b"],
+        }
+
+        result = self._obj.copy().drop(self._obj.columns, axis=1)
+
+        loop_combinations = product(modalities, sides, subdivisions.items())
+        for modality, side, (superlevel, subids) in loop_combinations:
+            sublevels = [superlevel + subid for subid in subids]
+            sublevel_cols = [(modality, side, sublevel) for sublevel in sublevels]
+
+            try:
+                are_all_healthy = ~self._obj[sublevel_cols].any(axis=1)
+                is_any_involved = self._obj[sublevel_cols].any(axis=1)
+                is_unknown = self._obj[sublevel_cols].isna().all(axis=1)
+            except KeyError:
+                continue
+
+            result.loc[are_all_healthy, (modality, side, superlevel)] = False
+            result.loc[is_any_involved, (modality, side, superlevel)] = True
+            result.loc[is_unknown, (modality, side, superlevel)] = None
 
         return result
 
