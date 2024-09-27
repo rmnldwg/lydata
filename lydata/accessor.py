@@ -378,11 +378,11 @@ def expand_mapping(
     >>> expand_mapping({'age': 'foo', 'hpv': 'bar'})
     {('patient', '#', 'age'): 'foo', ('patient', '#', 'hpv_status'): 'bar'}
     """
-    colname_map = colname_map or get_default_column_map().from_short
+    _colname_map = colname_map or get_default_column_map().from_short
     expanded_map = {}
 
     for colname, func in short_map.items():
-        expanded_colname = getattr(colname_map.get(colname), "long", colname)
+        expanded_colname = getattr(_colname_map.get(colname), "long", colname)
         expanded_map[expanded_colname] = func
 
     return expanded_map
@@ -411,13 +411,13 @@ class LyDataAccessor:
         >>> ("patient", "#", "age") in df.ly
         True
         """
-        key = self._get_safe_long(key)
-        return key in self._obj
+        _key = self._get_safe_long(key)
+        return _key in self._obj
 
     def __getitem__(self, key: str) -> pd.Series:
         """Allow column access by short name, too."""
-        key = self._get_safe_long(key)
-        return self._obj[key]
+        _key = self._get_safe_long(key)
+        return self._obj[_key]
 
     def __getattr__(self, name: str) -> Any:
         """Access columns also by short name.
