@@ -454,6 +454,26 @@ class LyDataAccessor:
         lydata_schema = construct_schema(modalities=modalities)
         return lydata_schema.validate(self._obj)
 
+    def get_modalities(self) -> list[str]:
+        """Return the modalities present in this DataFrame."""
+        top_level_cols = self._obj.columns.get_level_values(0)
+        modalities = top_level_cols.unique().tolist()
+
+        for non_modality_col in [
+            "patient",
+            "tumor",
+            "total_dissected",
+            "positive_dissected",
+            "enbloc_dissected",
+            "enbloc_positive",
+        ]:
+            try:
+                modalities.remove(non_modality_col)
+            except ValueError:
+                pass
+
+        return modalities
+
     def query(self, query: QTypes = None) -> pd.DataFrame:
         """Return a DataFrame with rows that satisfy the ``query``."""
         mask = (query or NoneQ()).execute(self._obj)
@@ -512,7 +532,7 @@ class LyDataAccessor:
 
     def combine(
         self,
-        modalities: list[ModalityConfig] | None = None,
+        modalities: dict[str, ModalityConfig] | None = None,
         method: Literal["max_llh", "rank"] = "max_llh",
     ) -> pd.DataFrame:
         """Combine diagnoses of ``modalities`` using ``method``.
@@ -534,9 +554,14 @@ class LyDataAccessor:
         2   False
         3    True
         """
-        modalities = modalities or list(get_default_modalities().values())
-        modality_names = list(get_default_modalities().keys())
-        diagnosis_stack = align_diagnoses(self._obj, modality_names)
+        modalities = modalities or get_default_modalities()
+        modalities = {
+            modality_name: modality_config
+            for modality_name, modality_config in modalities.items()
+            if modality_name in self.get_modalities()
+        }
+
+        diagnosis_stack = align_diagnoses(self._obj, list(modalities.keys()))
         columns = diagnosis_stack[0].columns
         diagnosis_stack = np.array(diagnosis_stack)
 
@@ -545,8 +570,8 @@ class LyDataAccessor:
             func1d=funcs1d[method],
             axis=0,
             arr=diagnosis_stack,
-            sensitivities=np.array([mod.sens for mod in modalities]),
-            specificities=np.array([mod.spec for mod in modalities]),
+            sensitivities=np.array([mod.sens for mod in modalities.values()]),
+            specificities=np.array([mod.spec for mod in modalities.values()]),
         )
         return pd.DataFrame(result, columns=columns)
 
