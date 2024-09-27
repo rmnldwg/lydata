@@ -31,6 +31,7 @@ dependencies = [
 
 [project.urls]
 source = "https://github.com/rmnldwg/lydata"
+documentation = "https://lydata.readthedocs.io"
 
 [project.optional-dependencies]
 docs = [
