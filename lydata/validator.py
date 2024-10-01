@@ -92,14 +92,37 @@ def construct_schema(
     return schema
 
 
-def validate() -> None:
-    """Validate all lydata datasets."""
+def validate_datasets(
+    year: int | str = "*",
+    institution: str = "*",
+    subsite: str = "*",
+    skip_disk: bool = False,
+    repo: str = "rmnldwg/lydata",
+    ref: str = "main",
+    **kwargs,
+) -> None:
+    """Validate all lydata datasets.
+
+    The arguments of this function are directly passed to the
+    :py:func:`available_datasets` function to determine which datasets to validate.
+
+    Keyword arguments beyond the ones that :py:func:`available_datasets` accepts are
+    passed to the :py:meth:`~lydata.loader.Dataset.load` method of the
+    :py:class:`~lydata.loader.Dataset` instances.
+    """
     lydata_schema = construct_schema(
         modalities=["pathology", "diagnostic_consensus", "PET", "CT", "FNA", "MRI"],
     )
 
-    for data_conf in available_datasets():
-        dataset = data_conf.load()
+    for data_conf in available_datasets(
+        year=year,
+        institution=institution,
+        subsite=subsite,
+        skip_disk=skip_disk,
+        repo=repo,
+        ref=ref,
+    ):
+        dataset = data_conf.load(**kwargs)
         try:
             lydata_schema.validate(dataset)
             logger.info(f"Schema validation passed for {data_conf!r}.")
@@ -110,4 +133,4 @@ def validate() -> None:
 
 
 if __name__ == "__main__":
-    validate()
+    validate_datasets()
