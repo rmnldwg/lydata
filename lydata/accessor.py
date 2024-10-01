@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import warnings
 from collections.abc import Callable
 from dataclasses import dataclass
+from itertools import product
 from typing import Any, Literal
 
 import numpy as np
@@ -257,7 +259,11 @@ def align_diagnoses(
     """Stack aligned diagnosis tables in ``dataset`` for each of ``modalities``."""
     diagnosis_stack = []
     for modality in modalities:
-        this = dataset[modality].copy().drop(columns=["info"])
+        try:
+            this = dataset[modality].copy().drop(columns=["info"], errors="ignore")
+        except KeyError:
+            warnings.warn(f"Did not find modality {modality}, cannot align. Skipping.")  # noqa
+            continue
 
         for i, other in enumerate(diagnosis_stack):
             this, other = this.align(other, join="outer")
@@ -378,11 +384,11 @@ def expand_mapping(
     >>> expand_mapping({'age': 'foo', 'hpv': 'bar'})
     {('patient', '#', 'age'): 'foo', ('patient', '#', 'hpv_status'): 'bar'}
     """
-    colname_map = colname_map or get_default_column_map().from_short
+    _colname_map = colname_map or get_default_column_map().from_short
     expanded_map = {}
 
     for colname, func in short_map.items():
-        expanded_colname = getattr(colname_map.get(colname), "long", colname)
+        expanded_colname = getattr(_colname_map.get(colname), "long", colname)
         expanded_map[expanded_colname] = func
 
     return expanded_map
@@ -393,7 +399,11 @@ AggFuncType = dict[str | tuple[str, str, str], Callable[[pd.Series], pd.Series]]
 
 @pd_ext.register_dataframe_accessor("ly")
 class LyDataAccessor:
-    """Custom accessor for handling lymphatic involvement data."""
+    """Custom accessor for handling lymphatic involvement data.
+
+    This aims to provide an easy and user-friendly interface to the most commonly needed
+    operations on the lymphatic involvement data we publish in the lydata project.
+    """
 
     def __init__(self, obj: pd.DataFrame) -> None:
         """Initialize the accessor with a DataFrame."""
@@ -411,13 +421,13 @@ class LyDataAccessor:
         >>> ("patient", "#", "age") in df.ly
         True
         """
-        key = self._get_safe_long(key)
-        return key in self._obj
+        _key = self._get_safe_long(key)
+        return _key in self._obj
 
     def __getitem__(self, key: str) -> pd.Series:
         """Allow column access by short name, too."""
-        key = self._get_safe_long(key)
-        return self._obj[key]
+        _key = self._get_safe_long(key)
+        return self._obj[_key]
 
     def __getattr__(self, name: str) -> Any:
         """Access columns also by short name.
@@ -443,18 +453,59 @@ class LyDataAccessor:
         return getattr(self._column_map.from_short.get(key), "long", key)
 
     def validate(self, modalities: list[str] | None = None) -> pd.DataFrame:
-        """Validate the DataFrame against the lydata schema."""
+        """Validate the DataFrame against the lydata schema.
+
+        The schema is constructed by the :py:func:`construct_schema` function using
+        the ``modalities`` provided or it will :py:func:`get_default_modalities` if
+        ``None`` are provided.
+        """
         modalities = modalities or list(get_default_modalities().keys())
         lydata_schema = construct_schema(modalities=modalities)
         return lydata_schema.validate(self._obj)
 
+    def get_modalities(self, _filter: list[str] | None = None) -> list[str]:
+        """Return the modalities present in this DataFrame.
+
+        .. warning::
+
+            This method assumes that all top-level columns are modalities, except for
+            some predefined non-modality columns. For some custom dataset, this may not
+            be correct. In that case, you should provide a list of columns to
+            ``_filter``, i.e., the columns that are *not* modalities.
+        """
+        top_level_cols = self._obj.columns.get_level_values(0)
+        modalities = top_level_cols.unique().tolist()
+
+        for non_modality_col in _filter or [
+            "patient",
+            "tumor",
+            "total_dissected",
+            "positive_dissected",
+            "enbloc_dissected",
+            "enbloc_positive",
+        ]:
+            try:
+                modalities.remove(non_modality_col)
+            except ValueError:
+                pass
+
+        return modalities
+
     def query(self, query: QTypes = None) -> pd.DataFrame:
-        """Return a DataFrame with rows that satisfy the ``query``."""
+        """Return a DataFrame with rows that satisfy the ``query``.
+
+        A query is a :py:class:`Q` object that can be combined with logical operators.
+        See this class' documentation for more information.
+        """
         mask = (query or NoneQ()).execute(self._obj)
         return self._obj[mask]
 
     def portion(self, query: QTypes = None, given: QTypes = None) -> QueryPortion:
         """Compute how many rows satisfy a ``query``, ``given`` some other conditions.
+
+        This returns a :py:class:`QueryPortion` object that contains the number of rows
+        satisfying the ``query`` and ``given`` :py:class:`Q` object divided by the
+        number of rows satisfying only the ``given`` condition.
 
         >>> df = pd.DataFrame({'x': [1, 2, 3]})
         >>> df.ly.portion(query=Q('x', '==', 2), given=Q('x', '>', 1))
@@ -477,6 +528,18 @@ class LyDataAccessor:
         out_format: str = "dict",
     ) -> Any:
         """Compute statistics.
+
+        The ``agg_funcs`` argument is a mapping of column names to functions that
+        receive a :py:class:`pd.Series` and return a :py:class:`pd.Series`. The default
+        is a useful selection of statistics for the most common columns. E.g., for the
+        column ``('patient', '#', 'age')`` (or its short column name ``age``), the
+        default function returns the value counts.
+
+        The ``use_shortnames`` argument determines whether the output should use the
+        short column names or the long ones. The default is to use the short names.
+
+        With ``out_format`` one can specify the output format. Available options are
+        those formats for which pandas has a ``to_<format>`` method.
 
         >>> df = pd.DataFrame({
         ...     ('patient', '#', 'age'): [61, 52, 73, 61],
@@ -506,25 +569,182 @@ class LyDataAccessor:
 
     def combine(
         self,
-        modalities: list[ModalityConfig] | None = None,
+        modalities: dict[str, ModalityConfig] | None = None,
         method: Literal["max_llh", "rank"] = "max_llh",
     ) -> pd.DataFrame:
-        """Combine diagnoses of ``modalities`` using ``method``."""
-        modalities = modalities or list(get_default_modalities().values())
-        modality_names = list(get_default_modalities().keys())
-        diagnosis_stack = align_diagnoses(self._obj, modality_names)
+        """Combine diagnoses of ``modalities`` using ``method``.
+
+        The details of what the ``method`` does and how can be found in their
+        respective documentations: :py:func:`max_likelihood` and
+        :py:func:`rank_trustworthy`.
+
+        The result contains only the combined columns. The intended use is to
+        :py:meth:`~pandas.DataFrame.update` the original DataFrame with the result.
+
+        >>> df = pd.DataFrame({
+        ...     ('MRI'      , 'ipsi', 'I'): [False, True , True , None],
+        ...     ('CT'       , 'ipsi', 'I'): [False, True , False, True],
+        ...     ('pathology', 'ipsi', 'I'): [True , None , False, None],
+        ... })
+        >>> df.ly.combine()   # doctest: +NORMALIZE_WHITESPACE
+             ipsi
+                I
+        0    True
+        1    True
+        2   False
+        3    True
+        """
+        modalities = modalities or get_default_modalities()
+        modalities = {
+            modality_name: modality_config
+            for modality_name, modality_config in modalities.items()
+            if modality_name in self.get_modalities()
+        }
+
+        diagnosis_stack = align_diagnoses(self._obj, list(modalities.keys()))
         columns = diagnosis_stack[0].columns
-        diagnosis_stack = np.array([diagnosis_stack])
+        diagnosis_stack = np.array(diagnosis_stack)
 
         funcs1d = {"max_llh": max_likelihood, "rank": rank_trustworthy}
         result = np.apply_along_axis(
             func1d=funcs1d[method],
             axis=0,
             arr=diagnosis_stack,
-            sensitivities=np.array([mod.sens for mod in modalities]),
-            specificities=np.array([mod.spec for mod in modalities]),
+            sensitivities=np.array([mod.sens for mod in modalities.values()]),
+            specificities=np.array([mod.spec for mod in modalities.values()]),
         )
         return pd.DataFrame(result, columns=columns)
+
+    def infer_sublevels(
+        self,
+        modalities: list[str] | None = None,
+        sides: list[Literal["ipsi", "contra"]] | None = None,
+        subdivisions: dict[str, list[str]] | None = None,
+    ) -> pd.DataFrame:
+        """Determine involvement status of an LNL's sublevels (e.g., IIa and IIb).
+
+        Some LNLs have sublevels, e.g., IIa and IIb. The involvement of these sublevels
+        is not always reported, but only the superlevel's status. This function infers
+        the status of the sublevels from the superlevel.
+
+        The sublevel's status is computed for the specified ``modalities``. If and what
+        sublevels a superlevel has, is specified in ``subdivisions``. The default
+        ``subdivisions`` argument looks like this:
+
+        .. code-block:: python
+
+            {
+                "I": ["a", "b"],
+                "II": ["a", "b"],
+                "V": ["a", "b"],
+            }
+
+        The resulting DataFrame will only contain the newly inferred sublevel columns.
+        Thus, one can simply :py:meth:`~pandas.DataFrame.update` the original DataFrame
+        with the result.
+
+        >>> df = pd.DataFrame({
+        ...     ('MRI', 'ipsi'  , 'I' ): [True , False, False, None],
+        ...     ('MRI', 'contra', 'I' ): [False, True , False, None],
+        ...     ('MRI', 'ipsi'  , 'II'): [False, False, True , None],
+        ...     ('MRI', 'ipsi'  , 'IV'): [False, False, True , None],
+        ...     ('CT' , 'ipsi'  , 'I' ): [True , False, False, None],
+        ... })
+        >>> df.ly.infer_sublevels(modalities=["MRI"])   # doctest: +NORMALIZE_WHITESPACE
+             MRI
+            ipsi                      contra
+              Ia     Ib    IIa    IIb     Ia     Ib
+        0   None   None  False  False  False  False
+        1  False  False  False  False   None   None
+        2  False  False   None   None  False  False
+        3   None   None   None   None   None   None
+        """
+        modalities = modalities or list(get_default_modalities().keys())
+        sides = sides or ["ipsi", "contra"]
+        subdivisions = subdivisions or {
+            "I": ["a", "b"],
+            "II": ["a", "b"],
+            "V": ["a", "b"],
+        }
+
+        result = self._obj.copy().drop(self._obj.columns, axis=1)
+
+        loop_combinations = product(modalities, sides, subdivisions.items())
+        for modality, side, (superlevel, subids) in loop_combinations:
+            try:
+                is_healthy = self._obj[modality, side, superlevel] == False  # noqa
+            except KeyError:
+                continue
+
+            for subid in subids:
+                sublevel = superlevel + subid
+                result.loc[is_healthy, (modality, side, sublevel)] = False
+                result.loc[~is_healthy, (modality, side, sublevel)] = None
+
+        return result
+
+    def infer_superlevels(
+        self,
+        modalities: list[str] | None = None,
+        sides: list[Literal["ipsi", "contra"]] | None = None,
+        subdivisions: dict[str, list[str]] | None = None,
+    ) -> pd.DataFrame:
+        """Determine involvement status of an LNL's superlevel (e.g., II).
+
+        Some LNLs have sublevels, e.g., IIa and IIb. In real data, sometimes the
+        sublevels are reported, sometimes only the superlevel. This function infers the
+        status of the superlevel from the sublevels.
+
+        The superlevel's status is computed for the specified ``modalities``. If and
+        what sublevels a superlevel has, is specified in ``subdivisions``.
+
+        The resulting DataFrame will only contain the newly inferred superlevel columns.
+        This way, it is straightforward to :py:meth:`~pandas.DataFrame.update` the
+        original DataFrame.
+
+        >>> df = pd.DataFrame({
+        ...     ('MRI', 'ipsi'  , 'Ia' ): [True , False, False, None],
+        ...     ('MRI', 'ipsi'  , 'Ib' ): [False, True , False, None],
+        ...     ('MRI', 'contra', 'IIa'): [False, False, None , None],
+        ...     ('MRI', 'contra', 'IIb'): [False, True , True , None],
+        ...     ('CT' , 'ipsi'  , 'I'  ): [True , False, False, None],
+        ... })
+        >>> df.ly.infer_superlevels(modalities=["MRI"]) # doctest: +NORMALIZE_WHITESPACE
+             MRI
+            ipsi contra
+               I     II
+        0   True  False
+        1   True   True
+        2  False   True
+        3   None   None
+        """
+        modalities = modalities or list(get_default_modalities().keys())
+        sides = sides or ["ipsi", "contra"]
+        subdivisions = subdivisions or {
+            "I": ["a", "b"],
+            "II": ["a", "b"],
+            "V": ["a", "b"],
+        }
+
+        result = self._obj.copy().drop(self._obj.columns, axis=1)
+
+        loop_combinations = product(modalities, sides, subdivisions.items())
+        for modality, side, (superlevel, subids) in loop_combinations:
+            sublevels = [superlevel + subid for subid in subids]
+            sublevel_cols = [(modality, side, sublevel) for sublevel in sublevels]
+
+            try:
+                are_all_healthy = ~self._obj[sublevel_cols].any(axis=1)
+                is_any_involved = self._obj[sublevel_cols].any(axis=1)
+                is_unknown = self._obj[sublevel_cols].isna().all(axis=1)
+            except KeyError:
+                continue
+
+            result.loc[are_all_healthy, (modality, side, superlevel)] = False
+            result.loc[is_any_involved, (modality, side, superlevel)] = True
+            result.loc[is_unknown, (modality, side, superlevel)] = None
+
+        return result
 
 
 def main() -> None:
@@ -532,5 +752,12 @@ def main() -> None:
     ...
 
 
+def run_doctests() -> None:
+    """Run the module doctests."""
+    import doctest
+
+    doctest.testmod()
+
+
 if __name__ == "__main__":
-    main()
+    run_doctests()
