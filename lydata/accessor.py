@@ -699,7 +699,7 @@ class LyDataAccessor:
         what sublevels a superlevel has, is specified in ``subdivisions``.
 
         The resulting DataFrame will only contain the newly inferred superlevel columns.
-        This way, it is straightformward to :py:meth:`~pandas.DataFrame.update` the
+        This way, it is straightforward to :py:meth:`~pandas.DataFrame.update` the
         original DataFrame.
 
         >>> df = pd.DataFrame({
@@ -709,7 +709,7 @@ class LyDataAccessor:
         ...     ('MRI', 'contra', 'IIb'): [False, True , True , None],
         ...     ('CT' , 'ipsi'  , 'I'  ): [True , False, False, None],
         ... })
-        >>> df.ly.infer_superlevel(modalities=["MRI"])  # doctest: +NORMALIZE_WHITESPACE
+        >>> df.ly.infer_superlevels(modalities=["MRI"]) # doctest: +NORMALIZE_WHITESPACE
              MRI
             ipsi contra
                I     II
