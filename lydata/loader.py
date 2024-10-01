@@ -18,10 +18,8 @@ from mistletoe.markdown_renderer import MarkdownRenderer
 from mistletoe.token import Token
 from pydantic import BaseModel, Field, constr
 
-from lydata import _repo
-
 logger = logging.getLogger(__name__)
-
+_repo = "rmnldwg/lydata"
 low_min1_str = constr(to_lower=True, min_length=1)
 
 
@@ -204,9 +202,11 @@ def _get_github_auth() -> Auth:
     password = os.getenv("GITHUB_PASSWORD")
 
     if token:
+        logger.debug("Using GITHUB_TOKEN for authentication.")
         return Auth.Token(token)
 
     if user and password:
+        logger.debug("Using GITHUB_USER and GITHUB_PASSWORD for authentication.")
         return Auth.Login(user, password)
 
     raise ValueError("Neither GITHUB_TOKEN nor GITHUB_USER and GITHUB_PASSWORD set.")
