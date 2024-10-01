@@ -27,6 +27,7 @@ low_min1_str = constr(to_lower=True, min_length=1)
 class SkipDiskError(Exception):
     """Raised when the user wants to skip loading from disk."""
 
+
 class SkipGithubError(Exception):
     """Raised when the user wants to skip loading from GitHub."""
 
@@ -36,7 +37,7 @@ class LyDatasetConfig(BaseModel):
 
     year: int = Field(
         gt=0,
-        lt=datetime.now().year,
+        le=datetime.now().year,
         description="Release year of dataset.",
     )
     institution: low_min1_str = Field(
@@ -329,14 +330,16 @@ def load_dataset(
     >>> conf_from_ds.name
     '2021-clb-oropharynx'
     """
-    return next(load_datasets(
-        year=year,
-        institution=institution,
-        subsite=subsite,
-        skip_disk=skip_disk,
-        skip_github=skip_github,
-        **kwargs
-    ))
+    return next(
+        load_datasets(
+            year=year,
+            institution=institution,
+            subsite=subsite,
+            skip_disk=skip_disk,
+            skip_github=skip_github,
+            **kwargs,
+        )
+    )
 
 
 def join_datasets(
