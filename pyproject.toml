@@ -59,6 +59,7 @@ testpaths = "."
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "B", "C", "R", "U", "D", "I", "S", "T", "A", "N"]
+ignore = ["B028"]
 
 [tool.markdownlint]
 MD003 = false
