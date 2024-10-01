@@ -29,10 +29,6 @@ class SkipDiskError(Exception):
     """Raised when the user wants to skip loading from disk."""
 
 
-class SkipGithubError(Exception):
-    """Raised when the user wants to skip loading from GitHub."""
-
-
 class LyDatasetConfig(BaseModel):
     """Specification of a dataset."""
 
