@@ -83,7 +83,7 @@ def construct_schema(
     modalities: list[str],
     lnls: list[str] = _LNLS,
 ) -> DataFrameSchema:
-    """Construct a DataFrameSchema for the lydata datasets."""
+    """Construct a :py:class:`pandera.DataFrameSchema` for the lydata datasets."""
     schema = DataFrameSchema(patient_columns).add_columns(tumor_columns)
 
     for modality in modalities:
