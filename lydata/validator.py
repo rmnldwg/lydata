@@ -1,4 +1,14 @@
-"""Module to validate the CSV schema of the lydata datasets."""
+"""Module to validate the CSV schema of the lydata datasets.
+
+Here we define the function :py:func:`construct_schema` to dynamically create a
+:py:class:`pandera.DataFrameSchema` that we can use to validate that a given
+:py:class:`~pandas.DataFrame` conforms to the minimum requirements of the lyDATA
+datasets.
+
+For now, we only publish the :py:func:`validate_datasets` function that validates all
+datasets that are found by the function :py:func:`~lydata.loader.available_datasets`.
+In the future, we may want to make this more flexible.
+"""
 
 import logging
 

@@ -1,4 +1,31 @@
-"""Module containing a custom accessor and helpers for querying lydata."""
+"""Module containing a custom accessor and helpers for querying lyDATA.
+
+Because of the special three-level header of the lyDATA tables, it is sometimes
+cumbersome and lengthy to access the columns. While this is certainly necessary to
+access e.g. the contralateral involvement of LNL II as observed on CT images
+(``df["CT", "contra", "II"]``), for simple patient information such as age and HPV
+status, it is more convenient to use short names, which we implement in this module.
+
+The main class in this module is the :py:class:`LyDataAccessor` class, which provides
+the above mentioned functionality. That way, accessing the age of all patients is now
+as easy as typing ``df.ly.age``.
+
+Beyond that, the module implements a convenient wat to query the
+:py:class:`pd.DataFrame`: The :py:class:`Q` object, that was inspired by Django's
+``Q`` object. It allows for more readable and modular queries, which can be combined
+with logical operators and reused across different DataFrames.
+
+The :py:class:`Q` objects can be passed to the :py:meth:`LyDataAccessor.query` and
+:py:meth:`LyDataAccessor.portion` methods to filter the DataFrame or compute the
+:py:class:`QueryPortion` of rows that satisfy the query.
+
+Further, we implement methods like :py:meth:`LyDataAccessor.combine`,
+:py:meth:`LyDataAccessor.infer_sublevels`, and
+:py:meth:`LyDataAccessor.infer_superlevels` to compute additional columns from the
+lyDATA tables. This is sometimes necessary, because not all data contains all the
+possibly necessary columns. E.g., in some cohorts we do have detailed sublevel
+information (i.e., IIa and IIb), while in others only the superlevel (II) is reported.
+"""
 
 from __future__ import annotations
 
@@ -42,7 +69,18 @@ class CombineQMixin:
 
 
 class Q(CombineQMixin):
-    """Combinable query object for filtering a DataFrame."""
+    """Combinable query object for filtering a DataFrame.
+
+    The syntax for this object is similar to Django's ``Q`` object. It can be used to
+    define queries in a more readable and modular way.
+
+    .. caution::
+
+        The column names are not checked upon instantiation. This is only done when the
+        query is executed. In fact, the ``Q`` object does not even know about the
+        :py:class:`~pandas.DataFrame` it will be applied to in the beginning. On the
+        flip side, this means a query may be reused for different DataFrames.
+    """
 
     _OPERATOR_MAP: dict[str, Callable[[pd.Series, Any], pd.Series]] = {
         "==": lambda series, value: series == value,
@@ -195,7 +233,19 @@ QTypes = Q | AndQ | OrQ | NotQ | None
 
 
 class C:
-    """Wraps a column name and produces a :py:class:`Q` object upon comparison."""
+    """Wraps a column name and produces a :py:class:`Q` object upon comparison.
+
+    .. caution::
+
+        Just like the :py:class:`Q` object, it is not checked upon instantiation
+        whether the column name is valid. This is only done when the query is executed.
+
+
+    .. note::
+
+        There is no shorthand syntax for creating ``isin`` queries using the ``C``
+        object. For that, one needs to use e.g. ``Q('col', 'in', [1, 2, 3])``.
+    """
 
     def __init__(self, column: str) -> None:
         """Create a column object for comparison."""

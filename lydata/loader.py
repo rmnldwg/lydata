@@ -1,4 +1,24 @@
-"""Module for loading the lydata datasets."""
+"""Provides functions to easily load lyDATA CSV tables as :py:class:`pandas.DataFrame`.
+
+The loading itself is implemented in the :py:class:`.LyDatasetConfig` class, which
+is a :py:class:`pydantic.BaseModel` subclass. It validates the unique specification
+that identifies a dataset and then allows loading it from the disk (if present) or
+from GitHub.
+
+The :py:func:`available_datasets` function can be used to create a generator of such
+:py:class:`.LyDatasetConfig` instances, corresponding to all available datasets that
+are either found on disk or on GitHub.
+
+Consequently, the :py:func:`load_datasets` function can be used to load all datasets
+matching the given specs/pattern. It takes the same arguments as the function
+:py:func:`available_datasets` but returns a generator of :py:class:`pandas.DataFrame`
+instead of :py:class:`.LyDatasetConfig`.
+
+Lastly, with the :py:func:`join_datasets` function, one can load and concatenate all
+datasets matching the given specs/pattern into a single :py:class:`pandas.DataFrame`.
+
+The docstring of all functions contains some basic doctest examples.
+"""
 
 import fnmatch
 import logging
