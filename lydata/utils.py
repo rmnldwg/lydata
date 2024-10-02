@@ -59,8 +59,8 @@ def get_default_column_map() -> _ColumnMap:
     DataFrames.
 
     >>> from lydata import accessor, loader
-    >>> df = loader.load_dataset(institution="usz")
-    >>> df.ly.op   # doctest: +ELLIPSIS
+    >>> df = next(loader.load_datasets(institution="usz"))
+    >>> df.ly.surgery   # doctest: +ELLIPSIS
     0      False
     ...
     286    False

@@ -3,7 +3,7 @@
 import logging
 
 import lydata._version as _version
-from lydata import accessor
+from lydata.accessor import C, Q
 from lydata.loader import (
     available_datasets,
     join_datasets,
@@ -18,6 +18,8 @@ __version__ = _version.__version__
 
 __all__ = [
     "accessor",
+    "Q",
+    "C",
     "available_datasets",
     "join_datasets",
     "load_datasets",

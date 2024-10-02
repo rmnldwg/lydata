@@ -69,13 +69,13 @@ class LyDatasetConfig(BaseModel):
     def get_url(self, file: str) -> str:
         """Get the URL to the dataset's directory, CSV file, or README file.
 
-        >>> conf = LyDatasetConfig(year=2021, institution="clb", subsite="oropharynx")
-        >>> conf.get_url("")
-        'https://raw.githubusercontent.com/rmnldwg/lydata/main/2021-clb-oropharynx/'
-        >>> conf.get_url("data.csv")
-        'https://raw.githubusercontent.com/rmnldwg/lydata/main/2021-clb-oropharynx/data.csv'
-        >>> conf.get_url("README.md")
-        'https://raw.githubusercontent.com/rmnldwg/lydata/main/2021-clb-oropharynx/README.md'
+        >>> LyDatasetConfig(
+        ...     year=2021,
+        ...     institution="clb",
+        ...     subsite="oropharynx",
+        ...     ref="6ac98d",
+        ... ).get_url("data.csv")
+        'https://raw.githubusercontent.com/rmnldwg/lydata/6ac98d/2021-clb-oropharynx/data.csv'
         """
         return (
             "https://raw.githubusercontent.com/"
@@ -188,11 +188,11 @@ def _available_datasets_on_disk(
     subsite: str = "*",
     search_paths: list[Path] | None = None,
 ) -> Generator[LyDatasetConfig, None, None]:
-    year = str(year)
+    pattern = f"{str(year)}-{institution}-{subsite}"
     search_paths = search_paths or [Path(__file__).parent.parent]
 
     for search_path in search_paths:
-        for match in search_path.glob(f"{year}-{institution}-{subsite}"):
+        for match in search_path.glob(pattern):
             if match.is_dir() and (match / "data.csv").exists():
                 year, institution, subsite = match.name.split("-")
                 yield LyDatasetConfig(
