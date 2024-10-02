@@ -397,7 +397,7 @@ def join_datasets(
     return pd.concat(list(gen), axis="index", ignore_index=True)
 
 
-def run_doctests() -> None:
+def _run_doctests() -> None:
     """Run the doctests."""
     import doctest
 
@@ -405,4 +405,4 @@ def run_doctests() -> None:
 
 
 if __name__ == "__main__":
-    run_doctests()
+    _run_doctests()

@@ -121,10 +121,10 @@ def get_default_modalities() -> dict[str, ModalityConfig]:
     }
 
 
-def main() -> None:
+def _main() -> None:
     """Run the main function."""
     ...
 
 
 if __name__ == "__main__":
-    main()
+    _main()

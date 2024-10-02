@@ -862,12 +862,12 @@ class LyDataAccessor:
         return result
 
 
-def main() -> None:
+def _main() -> None:
     """Run main function."""
     ...
 
 
-def run_doctests() -> None:
+def _run_doctests() -> None:
     """Run the module doctests."""
     import doctest
 
@@ -875,4 +875,4 @@ def run_doctests() -> None:
 
 
 if __name__ == "__main__":
-    run_doctests()
+    _run_doctests()
