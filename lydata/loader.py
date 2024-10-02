@@ -343,41 +343,6 @@ def load_datasets(
         yield dset_conf.load(skip_disk=skip_disk, **kwargs)
 
 
-def load_dataset(
-    year: int | str = "*",
-    institution: str = "*",
-    subsite: str = "*",
-    search_paths: list[Path] | None = None,
-    skip_disk: bool = False,
-    repo: str = _repo,
-    ref: str = "main",
-    **kwargs,
-) -> pd.DataFrame:
-    """Load the first matching dataset.
-
-    ``skip_disk`` is passed to the :py:func:`load_datasets` function.
-
-    >>> ds = load_dataset(year="2021", institution='clb', subsite='oropharynx')
-    >>> ds.attrs["year"]
-    2021
-    >>> conf_from_ds = LyDatasetConfig(**ds.attrs)
-    >>> conf_from_ds.name
-    '2021-clb-oropharynx'
-    """
-    return next(
-        load_datasets(
-            year=year,
-            institution=institution,
-            subsite=subsite,
-            search_paths=search_paths,
-            skip_disk=skip_disk,
-            repo=repo,
-            ref=ref,
-            **kwargs,
-        )
-    )
-
-
 def join_datasets(
     year: int | str = "*",
     institution: str = "*",

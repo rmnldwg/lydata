@@ -7,7 +7,6 @@ from lydata import accessor
 from lydata.loader import (
     available_datasets,
     join_datasets,
-    load_dataset,
     load_datasets,
 )
 from lydata.validator import validate_datasets
@@ -22,7 +21,6 @@ __all__ = [
     "available_datasets",
     "join_datasets",
     "load_datasets",
-    "load_dataset",
     "validate_datasets",
 ]
 
