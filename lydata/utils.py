@@ -73,10 +73,13 @@ def get_default_column_map() -> _ColumnMap:
     """
     return _ColumnMap.from_list(
         [
+            _ColumnSpec("id", ("patient", "#", "id")),
+            _ColumnSpec("institution", ("patient", "#", "institution")),
             _ColumnSpec("sex", ("patient", "#", "sex")),
             _ColumnSpec("age", ("patient", "#", "age")),
+            _ColumnSpec("weight", ("patient", "#", "weight")),
             _ColumnSpec("date", ("patient", "#", "diagnose_date")),
-            _ColumnSpec("op", ("patient", "#", "neck_dissection")),
+            _ColumnSpec("surgery", ("patient", "#", "neck_dissection")),
             _ColumnSpec("hpv", ("patient", "#", "hpv_status")),
             _ColumnSpec("smoke", ("patient", "#", "nicotine_abuse")),
             _ColumnSpec("alcohol", ("patient", "#", "alcohol_abuse")),
