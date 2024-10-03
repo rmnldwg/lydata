@@ -237,14 +237,8 @@ class C:
 
     .. caution::
 
-        Just like the :py:class:`Q` object, it is not checked upon instantiation
+        Just like for the :py:class:`Q` object, it is not checked upon instantiation
         whether the column name is valid. This is only done when the query is executed.
-
-
-    .. note::
-
-        There is no shorthand syntax for creating ``isin`` queries using the ``C``
-        object. For that, one needs to use e.g. ``Q('col', 'in', [1, 2, 3])``.
     """
 
     def __init__(self, column: str) -> None:
@@ -298,6 +292,14 @@ class C:
         Q('foo', '!=', 'bar')
         """
         return Q(self.column, "!=", value)
+
+    def in_(self, value: list[Any]) -> Q:
+        """Create a query object for checking if the column values are in a list.
+
+        >>> C('foo').in_([1, 2, 3])
+        Q('foo', 'in', [1, 2, 3])
+        """
+        return Q(self.column, "in", value)
 
 
 @dataclass
