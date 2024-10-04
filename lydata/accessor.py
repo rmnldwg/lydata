@@ -1,4 +1,31 @@
-"""Module containing a custom accessor and helpers for querying lydata."""
+"""Module containing a custom accessor and helpers for querying lyDATA.
+
+Because of the special three-level header of the lyDATA tables, it is sometimes
+cumbersome and lengthy to access the columns. While this is certainly necessary to
+access e.g. the contralateral involvement of LNL II as observed on CT images
+(``df["CT", "contra", "II"]``), for simple patient information such as age and HPV
+status, it is more convenient to use short names, which we implement in this module.
+
+The main class in this module is the :py:class:`LyDataAccessor` class, which provides
+the above mentioned functionality. That way, accessing the age of all patients is now
+as easy as typing ``df.ly.age``.
+
+Beyond that, the module implements a convenient wat to query the
+:py:class:`pd.DataFrame`: The :py:class:`Q` object, that was inspired by Django's
+``Q`` object. It allows for more readable and modular queries, which can be combined
+with logical operators and reused across different DataFrames.
+
+The :py:class:`Q` objects can be passed to the :py:meth:`LyDataAccessor.query` and
+:py:meth:`LyDataAccessor.portion` methods to filter the DataFrame or compute the
+:py:class:`QueryPortion` of rows that satisfy the query.
+
+Further, we implement methods like :py:meth:`LyDataAccessor.combine`,
+:py:meth:`LyDataAccessor.infer_sublevels`, and
+:py:meth:`LyDataAccessor.infer_superlevels` to compute additional columns from the
+lyDATA tables. This is sometimes necessary, because not all data contains all the
+possibly necessary columns. E.g., in some cohorts we do have detailed sublevel
+information (i.e., IIa and IIb), while in others only the superlevel (II) is reported.
+"""
 
 from __future__ import annotations
 
@@ -20,7 +47,7 @@ from lydata.utils import (
 from lydata.validator import construct_schema
 
 
-def get_all_true(df: pd.DataFrame) -> pd.Series:
+def _get_all_true(df: pd.DataFrame) -> pd.Series:
     """Return a mask with all entries set to ``True``."""
     return pd.Series([True] * len(df))
 
@@ -42,7 +69,18 @@ class CombineQMixin:
 
 
 class Q(CombineQMixin):
-    """Combinable query object for filtering a DataFrame."""
+    """Combinable query object for filtering a DataFrame.
+
+    The syntax for this object is similar to Django's ``Q`` object. It can be used to
+    define queries in a more readable and modular way.
+
+    .. caution::
+
+        The column names are not checked upon instantiation. This is only done when the
+        query is executed. In fact, the ``Q`` object does not even know about the
+        :py:class:`~pandas.DataFrame` it will be applied to in the beginning. On the
+        flip side, this means a query may be reused for different DataFrames.
+    """
 
     _OPERATOR_MAP: dict[str, Callable[[pd.Series, Any], pd.Series]] = {
         "==": lambda series, value: series == value,
@@ -188,10 +226,80 @@ class NoneQ(CombineQMixin):
 
     def execute(self, df: pd.DataFrame) -> pd.Series:
         """Return a boolean mask with all entries set to ``True``."""
-        return get_all_true(df)
+        return _get_all_true(df)
 
 
 QTypes = Q | AndQ | OrQ | NotQ | None
+
+
+class C:
+    """Wraps a column name and produces a :py:class:`Q` object upon comparison.
+
+    .. caution::
+
+        Just like for the :py:class:`Q` object, it is not checked upon instantiation
+        whether the column name is valid. This is only done when the query is executed.
+    """
+
+    def __init__(self, column: str) -> None:
+        """Create a column object for comparison."""
+        self.column = column
+
+    def __eq__(self, value: Any) -> Q:
+        """Create a query object for comparing equality.
+
+        >>> C('foo') == 'bar'
+        Q('foo', '==', 'bar')
+        """
+        return Q(self.column, "==", value)
+
+    def __lt__(self, value: Any) -> Q:
+        """Create a query object for comparing less than.
+
+        >>> C('foo') < 42
+        Q('foo', '<', 42)
+        """
+        return Q(self.column, "<", value)
+
+    def __le__(self, value: Any) -> Q:
+        """Create a query object for comparing less than or equal.
+
+        >>> C('foo') <= 42
+        Q('foo', '<=', 42)
+        """
+        return Q(self.column, "<=", value)
+
+    def __gt__(self, value: Any) -> Q:
+        """Create a query object for comparing greater than.
+
+        >>> C('foo') > 42
+        Q('foo', '>', 42)
+        """
+        return Q(self.column, ">", value)
+
+    def __ge__(self, value: Any) -> Q:
+        """Create a query object for comparing greater than or equal.
+
+        >>> C('foo') >= 42
+        Q('foo', '>=', 42)
+        """
+        return Q(self.column, ">=", value)
+
+    def __ne__(self, value: Any) -> Q:
+        """Create a query object for comparing inequality.
+
+        >>> C('foo') != 'bar'
+        Q('foo', '!=', 'bar')
+        """
+        return Q(self.column, "!=", value)
+
+    def in_(self, value: list[Any]) -> Q:
+        """Create a query object for checking if the column values are in a list.
+
+        >>> C('foo').in_([1, 2, 3])
+        Q('foo', 'in', [1, 2, 3])
+        """
+        return Q(self.column, "in", value)
 
 
 @dataclass
@@ -274,7 +382,7 @@ def align_diagnoses(
     return diagnosis_stack
 
 
-def create_raising_func(method: str):
+def _create_raising_func(method: str):
     """Raise ValueError for wrong ``method``."""
 
     def raise_value_err(*args, **kwargs):
@@ -283,7 +391,7 @@ def create_raising_func(method: str):
     return raise_value_err
 
 
-def false_estimate(
+def _false_estimate(
     obs: np.ndarray,
     false_pos_probs: np.ndarray,
     true_neg_probs: np.ndarray,
@@ -291,7 +399,7 @@ def false_estimate(
 ) -> float:
     """Compute estimate of ``False``, given ``obs``.
 
-    >>> false_estimate([True, False], [0.1, 0.6], [0.4, 0.7], method="whatever")
+    >>> _false_estimate([True, False], [0.1, 0.6], [0.4, 0.7], method="whatever")
     Traceback (most recent call last):
         ...
     ValueError: Unknown method whatever
@@ -302,11 +410,11 @@ def false_estimate(
         1.0 if method == "prod" else 0.0,
         false_llhs,
     )
-    method = getattr(np, method, create_raising_func(method))
+    method = getattr(np, method, _create_raising_func(method))
     return method(nans_masked)
 
 
-def true_estimate(
+def _true_estimate(
     obs: np.ndarray,
     true_pos_probs: np.ndarray,
     false_neg_probs: np.ndarray,
@@ -317,9 +425,9 @@ def true_estimate(
     >>> obs = [True, False, np.nan]
     >>> true_pos_probs = [0.8, 0.6, 0.9]
     >>> false_neg_probs = [0.6, 0.7, 0.9]
-    >>> true_estimate(obs, true_pos_probs, false_neg_probs, method="max")
+    >>> _true_estimate(obs, true_pos_probs, false_neg_probs, method="max")
     np.float64(0.8)
-    >>> tmp = true_estimate(obs, true_pos_probs, false_neg_probs, method="prod")
+    >>> tmp = _true_estimate(obs, true_pos_probs, false_neg_probs, method="prod")
     >>> np.isclose(tmp, 0.56)
     np.True_
     """
@@ -329,11 +437,11 @@ def true_estimate(
         1.0 if method == "prod" else 0.0,
         true_llhs,
     )
-    method = getattr(np, method, create_raising_func(method))
+    method = getattr(np, method, _create_raising_func(method))
     return method(nans_masked)
 
 
-def max_likelihood(
+def _max_likelihood(
     obs: np.ndarray,
     specificities: np.ndarray,
     sensitivities: np.ndarray,
@@ -343,18 +451,18 @@ def max_likelihood(
     >>> obs = np.array([True, False, np.nan, None])
     >>> sensitivities = np.array([0.9, 0.7, 0.7, 0.7])
     >>> specificities = np.array([0.9, 0.7, 0.7, 0.7])
-    >>> max_likelihood(obs, sensitivities, specificities)
+    >>> _max_likelihood(obs, sensitivities, specificities)
     np.True_
     >>> obs = np.array([True, False, False, False])
-    >>> max_likelihood(obs, sensitivities, specificities)
+    >>> _max_likelihood(obs, sensitivities, specificities)
     np.False_
     """
-    healthy_llh = false_estimate(obs, 1 - specificities, specificities, method="prod")
-    involved_llhs = true_estimate(obs, sensitivities, 1 - sensitivities, method="prod")
+    healthy_llh = _false_estimate(obs, 1 - specificities, specificities, method="prod")
+    involved_llhs = _true_estimate(obs, sensitivities, 1 - sensitivities, method="prod")
     return healthy_llh < involved_llhs
 
 
-def rank_trustworthy(
+def _rank_trustworthy(
     obs: np.ndarray,
     specificities: np.ndarray,
     sensitivities: np.ndarray,
@@ -364,24 +472,24 @@ def rank_trustworthy(
     >>> obs = np.array([True, False, np.nan, None])
     >>> sensitivities = np.array([0.9, 0.7, 0.7, 0.7])
     >>> specificities = np.array([0.9, 0.7, 0.7, 0.7])
-    >>> rank_trustworthy(obs, sensitivities, specificities)
+    >>> _rank_trustworthy(obs, sensitivities, specificities)
     np.True_
     >>> obs = np.array([True, False, False, False])
-    >>> rank_trustworthy(obs, sensitivities, specificities)
+    >>> _rank_trustworthy(obs, sensitivities, specificities)
     np.True_
     """
-    healthy_llh = false_estimate(obs, 1 - specificities, specificities, method="max")
-    involved_llhs = true_estimate(obs, sensitivities, 1 - sensitivities, method="max")
+    healthy_llh = _false_estimate(obs, 1 - specificities, specificities, method="max")
+    involved_llhs = _true_estimate(obs, sensitivities, 1 - sensitivities, method="max")
     return healthy_llh < involved_llhs
 
 
-def expand_mapping(
+def _expand_mapping(
     short_map: dict[str, Any],
     colname_map: dict[str | tuple[str, str, str], Any] | None = None,
 ) -> dict[tuple[str, str, str], Any]:
     """Expand the column map to full column names.
 
-    >>> expand_mapping({'age': 'foo', 'hpv': 'bar'})
+    >>> _expand_mapping({'age': 'foo', 'hpv': 'bar'})
     {('patient', '#', 'age'): 'foo', ('patient', '#', 'hpv_status'): 'bar'}
     """
     _colname_map = colname_map or get_default_column_map().from_short
@@ -496,6 +604,15 @@ class LyDataAccessor:
 
         A query is a :py:class:`Q` object that can be combined with logical operators.
         See this class' documentation for more information.
+
+        As a shorthand for creating these :py:class:`Q` objects, you can use the
+        :py:class:`C` object as in the example below, where we query all entries where
+        ``x`` is greater than 1 and not less than 3:
+
+        >>> df = pd.DataFrame({'x': [1, 2, 3]})
+        >>> df.ly.query((C('x') > 1) & ~(C('x') < 3))
+           x
+        2  3
         """
         mask = (query or NoneQ()).execute(self._obj)
         return self._obj[mask]
@@ -508,9 +625,9 @@ class LyDataAccessor:
         number of rows satisfying only the ``given`` condition.
 
         >>> df = pd.DataFrame({'x': [1, 2, 3]})
-        >>> df.ly.portion(query=Q('x', '==', 2), given=Q('x', '>', 1))
+        >>> df.ly.portion(query=C('x') ==  2, given=C('x') > 1)
         QueryPortion(match=np.int64(1), total=np.int64(2))
-        >>> df.ly.portion(query=Q('x', '==', 2), given=Q('x', '>', 3))
+        >>> df.ly.portion(query=C('x') ==  2, given=C('x') > 3)
         QueryPortion(match=np.int64(0), total=np.int64(0))
         """
         given_mask = (given or NoneQ()).execute(self._obj)
@@ -605,7 +722,7 @@ class LyDataAccessor:
         columns = diagnosis_stack[0].columns
         diagnosis_stack = np.array(diagnosis_stack)
 
-        funcs1d = {"max_llh": max_likelihood, "rank": rank_trustworthy}
+        funcs1d = {"max_llh": _max_likelihood, "rank": _rank_trustworthy}
         result = np.apply_along_axis(
             func1d=funcs1d[method],
             axis=0,
@@ -747,12 +864,12 @@ class LyDataAccessor:
         return result
 
 
-def main() -> None:
+def _main() -> None:
     """Run main function."""
     ...
 
 
-def run_doctests() -> None:
+def _run_doctests() -> None:
     """Run the module doctests."""
     import doctest
 
@@ -760,4 +877,4 @@ def run_doctests() -> None:
 
 
 if __name__ == "__main__":
-    run_doctests()
+    _run_doctests()

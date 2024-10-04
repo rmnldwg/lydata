@@ -53,10 +53,33 @@ class _ColumnMap:
 
 
 def get_default_column_map() -> _ColumnMap:
-    """Get the default column map."""
+    """Get the default column map.
+
+    This map defines which short column names can be used to access columns in the
+    DataFrames.
+
+    >>> from lydata import accessor, loader
+    >>> df = next(loader.load_datasets(institution="usz"))
+    >>> df.ly.surgery   # doctest: +ELLIPSIS
+    0      False
+    ...
+    286    False
+    Name: (patient, #, neck_dissection), Length: 287, dtype: bool
+    >>> df.ly.smoke   # doctest: +ELLIPSIS
+    0       True
+    ...
+    286     True
+    Name: (patient, #, nicotine_abuse), Length: 287, dtype: bool
+    """
     return _ColumnMap.from_list(
         [
+            _ColumnSpec("id", ("patient", "#", "id")),
+            _ColumnSpec("institution", ("patient", "#", "institution")),
+            _ColumnSpec("sex", ("patient", "#", "sex")),
             _ColumnSpec("age", ("patient", "#", "age")),
+            _ColumnSpec("weight", ("patient", "#", "weight")),
+            _ColumnSpec("date", ("patient", "#", "diagnose_date")),
+            _ColumnSpec("surgery", ("patient", "#", "neck_dissection")),
             _ColumnSpec("hpv", ("patient", "#", "hpv_status")),
             _ColumnSpec("smoke", ("patient", "#", "nicotine_abuse")),
             _ColumnSpec("alcohol", ("patient", "#", "alcohol_abuse")),
@@ -64,6 +87,8 @@ def get_default_column_map() -> _ColumnMap:
             _ColumnSpec("n_stage", ("patient", "#", "n_stage")),
             _ColumnSpec("m_stage", ("patient", "#", "m_stage")),
             _ColumnSpec("midext", ("tumor", "1", "extension")),
+            _ColumnSpec("subsite", ("tumor", "1", "subsite")),
+            _ColumnSpec("volume", ("tumor", "1", "volume")),
         ]
     )
 
@@ -96,10 +121,10 @@ def get_default_modalities() -> dict[str, ModalityConfig]:
     }
 
 
-def main() -> None:
+def _main() -> None:
     """Run the main function."""
     ...
 
 
 if __name__ == "__main__":
-    main()
+    _main()
