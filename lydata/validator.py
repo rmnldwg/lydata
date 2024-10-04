@@ -247,14 +247,14 @@ def get_depth(
     >>> get_depth(nested_column_map)   # doctest: +ELLIPSIS
     Traceback (most recent call last):
         ...
-    ValueError: Leaf of nested map must be dict with any of {'func', 'default'}.
+    ValueError: Leaf of nested map must be dict with any of ['default', 'func'].
     """
     leaf_keys = leaf_keys or {"func", "default"}
 
     for _, value in nested_map.items():
         if not isinstance(value, dict):
             raise ValueError(
-                f"Leaf of nested map must be dict with any of {leaf_keys}."
+                f"Leaf of nested map must be dict with any of {sorted(leaf_keys)}."
             )
 
         is_leaf = not set(value.keys()).isdisjoint(leaf_keys)
