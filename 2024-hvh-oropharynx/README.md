@@ -32,7 +32,7 @@ The data is provided as a CSV-table containing one row for each of the 287 patie
 1. **`patient:`** General information about the patient’s condition can be found under this top-level header.
     1. **`#:`** The second level under patient has no meaning and exists solely as a filler.
         1. **`id:`** Enumeration of the patients
-        2. **`institution:`** The clinic at which the patient were treated and recorded. This holds the value "University Hospital Zurich" for all patients in this dataset.
+        2. **`institution:`** The clinic at which the patient were treated and recorded. This holds the value "Vall d'Hebron Barcelona Hospital" for all patients in this dataset.
         3. **`sex:`** Sex of the patient
         4. **`age:`** Patient’s age at diagnosis
         5. **`diagnose_date:`** Date of diagnosis (format `YYYY-mm-dd`) defined as the date of first histological confirmation of HNSCC.
