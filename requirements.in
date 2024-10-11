@@ -9,3 +9,5 @@ lyscripts == 0.7.2
 lymph-model < 1
 lazydocs
 tueplots
+upsetplot
+lydata == 0.0.4
