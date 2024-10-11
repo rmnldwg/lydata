@@ -1,4 +1,24 @@
-"""Module for loading the lydata datasets."""
+"""Provides functions to easily load lyDATA CSV tables as :py:class:`pandas.DataFrame`.
+
+The loading itself is implemented in the :py:class:`.LyDatasetConfig` class, which
+is a :py:class:`pydantic.BaseModel` subclass. It validates the unique specification
+that identifies a dataset and then allows loading it from the disk (if present) or
+from GitHub.
+
+The :py:func:`available_datasets` function can be used to create a generator of such
+:py:class:`.LyDatasetConfig` instances, corresponding to all available datasets that
+are either found on disk or on GitHub.
+
+Consequently, the :py:func:`load_datasets` function can be used to load all datasets
+matching the given specs/pattern. It takes the same arguments as the function
+:py:func:`available_datasets` but returns a generator of :py:class:`pandas.DataFrame`
+instead of :py:class:`.LyDatasetConfig`.
+
+Lastly, with the :py:func:`join_datasets` function, one can load and concatenate all
+datasets matching the given specs/pattern into a single :py:class:`pandas.DataFrame`.
+
+The docstring of all functions contains some basic doctest examples.
+"""
 
 import fnmatch
 import logging
@@ -18,10 +38,8 @@ from mistletoe.markdown_renderer import MarkdownRenderer
 from mistletoe.token import Token
 from pydantic import BaseModel, Field, constr
 
-from lydata import _repo
-
 logger = logging.getLogger(__name__)
-
+_repo = "rmnldwg/lydata"
 low_min1_str = constr(to_lower=True, min_length=1)
 
 
@@ -71,13 +89,13 @@ class LyDatasetConfig(BaseModel):
     def get_url(self, file: str) -> str:
         """Get the URL to the dataset's directory, CSV file, or README file.
 
-        >>> conf = LyDatasetConfig(year=2021, institution="clb", subsite="oropharynx")
-        >>> conf.get_url("")
-        'https://raw.githubusercontent.com/rmnldwg/lydata/main/2021-clb-oropharynx/'
-        >>> conf.get_url("data.csv")
-        'https://raw.githubusercontent.com/rmnldwg/lydata/main/2021-clb-oropharynx/data.csv'
-        >>> conf.get_url("README.md")
-        'https://raw.githubusercontent.com/rmnldwg/lydata/main/2021-clb-oropharynx/README.md'
+        >>> LyDatasetConfig(
+        ...     year=2021,
+        ...     institution="clb",
+        ...     subsite="oropharynx",
+        ...     ref="6ac98d",
+        ... ).get_url("data.csv")
+        'https://raw.githubusercontent.com/rmnldwg/lydata/6ac98d/2021-clb-oropharynx/data.csv'
         """
         return (
             "https://raw.githubusercontent.com/"
@@ -188,14 +206,20 @@ def _available_datasets_on_disk(
     year: int | str = "*",
     institution: str = "*",
     subsite: str = "*",
+    search_paths: list[Path] | None = None,
 ) -> Generator[LyDatasetConfig, None, None]:
-    year = str(year)
-    search_path = Path(__file__).parent.parent
+    pattern = f"{str(year)}-{institution}-{subsite}"
+    search_paths = search_paths or [Path(__file__).parent.parent]
 
-    for match in search_path.glob(f"{year}-{institution}-{subsite}"):
-        if match.is_dir() and (match / "data.csv").exists():
-            year, institution, subsite = match.name.split("-")
-            yield LyDatasetConfig(year=year, institution=institution, subsite=subsite)
+    for search_path in search_paths:
+        for match in search_path.glob(pattern):
+            if match.is_dir() and (match / "data.csv").exists():
+                year, institution, subsite = match.name.split("-")
+                yield LyDatasetConfig(
+                    year=year,
+                    institution=institution,
+                    subsite=subsite,
+                )
 
 
 def _get_github_auth() -> Auth:
@@ -204,9 +228,11 @@ def _get_github_auth() -> Auth:
     password = os.getenv("GITHUB_PASSWORD")
 
     if token:
+        logger.debug("Using GITHUB_TOKEN for authentication.")
         return Auth.Token(token)
 
     if user and password:
+        logger.debug("Using GITHUB_USER and GITHUB_PASSWORD for authentication.")
         return Auth.Login(user, password)
 
     raise ValueError("Neither GITHUB_TOKEN nor GITHUB_USER and GITHUB_PASSWORD set.")
@@ -246,17 +272,25 @@ def available_datasets(
     year: int | str = "*",
     institution: str = "*",
     subsite: str = "*",
+    search_paths: list[Path] | None = None,
     skip_disk: bool = False,
     repo: str = _repo,
     ref: str = "main",
 ) -> Generator[LyDatasetConfig, None, None]:
-    """Generate names of available datasets.
+    """Generate :py:class:`.LyDatasetConfig` instances of available datasets.
 
     The arguments ``year``, ``institution``, and ``subsite`` represent glob patterns
     and all datasets matching these patterns can be iterated over using the returned
     generator.
 
-    With ``skip_disk`` set to ``True``, the function will not look for datasets on disk.
+    By default, the functions will look for datasets on the disk at paths specified
+    in the ``search_paths`` argument. If no paths are provided, it will look in the
+    the parent directory of the directory containing this file. If the library is
+    installed, this will be the ``site-packages`` directory.
+
+    With ``skip_disk`` set to ``True``, the function will not look for datasets on disk,
+    but will instead look for them on GitHub. The ``repo`` and ``ref`` arguments can be
+    used to specify the repository and the branch/tag/commit to look in.
 
     >>> avail_gen = available_datasets()
     >>> sorted([ds.name for ds in avail_gen])   # doctest: +NORMALIZE_WHITESPACE
@@ -284,7 +318,12 @@ def available_datasets(
                 "Parameters `repo` and `ref` are ignored, unless `skip_disk` "
                 "is set to `True`."
             )
-        yield from _available_datasets_on_disk(year, institution, subsite)
+        yield from _available_datasets_on_disk(
+            year=year,
+            institution=institution,
+            subsite=subsite,
+            search_paths=search_paths,
+        )
     else:
         yield from _available_datasets_on_github(
             year=year,
@@ -299,6 +338,7 @@ def load_datasets(
     year: int | str = "*",
     institution: str = "*",
     subsite: str = "*",
+    search_paths: list[Path] | None = None,
     skip_disk: bool = False,
     repo: str = _repo,
     ref: str = "main",
@@ -306,59 +346,28 @@ def load_datasets(
 ) -> Generator[pd.DataFrame, None, None]:
     """Load matching datasets from the disk.
 
-    The argument ``skip_disk`` is passed to both the :py:func:`.available_datasets`
-    function to check for what can be loaded and to the :py:meth:`.LyDatasetConfig.load`
-    method to decide whether to load from disk (default) or from GitHub.
+    It loads every dataset from the :py:class:`.LyDatasetConfig` instances generated by
+    the :py:func:`available_datasets` function, which also receives all arguments of
+    this function.
     """
     dset_confs = available_datasets(
         year=year,
         institution=institution,
         subsite=subsite,
+        search_paths=search_paths,
+        skip_disk=skip_disk,
         repo=repo,
         ref=ref,
-        skip_disk=skip_disk,
     )
     for dset_conf in dset_confs:
         yield dset_conf.load(skip_disk=skip_disk, **kwargs)
-
-
-def load_dataset(
-    year: int | str = "*",
-    institution: str = "*",
-    subsite: str = "*",
-    skip_disk: bool = False,
-    repo: str = _repo,
-    ref: str = "main",
-    **kwargs,
-) -> pd.DataFrame:
-    """Load the first matching dataset.
-
-    ``skip_disk`` is passed to the :py:func:`load_datasets` function.
-
-    >>> ds = load_dataset(year="2021", institution='clb', subsite='oropharynx')
-    >>> ds.attrs["year"]
-    2021
-    >>> conf_from_ds = LyDatasetConfig(**ds.attrs)
-    >>> conf_from_ds.name
-    '2021-clb-oropharynx'
-    """
-    return next(
-        load_datasets(
-            year=year,
-            institution=institution,
-            subsite=subsite,
-            skip_disk=skip_disk,
-            repo=repo,
-            ref=ref,
-            **kwargs,
-        )
-    )
 
 
 def join_datasets(
     year: int | str = "*",
     institution: str = "*",
     subsite: str = "*",
+    search_paths: list[Path] | None = None,
     skip_disk: bool = False,
     repo: str = _repo,
     ref: str = "main",
@@ -367,7 +376,8 @@ def join_datasets(
     """Join matching datasets from the disk.
 
     This uses the :py:func:`.load_datasets` function to load the datasets and then
-    concatenates them along the index axis.
+    concatenates them along the index axis. All arguments are also directly passed to
+    the :py:func:`.load_datasets` function.
 
     >>> join_datasets(year="2023").shape
     (705, 219)
@@ -378,6 +388,7 @@ def join_datasets(
         year=year,
         institution=institution,
         subsite=subsite,
+        search_paths=search_paths,
         skip_disk=skip_disk,
         repo=repo,
         ref=ref,
@@ -386,7 +397,7 @@ def join_datasets(
     return pd.concat(list(gen), axis="index", ignore_index=True)
 
 
-def run_doctests() -> None:
+def _run_doctests() -> None:
     """Run the doctests."""
     import doctest
 
@@ -394,4 +405,4 @@ def run_doctests() -> None:
 
 
 if __name__ == "__main__":
-    run_doctests()
+    _run_doctests()

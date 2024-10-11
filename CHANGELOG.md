@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.4] - 2024-10-11
+
+### 🚀 Features
+
+- [**breaking**] Make several helper functions private (e.g., `_max_likelihood()`)
+- *(utils)* Add more shortname columns, like `surgery` for `("patient", "#", "neck_dissection")`
+- *(load)* Allow search for datasets at different locations on disk
+- *(query)* Add `C` object for easier `Q` creation
+- *(query)* Add `in_` to `C` object
+- *(validate)* Add `transform_to_lyprox` function
+
+### 🐛 Bug Fixes
+
+- *(load)* Resolve circular import of `_repo`
+
+### 📚 Documentation
+
+- Add intersphinx mapping to pandera
+- Expand module docstrings
+- Update `README.md` with library examples
+
+### 🧪 Testing
+
+- Fix failure due to changing order of items in set
+
+### Change
+
+- *(validate)* Add args to renamed validation
+- Import useful stuff as top-level
+- Make `main()` funcs private
+
+### Remove
+
+- *(load)* [**breaking**] `load_dataset()` not needed, one can just use `next(load_datasets())`
+
 ## [0.0.3] - 2024-10-01
 
 ### 🚀 Features

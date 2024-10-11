@@ -57,6 +57,9 @@ local_scheme = "no-local-version"
 [tool.pytest.ini_options]
 testpaths = "."
 
+[tool.ruff]
+exclude = ["docs"]
+
 [tool.ruff.lint]
 select = ["E", "F", "W", "B", "C", "R", "U", "D", "I", "S", "T", "A", "N"]
 ignore = ["B028"]
