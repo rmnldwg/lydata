@@ -1,17 +1,13 @@
-"""
-Plot the distribution over patient's age, stratified by biological sex and somking
-status.
-"""
-from pathlib import Path
+"""Plot distribution over patient's age, stratified by sex and smoking status."""
+
 import argparse
+from pathlib import Path
 
-import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
-from tueplots import figsizes, fontsizes
-
+import numpy as np
+import pandas as pd
 from lyscripts.plot.utils import COLORS
-
+from tueplots import figsizes, fontsizes
 
 MPLSTYLE = Path(__file__).parent / ".mplstyle"
 OUTPUT_NAME = Path(__file__).with_suffix(".png").name

@@ -165,8 +165,8 @@ stages:
       size: 123938
     - path: scripts/age_and_sex.py
       hash: md5
-      md5: 07930bd03715f206c2613dd303eb1546
-      size: 3202
+      md5: a9679df5612bdbe764ddd72867ef02c1
+      size: 3184
   plot-t-category@2023-clb-multisite:
     cmd: "python scripts/t_category.py 2023-clb-multisite/data.csv\n"
     deps:
@@ -198,8 +198,8 @@ stages:
       size: 92742
     - path: scripts/age_and_sex.py
       hash: md5
-      md5: 07930bd03715f206c2613dd303eb1546
-      size: 3202
+      md5: a9679df5612bdbe764ddd72867ef02c1
+      size: 3184
   plot-age-and-sex@2023-isb-multisite:
     cmd: "python scripts/age_and_sex.py 2023-isb-multisite/data.csv\n"
     deps:
@@ -209,8 +209,8 @@ stages:
       size: 204322
     - path: scripts/age_and_sex.py
       hash: md5
-      md5: 07930bd03715f206c2613dd303eb1546
-      size: 3202
+      md5: a9679df5612bdbe764ddd72867ef02c1
+      size: 3184
   plot-t-category@2021-clb-oropharynx:
     cmd: "python scripts/t_category.py 2021-clb-oropharynx/data.csv\n"
     deps:
@@ -242,8 +242,8 @@ stages:
       size: 166961
     - path: scripts/age_and_sex.py
       hash: md5
-      md5: 07930bd03715f206c2613dd303eb1546
-      size: 3202
+      md5: a9679df5612bdbe764ddd72867ef02c1
+      size: 3184
   plot-subsite@2021-usz-oropharynx:
     cmd: "python scripts/subsite.py --data 2021-usz-oropharynx/data.csv\n"
     deps:
@@ -437,8 +437,8 @@ stages:
       size: 82567
     - path: scripts/age_and_sex.py
       hash: md5
-      md5: 07930bd03715f206c2613dd303eb1546
-      size: 3202
+      md5: a9679df5612bdbe764ddd72867ef02c1
+      size: 3184
   plot-subsite@2024-hvh-oropharynx:
     cmd: "python scripts/subsite.py --data 2024-hvh-oropharynx/data.csv\n"
     deps:
@@ -464,10 +464,5 @@ stages:
       size: 82567
     - path: scripts/upset_diff.py
       hash: md5
-      md5: bc46ebf3b65721981b3a0fe83f42b996
-      size: 5120
-    outs:
-    - path: 2024-hvh-oropharynx/figures/upset_diff.png
-      hash: md5
-      md5: 5fb78b91eb6b0d2b5038a661747b07b0
-      size: 152492
+      md5: c1d0b6ad04f10484fc4091c6edc1e7dc
+      size: 5431

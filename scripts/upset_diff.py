@@ -9,8 +9,10 @@ import numpy as np
 import pandas as pd
 import upsetplot
 from lyscripts.plot.utils import COLORS
+from tueplots import figsizes, fontsizes
 
-COMMIT = "5b85184ecece020f509ab0c9f05aa5c81257ffd3"
+MPLSTYLE = Path(__file__).parent / ".mplstyle"
+OUTPUT_NAME = Path(__file__).with_suffix(".png").name
 LNLS = ["I", "II", "III", "IV", "V"]
 
 
@@ -20,7 +22,7 @@ def get_parser() -> argparse.ArgumentParser:
 
     parser.add_argument(
         "--commit",
-        default=COMMIT,
+        type=str,
         help="The commit hash at which to compare the datasets.",
     )
     parser.add_argument(
@@ -107,6 +109,12 @@ def main() -> None:
     first_institution = first_load_kwargs["institution"].upper()
     second_institution = second_load_kwargs["institution"].upper()
 
+    plt.style.use(MPLSTYLE)
+    plt.rcParams.update(figsizes.icml2022_full(
+        nrows=1, ncols=2, height_to_width_ratio=0.75,
+    ))
+    plt.rcParams.update(fontsizes.icml2022())
+
     width = 0.4
 
     second_upset = upsetplot.UpSet(
@@ -154,8 +162,9 @@ def main() -> None:
     )
     ax_dict["totals"].set_xlabel("Prevalence\nof LNL involvement (%)")
 
-    output_path = Path(args.second_dataset) / "figures" / "upset_diff.png"
-    plt.savefig(output_path, dpi=300, bbox_inches="tight")
+    output_dir = Path(args.second_dataset) / "figures"
+    output_dir.mkdir(exist_ok=True, parents=True)
+    plt.savefig(output_dir / OUTPUT_NAME, dpi=300, bbox_inches="tight")
 
 
 if __name__ == "__main__":
