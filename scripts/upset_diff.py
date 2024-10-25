@@ -25,13 +25,26 @@ def main() -> None:
         ref=COMMIT,
     )).ly.combine()
 
-    indicators = upsetplot.from_indicators(usz_combined["ipsi"][LNLS])
-    upset = upsetplot.plot(
-        indicators,
-        subset_size="count",
-        sort_categories_by="-input",
-        min_subset_size=0,
-    )
+    usz_indicators = upsetplot.from_indicators(usz_combined["ipsi"][LNLS]).sort_index()
+    usz_index = usz_indicators.index
+    hvh_indicators = upsetplot.from_indicators(hvh_combined["ipsi"][LNLS])
+
+    for entry in usz_index:
+        if entry not in hvh_indicators:
+            hvh_indicators[entry] = 0
+
+    hvh_indicators = hvh_indicators.loc[usz_index]
+
+    upset_kwargs = {
+        "subset_size": "sum",
+        "sort_categories_by": "-input",
+        "min_subset_size": 0,
+    }
+
+    usz_upset = upsetplot.UpSet(usz_indicators, facecolor="blue", **upset_kwargs)
+    usz_ax_dict = usz_upset.plot()
+    hvh_upset = upsetplot.UpSet(hvh_indicators, facecolor="red", **upset_kwargs)
+    hvh_upset.plot_intersections(ax=usz_ax_dict["intersections"])
     plt.savefig("upset_diff.png", dpi=300)
 
 
