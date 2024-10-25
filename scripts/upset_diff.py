@@ -1,5 +1,8 @@
 """Plot the difference of involvement patterns in two datasets as an UpSet plot."""
 
+import argparse
+from pathlib import Path
+
 import lydata
 import matplotlib.pyplot as plt
 import numpy as np
@@ -11,100 +14,148 @@ COMMIT = "5b85184ecece020f509ab0c9f05aa5c81257ffd3"
 LNLS = ["I", "II", "III", "IV", "V"]
 
 
+def get_parser() -> argparse.ArgumentParser:
+    """Return the argument parser."""
+    parser = argparse.ArgumentParser(description=__doc__)
+
+    parser.add_argument(
+        "--commit",
+        default=COMMIT,
+        help="The commit hash at which to compare the datasets.",
+    )
+    parser.add_argument(
+        "--first-dataset",
+        type=str,
+        default="2021-usz-oropharynx",
+    )
+    parser.add_argument(
+        "--second-dataset",
+        type=str,
+        default="2024-hvh-oropharynx",
+    )
+
+    return parser
+
+
+def kwargs_from_option(option: str) -> dict:
+    """Return the load_kwargs for the given option."""
+    year, institution, subsite = option.split("-")
+    return {
+        "year": int(year),
+        "institution": institution,
+        "subsite": subsite,
+        "skip_disk": True,
+    }
+
+
 def remove_artists(ax):
     """Remove all artists from the axes."""
     for artist in (ax.lines + ax.patches + ax.collections):
         artist.remove()
 
 
+def calculate_summable_indicators(first_combined, second_combined):
+    """Calculate the summable indicators for the two datasets."""
+    first_countable_inds = upsetplot.from_indicators(first_combined["ipsi"][LNLS])
+    second_countable_inds = upsetplot.from_indicators(second_combined["ipsi"][LNLS])
+
+    multiindex = pd.MultiIndex.from_product([[False, True]] * len(LNLS), names=LNLS)
+
+    first_summable_inds = pd.Series(index=multiindex, dtype=float)
+    second_summable_inds = pd.Series(index=multiindex, dtype=float)
+    first_total = len(first_combined)
+    second_total = len(second_combined)
+
+    to_drop = []
+
+    for index in multiindex:
+        first_percent = 100 * len(first_countable_inds.get(index, [])) / first_total
+        second_percent = 100 * len(second_countable_inds.get(index, [])) / second_total
+
+        if first_percent == 0 and second_percent == 0:
+            to_drop.append(index)
+
+        first_summable_inds.loc[index] = first_percent
+        second_summable_inds.loc[index] = second_percent
+
+    first_summable_inds = first_summable_inds.drop(to_drop)
+    second_summable_inds = second_summable_inds.drop(to_drop)
+
+    return first_summable_inds, second_summable_inds
+
+
 def main() -> None:
     """Plot the figure."""
-    usz_combined = next(lydata.load_datasets(
-        year=2021,
-        institution="usz",
-        subsite="oropharynx",
-        skip_disk=True,
-        ref=COMMIT,
-    )).ly.combine()
-    hvh_combined = next(lydata.load_datasets(
-        year=2024,
-        institution="hvh",
-        subsite="oropharynx",
-        skip_disk=True,
-        ref=COMMIT,
-    )).ly.combine()
+    args = get_parser().parse_args()
 
-    usz_prevalences = (
-        100 * usz_combined["ipsi"][LNLS].sum(axis="index") / len(usz_combined)
+    first_load_kwargs = kwargs_from_option(args.first_dataset)
+    first_load_kwargs["ref"] = args.commit
+    first_combined = next(lydata.load_datasets(**first_load_kwargs)).ly.combine()
+
+    second_load_kwargs = kwargs_from_option(args.second_dataset)
+    second_load_kwargs["ref"] = args.commit
+    second_combined = next(lydata.load_datasets(**second_load_kwargs)).ly.combine()
+
+    first_total = len(first_combined)
+    second_total = len(second_combined)
+    first_prevs = 100 * first_combined["ipsi"][LNLS].sum(axis="index") / first_total
+    second_prevs = 100 * second_combined["ipsi"][LNLS].sum(axis="index") / second_total
+    first_summable_inds, second_summable_inds = calculate_summable_indicators(
+        first_combined, second_combined,
     )
-    hvh_prevalences = (
-        100 * hvh_combined["ipsi"][LNLS].sum(axis="index") / len(hvh_combined)
-    )
-    usz_countable_indicators = upsetplot.from_indicators(usz_combined["ipsi"][LNLS])
-    hvh_countable_indicators = upsetplot.from_indicators(hvh_combined["ipsi"][LNLS])
 
-    joined_index = usz_countable_indicators.index.unique().union(
-        hvh_countable_indicators.index.unique()
-    ).sort_values()
-
-    usz_summable_indicators = pd.Series(index=joined_index, dtype=float)
-    hvh_summable_indicators = pd.Series(index=joined_index, dtype=float)
-    usz_total = len(usz_combined)
-    hvh_total = len(hvh_combined)
-
-    for index in joined_index:
-        usz_summable_indicators.loc[index] = (
-            100 * len(usz_countable_indicators.get(index, [])) / usz_total
-        )
-        hvh_summable_indicators.loc[index] = (
-            100 * len(hvh_countable_indicators.get(index, [])) / hvh_total
-        )
+    first_institution = first_load_kwargs["institution"].upper()
+    second_institution = second_load_kwargs["institution"].upper()
 
     width = 0.4
 
-    hvh_upset = upsetplot.UpSet(
-        hvh_summable_indicators,
+    second_upset = upsetplot.UpSet(
+        second_summable_inds,
         subset_size="sum",
         sort_categories_by="-input",
+        sort_by="input",
         min_subset_size=0,
-        totals_plot_elements=4,
+        totals_plot_elements=6,
         facecolor=COLORS["blue"],
     )
-    ax_dict = hvh_upset.plot()
-    hvh_upset.style_subsets(absent=["I", "II", "III", "IV", "V"])
+    ax_dict = second_upset.plot()
 
     remove_artists(ax_dict["intersections"])
     remove_artists(ax_dict["totals"])
 
     ax_dict["intersections"].bar(
-        x=np.arange(len(hvh_summable_indicators)) + 0.1,
-        height=hvh_summable_indicators,
+        x=np.arange(len(second_summable_inds)) + 0.1,
+        height=second_summable_inds,
         width=width,
         color=COLORS["red"],
+        label=f"{first_institution} ({first_total:d} patients)",
     )
     ax_dict["intersections"].bar(
-        x=np.arange(len(usz_summable_indicators)) - 0.1,
-        height=usz_summable_indicators,
+        x=np.arange(len(first_summable_inds)) - 0.1,
+        height=first_summable_inds,
         width=width,
         color=COLORS["green"],
+        label=f"{second_institution} ({second_total:d} patients)",
     )
     ax_dict["intersections"].set_ylabel("Frequency\n of specific patterns (%)")
+    ax_dict["intersections"].legend(loc="upper right")
 
     ax_dict["totals"].barh(
-        y=np.arange(len(usz_prevalences)) + 0.1,
-        width=usz_prevalences[::-1],
+        y=np.arange(len(first_prevs)) + 0.1,
+        width=first_prevs[::-1],
         height=width,
         color=COLORS["red"],
     )
     ax_dict["totals"].barh(
-        y=np.arange(len(hvh_prevalences)) - 0.1,
-        width=hvh_prevalences[::-1],
+        y=np.arange(len(second_prevs)) - 0.1,
+        width=second_prevs[::-1],
         height=width,
         color=COLORS["green"],
     )
     ax_dict["totals"].set_xlabel("Prevalence\nof LNL involvement (%)")
 
-    plt.savefig("upset_diff.png", dpi=300, bbox_inches="tight")
+    output_path = Path(args.second_dataset) / "figures" / "upset_diff.png"
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
 
 
 if __name__ == "__main__":
