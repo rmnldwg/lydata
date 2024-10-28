@@ -8,8 +8,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import upsetplot
-from lyscripts.plot.utils import COLORS
 from tueplots import figsizes, fontsizes
+
+from lyscripts.plot.utils import COLORS
 
 MPLSTYLE = Path(__file__).parent / ".mplstyle"
 OUTPUT_NAME = Path(__file__).with_suffix(".png").name

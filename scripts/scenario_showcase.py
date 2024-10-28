@@ -1,18 +1,15 @@
-"""
-Create a horizontal stacked bar plot showcasing the involvement prevalence for
-different scenarios.
-"""
-from pathlib import Path
-import argparse
+"""Create a stacked bar plot of the involvement prevalence for different scenarios."""
 
-import pandas as pd
-import numpy as np
+import argparse
+from pathlib import Path
+
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from subsite import INVERTED_FLAT_SUBSITE_DICT, SUBSITE_DICT
 from tueplots import figsizes, fontsizes
 
 from lyscripts.plot.utils import COLORS
-
-from subsite import INVERTED_FLAT_SUBSITE_DICT, SUBSITE_DICT
 
 
 def get_idx(df: pd.DataFrame, location: str) -> pd.Series:
