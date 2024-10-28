@@ -854,9 +854,6 @@ class LyDataAccessor:
 
         loop_combinations = product(modalities, sides, subdivisions.items())
         for modality, side, (superlevel, subids) in loop_combinations:
-            if superlevel in self._obj[modality, side]:
-                continue
-
             sublevels = [superlevel + subid for subid in subids]
             sublevel_cols = [(modality, side, sublevel) for sublevel in sublevels]
 
@@ -865,6 +862,9 @@ class LyDataAccessor:
                 is_any_involved = self._obj[sublevel_cols].any(axis=1)
                 is_unknown = self._obj[sublevel_cols].isna().all(axis=1)
             except KeyError:
+                continue
+
+            if superlevel in self._obj[modality, side]:
                 continue
 
             result.loc[are_all_healthy, (modality, side, superlevel)] = False
