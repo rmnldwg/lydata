@@ -121,6 +121,49 @@ def get_default_modalities() -> dict[str, ModalityConfig]:
     }
 
 
+def enhance(
+    dataset: pd.DataFrame,
+    infer_sublevels_kwargs: dict[str, Any] | None = None,
+    infer_superlevels_kwargs: dict[str, Any] | None = None,
+    combine_kwargs: dict[str, Any] | None = None,
+) -> pd.DataFrame:
+    """Enhance the dataset by inferring additional columns from the data.
+
+    This performs the following steps in order:
+
+    1. Infer the superlevel involvement for each diagnostic modality using the
+        :py:meth:`~lydata.accessor.LyDataAccessor.infer_superlevels` method.
+    2. Infer the sublevel involvement for each diagnostic modality using the
+        :py:meth:`~lydata.accessor.LyDataAccessor.infer_sublevels` method. This skips
+        all LNLs that were computed in the previous step.
+    3. Compute the maximum likelihood estimate of the true state of the patient using
+        the :py:meth:`~lydata.accessor.LyDataAccessor.combine`.
+
+    .. important::
+
+        Performing these operations in any other order may lead to the loss of some
+        information or even to conflicting LNL involvement information.
+
+    The result contains all LNLs of interest in the head and neck region, as well as
+    the best estimate of the true state of the patient under the top-level key
+    ``max_llh``.
+    """
+    infer_sublevels_kwargs = infer_sublevels_kwargs or {}
+    infer_superlevels_kwargs = infer_superlevels_kwargs or {}
+    combine_kwargs = combine_kwargs or {}
+
+    result = dataset.copy()
+
+    result = result.join(result.ly.infer_sublevels(**infer_sublevels_kwargs))
+    result = result.join(result.ly.infer_superlevels(**infer_superlevels_kwargs))
+
+    max_llh = pd.concat(
+        {"max_llh": result.ly.combine(**combine_kwargs)},
+        axis="columns",
+    )
+    return result.join(max_llh)
+
+
 def _main() -> None:
     """Run the main function."""
     ...

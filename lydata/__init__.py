@@ -9,6 +9,7 @@ from lydata.loader import (
     join_datasets,
     load_datasets,
 )
+from lydata.utils import enhance
 from lydata.validator import validate_datasets
 
 __author__ = "Roman Ludwig"
@@ -24,6 +25,7 @@ __all__ = [
     "join_datasets",
     "load_datasets",
     "validate_datasets",
+    "enhance",
 ]
 
 logger = logging.getLogger(__name__)
