@@ -46,6 +46,8 @@ from lydata.utils import (
 )
 from lydata.validator import construct_schema
 
+warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
+
 
 def _get_all_true(df: pd.DataFrame) -> pd.Series:
     """Return a mask with all entries set to ``True``."""
@@ -756,8 +758,9 @@ class LyDataAccessor:
                 "V": ["a", "b"],
             }
 
-        The resulting DataFrame will only contain the newly inferred sublevel columns.
-        Thus, one can simply :py:meth:`~pandas.DataFrame.update` the original DataFrame
+        The resulting DataFrame will only contain the newly inferred sublevel columns
+        and only for those sublevels that were not already present in the DataFrame.
+        Thus, one can simply :py:meth:`~pandas.DataFrame.join` the original DataFrame
         with the result.
 
         >>> df = pd.DataFrame({
@@ -795,6 +798,9 @@ class LyDataAccessor:
 
             for subid in subids:
                 sublevel = superlevel + subid
+                if sublevel in self._obj[modality, side]:
+                    continue
+
                 result.loc[is_healthy, (modality, side, sublevel)] = False
                 result.loc[~is_healthy, (modality, side, sublevel)] = None
 
@@ -815,8 +821,9 @@ class LyDataAccessor:
         The superlevel's status is computed for the specified ``modalities``. If and
         what sublevels a superlevel has, is specified in ``subdivisions``.
 
-        The resulting DataFrame will only contain the newly inferred superlevel columns.
-        This way, it is straightforward to :py:meth:`~pandas.DataFrame.update` the
+        The resulting DataFrame will only contain the newly inferred superlevel columns
+        and only for those superlevels that were not already present in the DataFrame.
+        This way, it is straightforward to :py:meth:`~pandas.DataFrame.join` it with the
         original DataFrame.
 
         >>> df = pd.DataFrame({
@@ -847,6 +854,9 @@ class LyDataAccessor:
 
         loop_combinations = product(modalities, sides, subdivisions.items())
         for modality, side, (superlevel, subids) in loop_combinations:
+            if superlevel in self._obj[modality, side]:
+                continue
+
             sublevels = [superlevel + subid for subid in subids]
             sublevel_cols = [(modality, side, sublevel) for sublevel in sublevels]
 
