@@ -295,10 +295,10 @@ class C:
         """
         return Q(self.column, "!=", value)
 
-    def in_(self, value: list[Any]) -> Q:
+    def isin(self, value: list[Any]) -> Q:
         """Create a query object for checking if the column values are in a list.
 
-        >>> C('foo').in_([1, 2, 3])
+        >>> C('foo').isin([1, 2, 3])
         Q('foo', 'in', [1, 2, 3])
         """
         return Q(self.column, "in", value)
