@@ -1,13 +1,12 @@
-"""
-Plot the distribution over primary tumor subsites.
-"""
-from cgitb import text
+"""Plot the distribution over primary tumor subsites."""
+
+import argparse
 from collections import defaultdict
 from pathlib import Path
-import argparse
 
-import pandas as pd
 import matplotlib.pyplot as plt
+import pandas as pd
+from shared import MPLSTYLE
 from tueplots import figsizes, fontsizes
 
 from lyscripts.plot.utils import COLORS
@@ -24,7 +23,6 @@ def invert(mapping: dict) -> dict:
     return result
 
 
-MPLSTYLE = Path(__file__).parent / ".mplstyle"
 OUTPUT_NAME = Path(__file__).with_suffix(".png").name
 SUBSITE_DICT = {
     "oropharynx": {

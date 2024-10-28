@@ -8,14 +8,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import upsetplot
+from shared import LNLS, MPLSTYLE, remove_artists
 from tueplots import figsizes, fontsizes
 
 from lyscripts.plot.utils import COLORS
 
-MPLSTYLE = Path(__file__).parent / ".mplstyle"
 OUTPUT_NAME = Path(__file__).with_suffix(".png").name
-LNLS = ["I", "II", "III", "IV", "V"]
-
 
 def get_parser() -> argparse.ArgumentParser:
     """Return the argument parser."""
@@ -47,14 +45,8 @@ def kwargs_from_option(option: str) -> dict:
         "year": int(year),
         "institution": institution,
         "subsite": subsite,
-        "skip_disk": True,
+        "use_github": True,
     }
-
-
-def remove_artists(ax):
-    """Remove all artists from the axes."""
-    for artist in (ax.lines + ax.patches + ax.collections):
-        artist.remove()
 
 
 def calculate_summable_indicators(first_combined, second_combined):

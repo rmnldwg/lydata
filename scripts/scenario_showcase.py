@@ -6,6 +6,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from shared import MPLSTYLE
 from subsite import INVERTED_FLAT_SUBSITE_DICT, SUBSITE_DICT
 from tueplots import figsizes, fontsizes
 
@@ -31,7 +32,7 @@ if __name__ == "__main__":
         help="Path to the data file.",
     )
     parser.add_argument(
-        "--mplstyle", type=Path, default=Path(__file__).parent / ".mplstyle",
+        "--mplstyle", type=Path, default=MPLSTYLE,
         help="Path to the matplotlib style file.",
     )
     args = parser.parse_args()

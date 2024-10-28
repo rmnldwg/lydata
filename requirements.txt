@@ -6,7 +6,7 @@ aiohttp==3.10.10
     # via
     #   aiohttp-retry
     #   fsspec
-aiohttp-retry==2.8.3
+aiohttp-retry==2.9.0
     # via
     #   dvc-http
     #   scmrepo
@@ -38,7 +38,7 @@ async-lru==2.0.4
     # via jupyterlab
 async-timeout==4.0.3
     # via aiohttp
-asyncssh==2.17.0
+asyncssh==2.18.0
     # via scmrepo
 atpublic==5.0
     # via flufl-lock
@@ -326,7 +326,7 @@ lazydocs==0.4.8
     # via -r requirements.in
 lxml==5.3.0
     # via jupyter-contrib-nbextensions
-lydata==0.0.4
+lydata==0.1.0
     # via -r requirements.in
 lymph-model==0.4.3
     # via
@@ -688,7 +688,7 @@ traitlets==5.14.3
     #   nbformat
 tueplots==0.0.17
     # via -r requirements.in
-typeguard==4.3.0
+typeguard==4.4.0
     # via pandera
 typer==0.12.5
     # via

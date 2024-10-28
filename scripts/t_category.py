@@ -1,11 +1,11 @@
-"""
-Plot the distribution over patient's T-category.
-"""
-from pathlib import Path
-import argparse
+"""Plot the distribution over patient's T-category."""
 
-import pandas as pd
+import argparse
+from pathlib import Path
+
 import matplotlib.pyplot as plt
+import pandas as pd
+from shared import MPLSTYLE
 from tueplots import figsizes, fontsizes
 
 from lyscripts.plot.utils import COLORS
@@ -19,7 +19,6 @@ def create_label(percent):
     return f"{percent:.0f}%"
 
 
-MPLSTYLE = Path(__file__).parent / ".mplstyle"
 OUTPUT_NAME = Path(__file__).with_suffix(".png").name
 
 

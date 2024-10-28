@@ -1,17 +1,15 @@
-"""
-Short module to render the `README.md` file from the `README.template` file and
-the `mapping.py`.
-"""
+"""Render the `README.md` from the `README.template` and the docs for `mapping.py`."""
+
 import argparse
 import importlib.util
-from pathlib import Path
 import sys
+from pathlib import Path
+
+import pandas as pd
 from jinja2 import Environment, FileSystemLoader
 from lazydocs import MarkdownGenerator
 
 from lyscripts.data.lyproxify import generate_markdown_docs
-import pandas as pd
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(

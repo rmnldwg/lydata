@@ -6,10 +6,11 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from lyscripts.plot.utils import COLORS
+from shared import MPLSTYLE
 from tueplots import figsizes, fontsizes
 
-MPLSTYLE = Path(__file__).parent / ".mplstyle"
+from lyscripts.plot.utils import COLORS
+
 OUTPUT_NAME = Path(__file__).with_suffix(".png").name
 
 

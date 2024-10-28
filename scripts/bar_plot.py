@@ -1,19 +1,16 @@
-"""
-Create a bar plot of different filters applied to the dataset, illustrating how
-the patient-individual data may be used.
-"""
-from pathlib import Path
-import argparse
+"""Create a bar plot of different filters applied to the dataset.
 
-import pandas as pd
-import numpy as np
+This should illustrate how the patient-individual data may be used.
+"""
+import argparse
+from pathlib import Path
+
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from shared import MPLSTYLE
 from tueplots import figsizes, fontsizes
 
-from lyscripts.plot.utils import COLORS
-
-
-MPLSTYLE = Path(__file__).parent / ".mplstyle"
 OUTPUT_NAME = Path(__file__).with_suffix(".png").name
 
 
