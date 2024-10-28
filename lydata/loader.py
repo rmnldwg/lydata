@@ -128,12 +128,12 @@ class LyDatasetConfig(BaseModel):
 
     def load(
         self,
-        skip_disk: bool = False,
+        use_github: bool = False,
         **load_kwargs,
     ) -> pd.DataFrame:
         """Load the ``data.csv`` file from disk or from GitHub.
 
-        One can also choose to ``skip_disk``. Any keyword arguments are passed to
+        One can also choose to ``use_github``. Any keyword arguments are passed to
         :py:func:`pandas.read_csv`.
 
         The method will store the output of :py:meth:`~pydantic.BaseModel.model_dump`
@@ -144,7 +144,7 @@ class LyDatasetConfig(BaseModel):
         >>> df_from_disk = conf.load()
         >>> df_from_disk.shape
         (263, 82)
-        >>> df_from_github = conf.load(skip_disk=True)
+        >>> df_from_github = conf.load(use_github=True)
         >>> np.all(df_from_disk.fillna(0) == df_from_github.fillna(0))
         np.True_
         """
@@ -152,7 +152,7 @@ class LyDatasetConfig(BaseModel):
         kwargs.update(load_kwargs)
 
         try:
-            if skip_disk:
+            if use_github:
                 logger.info(f"Skipping loading from {self.path}.")
                 raise SkipDiskError
             df = pd.read_csv(self.path, **kwargs)
@@ -273,7 +273,7 @@ def available_datasets(
     institution: str = "*",
     subsite: str = "*",
     search_paths: list[Path] | None = None,
-    skip_disk: bool = False,
+    use_github: bool = False,
     repo: str = _repo,
     ref: str = "main",
 ) -> Generator[LyDatasetConfig, None, None]:
@@ -288,9 +288,9 @@ def available_datasets(
     the parent directory of the directory containing this file. If the library is
     installed, this will be the ``site-packages`` directory.
 
-    With ``skip_disk`` set to ``True``, the function will not look for datasets on disk,
-    but will instead look for them on GitHub. The ``repo`` and ``ref`` arguments can be
-    used to specify the repository and the branch/tag/commit to look in.
+    With ``use_github`` set to ``True``, the function will not look for datasets on
+    disk, but will instead look for them on GitHub. The ``repo`` and ``ref`` arguments
+    can be used to specify the repository and the branch/tag/commit to look in.
 
     >>> avail_gen = available_datasets()
     >>> sorted([ds.name for ds in avail_gen])   # doctest: +NORMALIZE_WHITESPACE
@@ -298,7 +298,7 @@ def available_datasets(
      '2021-usz-oropharynx',
      '2023-clb-multisite',
      '2023-isb-multisite']
-    >>> avail_gen = available_datasets(skip_disk=True)
+    >>> avail_gen = available_datasets(use_github=True)
     >>> sorted([ds.name for ds in avail_gen])   # doctest: +NORMALIZE_WHITESPACE
     ['2021-clb-oropharynx',
      '2021-usz-oropharynx',
@@ -307,15 +307,15 @@ def available_datasets(
     >>> avail_gen = available_datasets(
     ...     institution="hvh",
     ...     ref="6ac98d",
-    ...     skip_disk=True,
+    ...     use_github=True,
     ... )
     >>> sorted([ds.get_url("") for ds in avail_gen])   # doctest: +NORMALIZE_WHITESPACE
     ['https://raw.githubusercontent.com/rmnldwg/lydata/6ac98d/2024-hvh-oropharynx/']
     """
-    if not skip_disk:
+    if not use_github:
         if repo != _repo or ref != "main":
             warnings.warn(
-                "Parameters `repo` and `ref` are ignored, unless `skip_disk` "
+                "Parameters `repo` and `ref` are ignored, unless `use_github` "
                 "is set to `True`."
             )
         yield from _available_datasets_on_disk(
@@ -339,7 +339,7 @@ def load_datasets(
     institution: str = "*",
     subsite: str = "*",
     search_paths: list[Path] | None = None,
-    skip_disk: bool = False,
+    use_github: bool = False,
     repo: str = _repo,
     ref: str = "main",
     **kwargs,
@@ -355,12 +355,12 @@ def load_datasets(
         institution=institution,
         subsite=subsite,
         search_paths=search_paths,
-        skip_disk=skip_disk,
+        use_github=use_github,
         repo=repo,
         ref=ref,
     )
     for dset_conf in dset_confs:
-        yield dset_conf.load(skip_disk=skip_disk, **kwargs)
+        yield dset_conf.load(use_github=use_github, **kwargs)
 
 
 def join_datasets(
@@ -368,7 +368,7 @@ def join_datasets(
     institution: str = "*",
     subsite: str = "*",
     search_paths: list[Path] | None = None,
-    skip_disk: bool = False,
+    use_github: bool = False,
     repo: str = _repo,
     ref: str = "main",
     **kwargs,
@@ -381,7 +381,7 @@ def join_datasets(
 
     >>> join_datasets(year="2023").shape
     (705, 219)
-    >>> join_datasets(year="2023", skip_disk=True).shape
+    >>> join_datasets(year="2023", use_github=True).shape
     (705, 219)
     """
     gen = load_datasets(
@@ -389,7 +389,7 @@ def join_datasets(
         institution=institution,
         subsite=subsite,
         search_paths=search_paths,
-        skip_disk=skip_disk,
+        use_github=use_github,
         repo=repo,
         ref=ref,
         **kwargs,
