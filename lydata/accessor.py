@@ -46,6 +46,8 @@ from lydata.utils import (
 )
 from lydata.validator import construct_schema
 
+warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
+
 
 def _get_all_true(df: pd.DataFrame) -> pd.Series:
     """Return a mask with all entries set to ``True``."""
@@ -293,10 +295,10 @@ class C:
         """
         return Q(self.column, "!=", value)
 
-    def in_(self, value: list[Any]) -> Q:
+    def isin(self, value: list[Any]) -> Q:
         """Create a query object for checking if the column values are in a list.
 
-        >>> C('foo').in_([1, 2, 3])
+        >>> C('foo').isin([1, 2, 3])
         Q('foo', 'in', [1, 2, 3])
         """
         return Q(self.column, "in", value)
@@ -756,8 +758,9 @@ class LyDataAccessor:
                 "V": ["a", "b"],
             }
 
-        The resulting DataFrame will only contain the newly inferred sublevel columns.
-        Thus, one can simply :py:meth:`~pandas.DataFrame.update` the original DataFrame
+        The resulting DataFrame will only contain the newly inferred sublevel columns
+        and only for those sublevels that were not already present in the DataFrame.
+        Thus, one can simply :py:meth:`~pandas.DataFrame.join` the original DataFrame
         with the result.
 
         >>> df = pd.DataFrame({
@@ -795,6 +798,9 @@ class LyDataAccessor:
 
             for subid in subids:
                 sublevel = superlevel + subid
+                if sublevel in self._obj[modality, side]:
+                    continue
+
                 result.loc[is_healthy, (modality, side, sublevel)] = False
                 result.loc[~is_healthy, (modality, side, sublevel)] = None
 
@@ -815,8 +821,9 @@ class LyDataAccessor:
         The superlevel's status is computed for the specified ``modalities``. If and
         what sublevels a superlevel has, is specified in ``subdivisions``.
 
-        The resulting DataFrame will only contain the newly inferred superlevel columns.
-        This way, it is straightforward to :py:meth:`~pandas.DataFrame.update` the
+        The resulting DataFrame will only contain the newly inferred superlevel columns
+        and only for those superlevels that were not already present in the DataFrame.
+        This way, it is straightforward to :py:meth:`~pandas.DataFrame.join` it with the
         original DataFrame.
 
         >>> df = pd.DataFrame({
@@ -855,6 +862,9 @@ class LyDataAccessor:
                 is_any_involved = self._obj[sublevel_cols].any(axis=1)
                 is_unknown = self._obj[sublevel_cols].isna().all(axis=1)
             except KeyError:
+                continue
+
+            if superlevel in self._obj[modality, side]:
                 continue
 
             result.loc[are_all_healthy, (modality, side, superlevel)] = False

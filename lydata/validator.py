@@ -118,7 +118,7 @@ def validate_datasets(
     year: int | str = "*",
     institution: str = "*",
     subsite: str = "*",
-    skip_disk: bool = False,
+    use_github: bool = False,
     repo: str = "rmnldwg/lydata",
     ref: str = "main",
     **kwargs,
@@ -140,7 +140,7 @@ def validate_datasets(
         year=year,
         institution=institution,
         subsite=subsite,
-        skip_disk=skip_disk,
+        use_github=use_github,
         repo=repo,
         ref=ref,
     ):
