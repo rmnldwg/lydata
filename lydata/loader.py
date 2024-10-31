@@ -32,14 +32,14 @@ from pathlib import Path
 import mistletoe
 import numpy as np  # noqa: F401
 import pandas as pd
-from github import Auth, Github
+from github import Auth, Github, Repository
 from mistletoe.block_token import Heading
 from mistletoe.markdown_renderer import MarkdownRenderer
 from mistletoe.token import Token
 from pydantic import BaseModel, Field, constr
 
 logger = logging.getLogger(__name__)
-_repo = "rmnldwg/lydata"
+_default_repo_name = "rmnldwg/lydata"
 low_min1_str = constr(to_lower=True, min_length=1)
 
 
@@ -59,7 +59,10 @@ class LyDatasetConfig(BaseModel):
         description="Institution's short code. E.g., University Hospital Zurich: `usz`."
     )
     subsite: low_min1_str = Field(description="Subsite(s) this dataset covers.")
-    repo: low_min1_str = Field(default=_repo, description="GitHub `repository/owner`.")
+    repo_name: low_min1_str = Field(
+        default=_default_repo_name,
+        description="GitHub `repository/owner`.",
+    )
     ref: low_min1_str = Field(
         default="main",
         description="Branch/tag/commit of the repo.",
@@ -99,16 +102,51 @@ class LyDatasetConfig(BaseModel):
         """
         return (
             "https://raw.githubusercontent.com/"
-            f"{self.repo}/{self.ref}/"
-            f"{self.year}-{self.institution}-{self.subsite}/"
+            f"{self.repo_name}/{self.ref}/{self.name}/"
         ) + file
 
-    def get_description(self) -> str:
+    def get_repo(
+        self,
+        token: str | None = None,
+        user: str | None = None,
+        password: str | None = None,
+    ) -> Repository:
+        """Get the GitHub repository object.
+
+        With the arguments ``token`` or ``user`` and ``password``, one can authenticate
+        with GitHub. If no authentication is provided, the function will try to use the
+        environment variables ``GITHUB_TOKEN`` or ``GITHUB_USER`` and
+        ``GITHUB_PASSWORD``.
+
+        >>> conf = LyDatasetConfig(
+        ...     year=2021,
+        ...     institution="clb",
+        ...     subsite="oropharynx",
+        ...     repo="rmnldwg/lydata",
+        ... )
+        >>> conf.get_repo().full_name == conf.repo_name
+        True
+        >>> conf.get_repo().visibility
+        'public'
+        """
+        auth = _get_github_auth(token=token, user=user, password=password)
+        gh = Github(auth=auth)
+        return gh.get_repo(self.repo_name)
+
+    def get_description(
+        self,
+        token: str | None = None,
+        user: str | None = None,
+        password: str | None = None,
+    ) -> str:
         """Get the description of the dataset.
 
         First, try to load it from the ``README.md`` file that should sit right next to
         the ``data.csv`` file. If that fails, try to look for the ``README.md`` file in
         the GitHub repository.
+
+        In the latter case, see :py:func:`.get_repo` for how to authenticate with
+        GitHub, if necessary.
 
         >>> conf = LyDatasetConfig(year=2021, institution="clb", subsite="oropharynx")
         >>> print(conf.get_description())   # doctest: +ELLIPSIS
@@ -121,8 +159,7 @@ class LyDatasetConfig(BaseModel):
                 return format_description(readme, short=True)
 
         logger.info(f"Readme not found at {readme_path}. Searching on GitHub...")
-        gh = Github(auth=_get_github_auth())
-        repo = gh.get_repo(self.repo)
+        repo = self.get_repo(token=token, user=user, password=password)
         readme = repo.get_contents(f"{self.name}/README.md").decoded_content.decode()
         return format_description(readme, short=True)
 
@@ -222,10 +259,14 @@ def _available_datasets_on_disk(
                 )
 
 
-def _get_github_auth() -> Auth:
-    token = os.getenv("GITHUB_TOKEN")
-    user = os.getenv("GITHUB_USER")
-    password = os.getenv("GITHUB_PASSWORD")
+def _get_github_auth(
+    token: str | None = None,
+    user: str | None = None,
+    password: str | None = None,
+) -> Auth:
+    token = token or os.getenv("GITHUB_TOKEN")
+    user = user or os.getenv("GITHUB_USER")
+    password = password or os.getenv("GITHUB_PASSWORD")
 
     if token:
         logger.debug("Using GITHUB_TOKEN for authentication.")
@@ -242,7 +283,7 @@ def _available_datasets_on_github(
     year: int | str = "*",
     institution: str = "*",
     subsite: str = "*",
-    repo: str = _repo,
+    repo: str = _default_repo_name,
     ref: str = "main",
 ) -> Generator[LyDatasetConfig, None, None]:
     gh = Github(auth=_get_github_auth())
@@ -263,7 +304,7 @@ def _available_datasets_on_github(
             year=year,
             institution=institution,
             subsite=subsite,
-            repo=repo.full_name,
+            repo_name=repo.full_name,
             ref=ref,
         )
 
@@ -274,7 +315,7 @@ def available_datasets(
     subsite: str = "*",
     search_paths: list[Path] | None = None,
     use_github: bool = False,
-    repo: str = _repo,
+    repo: str = _default_repo_name,
     ref: str = "main",
 ) -> Generator[LyDatasetConfig, None, None]:
     """Generate :py:class:`.LyDatasetConfig` instances of available datasets.
@@ -313,7 +354,7 @@ def available_datasets(
     ['https://raw.githubusercontent.com/rmnldwg/lydata/6ac98d/2024-hvh-oropharynx/']
     """
     if not use_github:
-        if repo != _repo or ref != "main":
+        if repo != _default_repo_name or ref != "main":
             warnings.warn(
                 "Parameters `repo` and `ref` are ignored, unless `use_github` "
                 "is set to `True`."
@@ -340,7 +381,7 @@ def load_datasets(
     subsite: str = "*",
     search_paths: list[Path] | None = None,
     use_github: bool = False,
-    repo: str = _repo,
+    repo: str = _default_repo_name,
     ref: str = "main",
     **kwargs,
 ) -> Generator[pd.DataFrame, None, None]:
@@ -369,7 +410,7 @@ def join_datasets(
     subsite: str = "*",
     search_paths: list[Path] | None = None,
     use_github: bool = False,
-    repo: str = _repo,
+    repo: str = _default_repo_name,
     ref: str = "main",
     **kwargs,
 ) -> pd.DataFrame:
