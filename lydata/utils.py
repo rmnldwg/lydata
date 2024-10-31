@@ -121,6 +121,27 @@ def get_default_modalities() -> dict[str, ModalityConfig]:
     }
 
 
+def infer_all_levels(
+    dataset: pd.DataFrame,
+    infer_sublevels_kwargs: dict[str, Any] | None = None,
+    infer_superlevels_kwargs: dict[str, Any] | None = None,
+) -> pd.DataFrame:
+    """Infer all levels of involvement for each diagnostic modality.
+
+    This function first infers sublevel (e.g. 'IIa", and 'IIb') involvement for each
+    modality using :py:meth:`~lydata.accessor.LyDataAccessor.infer_sublevels`. Then,
+    it infers superlevel (e.g. 'II') involvement for each modality using
+    :py:meth:`~lydata.accessor.LyDataAccessor.infer_superlevels`.
+    """
+    infer_sublevels_kwargs = infer_sublevels_kwargs or {}
+    infer_superlevels_kwargs = infer_superlevels_kwargs or {}
+
+    result = dataset.copy()
+
+    result = result.join(result.ly.infer_sublevels(**infer_sublevels_kwargs))
+    return result.join(result.ly.infer_superlevels(**infer_superlevels_kwargs))
+
+
 def enhance(
     dataset: pd.DataFrame,
     infer_sublevels_kwargs: dict[str, Any] | None = None,
@@ -148,15 +169,12 @@ def enhance(
     the best estimate of the true state of the patient under the top-level key
     ``max_llh``.
     """
-    infer_sublevels_kwargs = infer_sublevels_kwargs or {}
-    infer_superlevels_kwargs = infer_superlevels_kwargs or {}
+    result = infer_all_levels(
+        dataset,
+        infer_sublevels_kwargs=infer_sublevels_kwargs,
+        infer_superlevels_kwargs=infer_superlevels_kwargs,
+    )
     combine_kwargs = combine_kwargs or {}
-
-    result = dataset.copy()
-
-    result = result.join(result.ly.infer_sublevels(**infer_sublevels_kwargs))
-    result = result.join(result.ly.infer_superlevels(**infer_superlevels_kwargs))
-
     max_llh = pd.concat(
         {"max_llh": result.ly.combine(**combine_kwargs)},
         axis="columns",
