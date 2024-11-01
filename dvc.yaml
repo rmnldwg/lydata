@@ -194,3 +194,17 @@ stages:
       - ${item.first}/data.csv
       - ${item.second}/data.csv
       - scripts/upset_diff.py
+
+  factors-diff:
+    matrix:
+      first: [2021-usz-oropharynx]
+      second: [2024-hvh-oropharynx]
+    cmd: >
+      python scripts/factors_diff.py
+      --first-dataset ${item.first}
+      --second-dataset ${item.second}
+      --commit 5b85184ecece020f509ab0c9f05aa5c81257ffd3
+    deps:
+      - ${item.first}/data.csv
+      - ${item.second}/data.csv
+      - scripts/factors_diff.py

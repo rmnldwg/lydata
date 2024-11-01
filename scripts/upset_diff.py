@@ -8,10 +8,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import upsetplot
+from lyscripts.plot.utils import COLORS
 from shared import LNLS, MPLSTYLE, remove_artists
 from tueplots import figsizes, fontsizes
-
-from lyscripts.plot.utils import COLORS
 
 OUTPUT_NAME = Path(__file__).with_suffix(".png").name
 
@@ -23,6 +22,7 @@ def get_parser() -> argparse.ArgumentParser:
         "--commit",
         type=str,
         help="The commit hash at which to compare the datasets.",
+        default="5b85184ecece020f509ab0c9f05aa5c81257ffd3",
     )
     parser.add_argument(
         "--first-dataset",
@@ -108,7 +108,7 @@ def main() -> None:
     ))
     plt.rcParams.update(fontsizes.icml2022())
 
-    width = 0.4
+    width = 0.35
 
     second_upset = upsetplot.UpSet(
         second_summable_inds,
@@ -117,41 +117,44 @@ def main() -> None:
         sort_by="input",
         min_subset_size=0,
         totals_plot_elements=6,
-        facecolor=COLORS["blue"],
+        facecolor="#5d749d",
     )
     ax_dict = second_upset.plot()
 
     remove_artists(ax_dict["intersections"])
     remove_artists(ax_dict["totals"])
 
+    first_color = COLORS["blue"]
+    second_color = COLORS["red"]
+
     ax_dict["intersections"].bar(
-        x=np.arange(len(second_summable_inds)) + 0.1,
+        x=np.arange(len(second_summable_inds)) - width/2,
         height=second_summable_inds,
         width=width,
-        color=COLORS["red"],
+        color=first_color,
         label=f"{first_institution} ({first_total:d} patients)",
     )
     ax_dict["intersections"].bar(
-        x=np.arange(len(first_summable_inds)) - 0.1,
+        x=np.arange(len(first_summable_inds)) + width/2,
         height=first_summable_inds,
         width=width,
-        color=COLORS["green"],
+        color=second_color,
         label=f"{second_institution} ({second_total:d} patients)",
     )
     ax_dict["intersections"].set_ylabel("Frequency\n of specific patterns (%)")
     ax_dict["intersections"].legend(loc="upper right")
 
     ax_dict["totals"].barh(
-        y=np.arange(len(first_prevs)) + 0.1,
+        y=np.arange(len(first_prevs)) + width/2,
         width=first_prevs[::-1],
         height=width,
-        color=COLORS["red"],
+        color=first_color,
     )
     ax_dict["totals"].barh(
-        y=np.arange(len(second_prevs)) - 0.1,
+        y=np.arange(len(second_prevs)) - width/2,
         width=second_prevs[::-1],
         height=width,
-        color=COLORS["green"],
+        color=second_color,
     )
     ax_dict["totals"].set_xlabel("Prevalence\nof LNL involvement (%)")
 

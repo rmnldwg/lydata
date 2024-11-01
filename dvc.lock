@@ -380,14 +380,14 @@ stages:
     outs:
     - path: enhanced.csv
       hash: md5
-      md5: 31efa728aebea6fdde1baf9422c5c0c6
+      md5: 226c231582ac80c8b25696a11d9d880e
       size: 644104
   scenario-showcase:
     cmd: "python scripts/scenario_showcase.py --data enhanced.csv --mplstyle scripts/.mplstyle\n"
     deps:
     - path: enhanced.csv
       hash: md5
-      md5: 31efa728aebea6fdde1baf9422c5c0c6
+      md5: 226c231582ac80c8b25696a11d9d880e
       size: 644104
     - path: scripts/.mplstyle
       hash: md5
@@ -464,5 +464,21 @@ stages:
       size: 82567
     - path: scripts/upset_diff.py
       hash: md5
-      md5: b9b952906e9e0e7e9e351ae749cf9ab0
-      size: 5244
+      md5: b77abedf6359018790749e8e0f19bc30
+      size: 5372
+  factors-diff@2021-usz-oropharynx-2024-hvh-oropharynx:
+    cmd: "python scripts/factors_diff.py --first-dataset 2021-usz-oropharynx --second-dataset
+      2024-hvh-oropharynx --commit 5b85184ecece020f509ab0c9f05aa5c81257ffd3\n"
+    deps:
+    - path: 2021-usz-oropharynx/data.csv
+      hash: md5
+      md5: f5ddc8334a2bee6e8457885a9f75a7d0
+      size: 166961
+    - path: 2024-hvh-oropharynx/data.csv
+      hash: md5
+      md5: 7baa8021efbff0126fcf297e52106168
+      size: 82567
+    - path: scripts/factors_diff.py
+      hash: md5
+      md5: 2c1fdf960f3ea59d999b4a459d2fc947
+      size: 2698
