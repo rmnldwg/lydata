@@ -15,13 +15,17 @@ You can find here
 
 Below we show some figures that aim to coarsely characterize the patient cohort in this directory.
 
-| ![age distribution](figures/age_and_sex.png)                               |
+| ![age distribution](figures/age_and_sex.png)                                 |
 | ---------------------------------------------------------------------------- |
 | **Figure 1:** _Distribution over age, stratified by sex and smoking status._ |
 
-| ![T-category distribution](figures/t_category.png)                         | ![subsite distribution](figures/subsite.png)           |
+| ![T-category distribution](figures/t_category.png)                           | ![subsite distribution](figures/subsite.png)             |
 | ---------------------------------------------------------------------------- | -------------------------------------------------------- |
 | **Figure 2:** _Distribution over age, stratified by sex and smoking status._ | **Figure 3:** _Distribution over primary tumor subsite._ |
+
+| ![Involvement pattern difference between HVH and USZ](figures/upset_diff.png) |
+| ----------------------------------------------------------------------------- |
+| **Figure 4:** _An "upsetplot" comparing the involvement patterns of the dataset from the USZ and the new data from the HVH. It shows both the prevalence of any LNL's involvement (horizontal bar plot, left), as well as how frequent any specific pattern of involvement was (vertical bar plot, top)._ |
 
 ## Description
 
