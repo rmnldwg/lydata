@@ -33,10 +33,11 @@ import mistletoe
 import numpy as np  # noqa: F401
 import pandas as pd
 from github import Auth, Github, Repository
+from github.ContentFile import ContentFile
 from mistletoe.block_token import Heading
 from mistletoe.markdown_renderer import MarkdownRenderer
 from mistletoe.token import Token
-from pydantic import BaseModel, Field, constr
+from pydantic import BaseModel, Field, PrivateAttr, constr
 
 logger = logging.getLogger(__name__)
 _default_repo_name = "rmnldwg/lydata"
@@ -47,7 +48,7 @@ class SkipDiskError(Exception):
     """Raised when the user wants to skip loading from disk."""
 
 
-class LyDatasetConfig(BaseModel):
+class LyDataset(BaseModel):
     """Specification of a dataset."""
 
     year: int = Field(
@@ -58,7 +59,9 @@ class LyDatasetConfig(BaseModel):
     institution: low_min1_str = Field(
         description="Institution's short code. E.g., University Hospital Zurich: `usz`."
     )
-    subsite: low_min1_str = Field(description="Subsite(s) this dataset covers.")
+    subsite: low_min1_str = Field(
+        description="Tumor subsite(s) patients in this dataset were diagnosed with.",
+    )
     repo_name: low_min1_str = Field(
         default=_default_repo_name,
         description="GitHub `repository/owner`.",
@@ -67,6 +70,7 @@ class LyDatasetConfig(BaseModel):
         default="main",
         description="Branch/tag/commit of the repo.",
     )
+    _content_file: ContentFile | None = PrivateAttr(default=None)
 
     @property
     def name(self) -> str:
@@ -79,31 +83,15 @@ class LyDatasetConfig(BaseModel):
         return f"{self.year}-{self.institution}-{self.subsite}"
 
     @property
-    def path(self) -> Path:
+    def path_on_disk(self) -> Path:
         """Get the path to the dataset.
 
         >>> conf = LyDatasetConfig(year="2021", institution="usz", subsite="oropharynx")
-        >>> conf.path.exists()
+        >>> conf.path_on_disk.exists()
         True
         """
         install_loc = Path(__file__).parent.parent
         return install_loc / self.name / "data.csv"
-
-    def get_url(self, file: str) -> str:
-        """Get the URL to the dataset's directory, CSV file, or README file.
-
-        >>> LyDatasetConfig(
-        ...     year=2021,
-        ...     institution="clb",
-        ...     subsite="oropharynx",
-        ...     ref="6ac98d",
-        ... ).get_url("data.csv")
-        'https://raw.githubusercontent.com/rmnldwg/lydata/6ac98d/2021-clb-oropharynx/data.csv'
-        """
-        return (
-            "https://raw.githubusercontent.com/"
-            f"{self.repo_name}/{self.ref}/{self.name}/"
-        ) + file
 
     def get_repo(
         self,
@@ -122,7 +110,6 @@ class LyDatasetConfig(BaseModel):
         ...     year=2021,
         ...     institution="clb",
         ...     subsite="oropharynx",
-        ...     repo="rmnldwg/lydata",
         ... )
         >>> conf.get_repo().full_name == conf.repo_name
         True
@@ -133,39 +120,41 @@ class LyDatasetConfig(BaseModel):
         gh = Github(auth=auth)
         return gh.get_repo(self.repo_name)
 
-    def get_description(
+    def get_content_file(
         self,
         token: str | None = None,
         user: str | None = None,
         password: str | None = None,
-    ) -> str:
-        """Get the description of the dataset.
+    ) -> ContentFile:
+        """Get the GitHub content file of the data CSV.
 
-        First, try to load it from the ``README.md`` file that should sit right next to
-        the ``data.csv`` file. If that fails, try to look for the ``README.md`` file in
-        the GitHub repository.
+        This method always tries to fetch the most recent version of the file.
 
-        In the latter case, see :py:func:`.get_repo` for how to authenticate with
-        GitHub, if necessary.
-
-        >>> conf = LyDatasetConfig(year=2021, institution="clb", subsite="oropharynx")
-        >>> print(conf.get_description())   # doctest: +ELLIPSIS
-        # 2021 CLB Oropharynx
-        ...
+        >>> conf = LyDatasetConfig(
+        ...     year=2023,
+        ...     institution="usz",
+        ...     subsite="hypopharynx-larynx",
+        ...     repo_name="rmnldwg/lydata.private",
+        ...     ref="2023-usz-hypopharynx-larynx",
+        ... )
+        >>> conf.get_content_file()
+        ContentFile(path="2023-usz-hypopharynx-larynx/data.csv")
         """
-        readme_path = self.path.with_name("README.md")
-        if readme_path.exists():
-            with open(readme_path, encoding="utf-8") as readme:
-                return format_description(readme, short=True)
+        if self._content_file is not None:
+            if self._content_file.update():
+                logger.info(f"Content file of {self.name} was updated.")
+            return self._content_file
 
-        logger.info(f"Readme not found at {readme_path}. Searching on GitHub...")
         repo = self.get_repo(token=token, user=user, password=password)
-        readme = repo.get_contents(f"{self.name}/README.md").decoded_content.decode()
-        return format_description(readme, short=True)
+        self._content_file = repo.get_contents(f"{self.name}/data.csv", ref=self.ref)
+        return self._content_file
 
-    def load(
+    def get_dataframe(
         self,
         use_github: bool = False,
+        token: str | None = None,
+        user: str | None = None,
+        password: str | None = None,
         **load_kwargs,
     ) -> pd.DataFrame:
         """Load the ``data.csv`` file from disk or from GitHub.
@@ -178,10 +167,10 @@ class LyDatasetConfig(BaseModel):
         :py:class:`~pandas.DataFrame`.
 
         >>> conf = LyDatasetConfig(year=2021, institution="clb", subsite="oropharynx")
-        >>> df_from_disk = conf.load()
+        >>> df_from_disk = conf.get_dataframe()
         >>> df_from_disk.shape
         (263, 82)
-        >>> df_from_github = conf.load(use_github=True)
+        >>> df_from_github = conf.get_dataframe(use_github=True)
         >>> np.all(df_from_disk.fillna(0) == df_from_github.fillna(0))
         np.True_
         """
@@ -190,15 +179,20 @@ class LyDatasetConfig(BaseModel):
 
         try:
             if use_github:
-                logger.info(f"Skipping loading from {self.path}.")
+                logger.info(f"Skipping loading from {self.path_on_disk}.")
                 raise SkipDiskError
-            df = pd.read_csv(self.path, **kwargs)
+            df = pd.read_csv(self.path_on_disk, **kwargs)
 
         except (FileNotFoundError, pd.errors.ParserError, SkipDiskError) as err:
             if isinstance(err, FileNotFoundError | pd.errors.ParserError):
-                logger.info(f"Could not load from {self.path}. Trying GitHub...")
+                logger.info(
+                    f"Could not load from {self.path_on_disk}. Trying GitHub..."
+                )
 
-            df = pd.read_csv(self.get_url("data.csv"), **kwargs)
+            download_url = self.get_content_file(
+                token=token, user=user, password=password
+            ).download_url
+            df = pd.read_csv(download_url, **kwargs)
 
         df.attrs.update(self.model_dump())
         return df
@@ -244,7 +238,7 @@ def _available_datasets_on_disk(
     institution: str = "*",
     subsite: str = "*",
     search_paths: list[Path] | None = None,
-) -> Generator[LyDatasetConfig, None, None]:
+) -> Generator[LyDataset, None, None]:
     pattern = f"{str(year)}-{institution}-{subsite}"
     search_paths = search_paths or [Path(__file__).parent.parent]
 
@@ -252,7 +246,7 @@ def _available_datasets_on_disk(
         for match in search_path.glob(pattern):
             if match.is_dir() and (match / "data.csv").exists():
                 year, institution, subsite = match.name.split("-")
-                yield LyDatasetConfig(
+                yield LyDataset(
                     year=year,
                     institution=institution,
                     subsite=subsite,
@@ -283,12 +277,12 @@ def _available_datasets_on_github(
     year: int | str = "*",
     institution: str = "*",
     subsite: str = "*",
-    repo: str = _default_repo_name,
+    repo_name: str = _default_repo_name,
     ref: str = "main",
-) -> Generator[LyDatasetConfig, None, None]:
+) -> Generator[LyDataset, None, None]:
     gh = Github(auth=_get_github_auth())
 
-    repo = gh.get_repo(repo)
+    repo = gh.get_repo(repo_name)
     contents = repo.get_contents(path="", ref=ref)
 
     matches = []
@@ -300,7 +294,7 @@ def _available_datasets_on_github(
 
     for match in matches:
         year, institution, subsite = match.name.split("-", maxsplit=2)
-        yield LyDatasetConfig(
+        yield LyDataset(
             year=year,
             institution=institution,
             subsite=subsite,
@@ -315,9 +309,9 @@ def available_datasets(
     subsite: str = "*",
     search_paths: list[Path] | None = None,
     use_github: bool = False,
-    repo: str = _default_repo_name,
+    repo_name: str = _default_repo_name,
     ref: str = "main",
-) -> Generator[LyDatasetConfig, None, None]:
+) -> Generator[LyDataset, None, None]:
     """Generate :py:class:`.LyDatasetConfig` instances of available datasets.
 
     The arguments ``year``, ``institution``, and ``subsite`` represent glob patterns
@@ -340,7 +334,7 @@ def available_datasets(
      '2023-clb-multisite',
      '2023-isb-multisite']
     >>> avail_gen = available_datasets(
-    ...     repo="rmnldwg/lydata.private",
+    ...     repo_name="rmnldwg/lydata.private",
     ...     ref="2024-umcg-hypopharynx-larynx",
     ...     use_github=True,
     ... )
@@ -355,11 +349,9 @@ def available_datasets(
     ...     ref="6ac98d",
     ...     use_github=True,
     ... )
-    >>> sorted([ds.get_url("") for ds in avail_gen])   # doctest: +NORMALIZE_WHITESPACE
-    ['https://raw.githubusercontent.com/rmnldwg/lydata/6ac98d/2024-hvh-oropharynx/']
     """
     if not use_github:
-        if repo != _default_repo_name or ref != "main":
+        if repo_name != _default_repo_name or ref != "main":
             warnings.warn(
                 "Parameters `repo` and `ref` are ignored, unless `use_github` "
                 "is set to `True`."
@@ -375,7 +367,7 @@ def available_datasets(
             year=year,
             institution=institution,
             subsite=subsite,
-            repo=repo,
+            repo_name=repo_name,
             ref=ref,
         )
 
@@ -386,7 +378,7 @@ def load_datasets(
     subsite: str = "*",
     search_paths: list[Path] | None = None,
     use_github: bool = False,
-    repo: str = _default_repo_name,
+    repo_name: str = _default_repo_name,
     ref: str = "main",
     **kwargs,
 ) -> Generator[pd.DataFrame, None, None]:
@@ -402,11 +394,11 @@ def load_datasets(
         subsite=subsite,
         search_paths=search_paths,
         use_github=use_github,
-        repo=repo,
+        repo_name=repo_name,
         ref=ref,
     )
     for dset_conf in dset_confs:
-        yield dset_conf.load(use_github=use_github, **kwargs)
+        yield dset_conf.get_dataframe(use_github=use_github, **kwargs)
 
 
 def join_datasets(
@@ -415,7 +407,7 @@ def join_datasets(
     subsite: str = "*",
     search_paths: list[Path] | None = None,
     use_github: bool = False,
-    repo: str = _default_repo_name,
+    repo_name: str = _default_repo_name,
     ref: str = "main",
     **kwargs,
 ) -> pd.DataFrame:
@@ -436,7 +428,7 @@ def join_datasets(
         subsite=subsite,
         search_paths=search_paths,
         use_github=use_github,
-        repo=repo,
+        repo_name=repo_name,
         ref=ref,
         **kwargs,
     )
