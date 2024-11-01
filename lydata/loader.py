@@ -299,7 +299,7 @@ def _available_datasets_on_github(
             matches.append(content)
 
     for match in matches:
-        year, institution, subsite = match.name.split("-")
+        year, institution, subsite = match.name.split("-", maxsplit=2)
         yield LyDatasetConfig(
             year=year,
             institution=institution,
@@ -339,12 +339,17 @@ def available_datasets(
      '2021-usz-oropharynx',
      '2023-clb-multisite',
      '2023-isb-multisite']
-    >>> avail_gen = available_datasets(use_github=True)
+    >>> avail_gen = available_datasets(
+    ...     repo="rmnldwg/lydata.private",
+    ...     ref="2024-umcg-hypopharynx-larynx",
+    ...     use_github=True,
+    ... )
     >>> sorted([ds.name for ds in avail_gen])   # doctest: +NORMALIZE_WHITESPACE
     ['2021-clb-oropharynx',
      '2021-usz-oropharynx',
      '2023-clb-multisite',
-     '2023-isb-multisite']
+     '2023-isb-multisite',
+     '2024-umcg-hypopharynx-larynx']
     >>> avail_gen = available_datasets(
     ...     institution="hvh",
     ...     ref="6ac98d",
