@@ -24,19 +24,14 @@ import fnmatch
 import logging
 import os
 import warnings
-from collections.abc import Generator, Iterable
+from collections.abc import Generator
 from datetime import datetime
-from io import TextIOWrapper
 from pathlib import Path
 
-import mistletoe
 import numpy as np  # noqa: F401
 import pandas as pd
 from github import Auth, Github, Repository
 from github.ContentFile import ContentFile
-from mistletoe.block_token import Heading
-from mistletoe.markdown_renderer import MarkdownRenderer
-from mistletoe.token import Token
 from pydantic import BaseModel, Field, PrivateAttr, constr
 
 logger = logging.getLogger(__name__)
@@ -198,41 +193,6 @@ class LyDataset(BaseModel):
         return df
 
 
-def remove_subheadings(tokens: Iterable[Token], min_level: int = 1) -> list[Token]:
-    """Remove anything under ``min_level`` headings.
-
-    With this, one can truncate markdown content to e.g. to the top-level heading and
-    the text that follows immediately after. Any subheadings after that will be removed.
-    """
-    for i, token in enumerate(tokens):
-        if isinstance(token, Heading) and token.level > min_level:
-            return tokens[:i]
-
-    return list(tokens)
-
-
-def format_description(
-    readme: TextIOWrapper | str,
-    short: bool = False,
-    max_line_length: int = 60,
-) -> str:
-    """Get a markdown description from a file.
-
-    Truncate the description before the first second-level heading if ``short``
-    is set to ``True``.
-    """
-    with MarkdownRenderer(
-        max_line_length=max_line_length,
-        normalize_whitespace=True,
-    ) as renderer:
-        doc = mistletoe.Document(readme)
-
-        if short:
-            doc.children = remove_subheadings(doc.children, min_level=1)
-
-        return renderer.render(doc)
-
-
 def _available_datasets_on_disk(
     year: int | str = "*",
     institution: str = "*",
@@ -245,7 +205,7 @@ def _available_datasets_on_disk(
     for search_path in search_paths:
         for match in search_path.glob(pattern):
             if match.is_dir() and (match / "data.csv").exists():
-                year, institution, subsite = match.name.split("-")
+                year, institution, subsite = match.name.split("-", maxsplit=2)
                 yield LyDataset(
                     year=year,
                     institution=institution,
