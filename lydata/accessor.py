@@ -57,12 +57,14 @@ def _get_all_true(df: pd.DataFrame) -> pd.Series:
 class CombineQMixin:
     """Mixin class for combining queries."""
 
-    def __and__(self, other: QTypes) -> AndQ:
+    def __and__(self, other: QTypes | None) -> AndQ:
         """Combine two queries with a logical AND."""
+        other = other or NoneQ()
         return AndQ(self, other)
 
-    def __or__(self, other: QTypes) -> OrQ:
+    def __or__(self, other: QTypes | None) -> OrQ:
         """Combine two queries with a logical OR."""
+        other = other or NoneQ()
         return OrQ(self, other)
 
     def __invert__(self) -> NotQ:
