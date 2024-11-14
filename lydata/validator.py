@@ -136,20 +136,20 @@ def validate_datasets(
         modalities=["pathology", "diagnostic_consensus", "PET", "CT", "FNA", "MRI"],
     )
 
-    for data_conf in available_datasets(
+    for dataset in available_datasets(
         year=year,
         institution=institution,
         subsite=subsite,
         use_github=use_github,
-        repo=repo,
+        repo_name=repo,
         ref=ref,
     ):
-        dataset = data_conf.load(**kwargs)
+        dataframe = dataset.get_dataframe(**kwargs)
         try:
-            lydata_schema.validate(dataset)
-            logger.info(f"Schema validation passed for {data_conf!r}.")
+            lydata_schema.validate(dataframe)
+            logger.info(f"Schema validation passed for {dataframe!r}.")
         except SchemaError as schema_err:
-            message = f"Schema validation failed for {data_conf!r}."
+            message = f"Schema validation failed for {dataframe!r}."
             logger.error(message, exc_info=schema_err)
             raise Exception(message) from schema_err
 
