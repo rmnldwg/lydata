@@ -24,19 +24,14 @@ import fnmatch
 import logging
 import os
 import warnings
-from collections.abc import Generator, Iterable
+from collections.abc import Generator
 from datetime import datetime
-from io import TextIOWrapper
 from pathlib import Path
 
-import mistletoe
 import numpy as np  # noqa: F401
 import pandas as pd
 from github import Auth, Github, Repository
 from github.ContentFile import ContentFile
-from mistletoe.block_token import Heading
-from mistletoe.markdown_renderer import MarkdownRenderer
-from mistletoe.token import Token
 from pydantic import BaseModel, Field, PrivateAttr, constr
 
 logger = logging.getLogger(__name__)
@@ -177,60 +172,19 @@ class LyDataset(BaseModel):
         kwargs = {"header": [0, 1, 2]}
         kwargs.update(load_kwargs)
 
-        try:
-            if use_github:
-                logger.info(f"Skipping loading from {self.path_on_disk}.")
-                raise SkipDiskError
-            df = pd.read_csv(self.path_on_disk, **kwargs)
-
-        except (FileNotFoundError, pd.errors.ParserError, SkipDiskError) as err:
-            if isinstance(err, FileNotFoundError | pd.errors.ParserError):
-                logger.info(
-                    f"Could not load from {self.path_on_disk}. Trying GitHub..."
-                )
-
-            download_url = self.get_content_file(
+        if use_github:
+            msg = f"Trying to load dataset {self.name} from GitHub."
+            from_location = self.get_content_file(
                 token=token, user=user, password=password
             ).download_url
-            df = pd.read_csv(download_url, **kwargs)
+        else:
+            msg = f"Trying to load dataset {self.name} from disk."
+            from_location = self.path_on_disk
 
+        logger.info(msg)
+        df = pd.read_csv(from_location, **kwargs)
         df.attrs.update(self.model_dump())
         return df
-
-
-def remove_subheadings(tokens: Iterable[Token], min_level: int = 1) -> list[Token]:
-    """Remove anything under ``min_level`` headings.
-
-    With this, one can truncate markdown content to e.g. to the top-level heading and
-    the text that follows immediately after. Any subheadings after that will be removed.
-    """
-    for i, token in enumerate(tokens):
-        if isinstance(token, Heading) and token.level > min_level:
-            return tokens[:i]
-
-    return list(tokens)
-
-
-def format_description(
-    readme: TextIOWrapper | str,
-    short: bool = False,
-    max_line_length: int = 60,
-) -> str:
-    """Get a markdown description from a file.
-
-    Truncate the description before the first second-level heading if ``short``
-    is set to ``True``.
-    """
-    with MarkdownRenderer(
-        max_line_length=max_line_length,
-        normalize_whitespace=True,
-    ) as renderer:
-        doc = mistletoe.Document(readme)
-
-        if short:
-            doc.children = remove_subheadings(doc.children, min_level=1)
-
-        return renderer.render(doc)
 
 
 def _available_datasets_on_disk(
@@ -245,7 +199,7 @@ def _available_datasets_on_disk(
     for search_path in search_paths:
         for match in search_path.glob(pattern):
             if match.is_dir() and (match / "data.csv").exists():
-                year, institution, subsite = match.name.split("-")
+                year, institution, subsite = match.name.split("-", maxsplit=2)
                 yield LyDataset(
                     year=year,
                     institution=institution,
@@ -399,40 +353,6 @@ def load_datasets(
     )
     for dset_conf in dset_confs:
         yield dset_conf.get_dataframe(use_github=use_github, **kwargs)
-
-
-def join_datasets(
-    year: int | str = "*",
-    institution: str = "*",
-    subsite: str = "*",
-    search_paths: list[Path] | None = None,
-    use_github: bool = False,
-    repo_name: str = _default_repo_name,
-    ref: str = "main",
-    **kwargs,
-) -> pd.DataFrame:
-    """Join matching datasets from the disk.
-
-    This uses the :py:func:`.load_datasets` function to load the datasets and then
-    concatenates them along the index axis. All arguments are also directly passed to
-    the :py:func:`.load_datasets` function.
-
-    >>> join_datasets(year="2023").shape
-    (705, 219)
-    >>> join_datasets(year="2023", use_github=True).shape
-    (705, 219)
-    """
-    gen = load_datasets(
-        year=year,
-        institution=institution,
-        subsite=subsite,
-        search_paths=search_paths,
-        use_github=use_github,
-        repo_name=repo_name,
-        ref=ref,
-        **kwargs,
-    )
-    return pd.concat(list(gen), axis="index", ignore_index=True)
 
 
 def _run_doctests() -> None:

@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [0.2.0] - 2024-11-14
 
+### 🚀 Features
+
+- Can now combine `Q` with `None` to yield `Q` again.
+- Add `contains` operator to `C`, `Q` objects. This calls pandas' `str.contains` method.
+
+### 🧪 Testing
+
+- Fix wrong name in doctests
+
 ### Change
 
 - [**breaking**] Add, rename, delete several methods:
@@ -14,6 +23,12 @@ All notable changes to this project will be documented in this file.
   - added `get_content_file()` method to fetch and store remove content
   - `load()` was renamed to `get_dataframe()`
   - the `repo` argument was changed to `repo_name`
+- *(utils)* [**breaking**] Rename `enhance` func to `infer_and_combine_levels`.
+
+### Remove
+
+- [**breaking**] Two unused funcs for markdown processing were removed
+- *(load)* [**breaking**] Drop `join_datasets`, since it's not needed. All it did was run `pd.concat(...)`.
 
 ## [0.1.2] - 2024-10-31
 

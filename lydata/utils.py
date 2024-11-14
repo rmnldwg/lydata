@@ -142,7 +142,7 @@ def infer_all_levels(
     return result.join(result.ly.infer_superlevels(**infer_superlevels_kwargs))
 
 
-def enhance(
+def infer_and_combine_levels(
     dataset: pd.DataFrame,
     infer_sublevels_kwargs: dict[str, Any] | None = None,
     infer_superlevels_kwargs: dict[str, Any] | None = None,
