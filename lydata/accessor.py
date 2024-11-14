@@ -71,6 +71,15 @@ class CombineQMixin:
         """Negate the query."""
         return NotQ(self)
 
+    def __eq__(self, value):
+        """Check if two queries are equal."""
+        return (
+            isinstance(value, self.__class__)
+            and self.colname == value.colname
+            and self.operator == value.operator
+            and self.value == value.value
+        )
+
 
 class Q(CombineQMixin):
     """Combinable query object for filtering a DataFrame.
@@ -94,12 +103,13 @@ class Q(CombineQMixin):
         ">=": lambda series, value: series >= value,
         "!=": lambda series, value: series != value,  # same as ~Q("col", "==", value)
         "in": lambda series, value: series.isin(value),  # value is a list
+        "contains": lambda series, value: series.str.contains(value),  # value is a str
     }
 
     def __init__(
         self,
         column: str,
-        operator: Literal["==", "<", "<=", ">", ">=", "!=", "in"],
+        operator: Literal["==", "<", "<=", ">", ">=", "!=", "in", "contains"],
         value: Any,
     ) -> None:
         """Create query object that can compare a ``column`` with a ``value``."""
@@ -113,7 +123,20 @@ class Q(CombineQMixin):
         return f"Q({self.colname!r}, {self.operator!r}, {self.value!r})"
 
     def execute(self, df: pd.DataFrame) -> pd.Series:
-        """Return a boolean mask where the query is satisfied for ``df``."""
+        """Return a boolean mask where the query is satisfied for ``df``.
+
+        >>> df = pd.DataFrame({'col1': [1, 2, 3], 'col2': ['foo', 'bar', 'baz']})
+        >>> Q('col1', '<=', 2).execute(df)
+        0     True
+        1     True
+        2    False
+        Name: col1, dtype: bool
+        >>> Q('col2', 'contains', 'ba').execute(df)
+        0    False
+        1     True
+        2     True
+        Name: col2, dtype: bool
+        """
         try:
             colname = self._column_map.from_short[self.colname].long
         except KeyError:
@@ -130,19 +153,19 @@ class Q(CombineQMixin):
 class AndQ(CombineQMixin):
     """Query object for combining two queries with a logical AND.
 
-    >>> df = pd.DataFrame({'col1': [1, 2, 3]})
-    >>> q1 = Q('col1', '>', 1)
-    >>> q2 = Q('col1', '<', 3)
+    >>> df = pd.DataFrame({'col1': [1, 2, 3], 'col2': ['foo', 'bar', 'baz']})
+    >>> q1 = Q('col1', '!=', 3)
+    >>> q2 = Q('col2', 'contains', 'ba')
     >>> and_q = q1 & q2
     >>> print(and_q)
-    Q('col1', '>', 1) & Q('col1', '<', 3)
+    Q('col1', '!=', 3) & Q('col2', 'contains', 'ba')
     >>> isinstance(and_q, AndQ)
     True
     >>> and_q.execute(df)
     0    False
     1     True
     2    False
-    Name: col1, dtype: bool
+    dtype: bool
     """
 
     def __init__(self, q1: QTypes, q2: QTypes) -> None:
@@ -245,9 +268,16 @@ class C:
         whether the column name is valid. This is only done when the query is executed.
     """
 
-    def __init__(self, column: str) -> None:
-        """Create a column object for comparison."""
-        self.column = column
+    def __init__(self, *column: str) -> None:
+        """Create a column object for comparison.
+
+        For querying multi-level columns, both the syntax ``C('col1', 'col2')`` and
+        ``C(('col1', 'col2'))`` are valid.
+
+        >>> (C('col1', 'col2') == 1) == (C(('col1', 'col2')) == 1)
+        True
+        """
+        self.column = column[0] if len(column) == 1 else column
 
     def __eq__(self, value: Any) -> Q:
         """Create a query object for comparing equality.
@@ -304,6 +334,14 @@ class C:
         Q('foo', 'in', [1, 2, 3])
         """
         return Q(self.column, "in", value)
+
+    def contains(self, value: str) -> Q:
+        """Create a query object for checking if the column values contain a string.
+
+        >>> C('foo').contains('bar')
+        Q('foo', 'contains', 'bar')
+        """
+        return Q(self.column, "contains", value)
 
 
 @dataclass
