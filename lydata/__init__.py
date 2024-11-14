@@ -6,10 +6,9 @@ import lydata._version as _version
 from lydata.accessor import C, Q
 from lydata.loader import (
     available_datasets,
-    join_datasets,
     load_datasets,
 )
-from lydata.utils import enhance
+from lydata.utils import infer_and_combine_levels
 from lydata.validator import validate_datasets
 
 __author__ = "Roman Ludwig"
@@ -22,10 +21,9 @@ __all__ = [
     "Q",
     "C",
     "available_datasets",
-    "join_datasets",
     "load_datasets",
     "validate_datasets",
-    "enhance",
+    "infer_and_combine_levels",
 ]
 
 logger = logging.getLogger(__name__)
