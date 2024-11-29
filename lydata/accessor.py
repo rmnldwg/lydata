@@ -741,9 +741,9 @@ class LyDataAccessor:
         :py:meth:`~pandas.DataFrame.update` the original DataFrame with the result.
 
         >>> df = pd.DataFrame({
-        ...     ('MRI'      , 'ipsi', 'I'): [False, True , True , None],
-        ...     ('CT'       , 'ipsi', 'I'): [False, True , False, True],
-        ...     ('pathology', 'ipsi', 'I'): [True , None , False, None],
+        ...     ('MRI'      , 'ipsi', 'I'): [False, True , True , None, None],
+        ...     ('CT'       , 'ipsi', 'I'): [False, True , False, True, None],
+        ...     ('pathology', 'ipsi', 'I'): [True , None , False, None, None],
         ... })
         >>> df.ly.combine()   # doctest: +NORMALIZE_WHITESPACE
              ipsi
@@ -752,6 +752,7 @@ class LyDataAccessor:
         1    True
         2   False
         3    True
+        4    None
         """
         modalities = modalities or get_default_modalities()
         modalities = {
