@@ -8,6 +8,37 @@ import pandas as pd
 from pydantic import BaseModel, Field
 
 
+def update_and_expand(
+    left: pd.DataFrame,
+    right: pd.DataFrame,
+    **update_kwargs: Any,
+) -> pd.DataFrame:
+    """Update ``left`` with values from ``right``, also adding .
+
+    The added feature of this function over pandas' :py:meth:`~pandas.DataFrame.update`
+    is that it also adds columns that are present in ``right`` but not in ``left``.
+
+    Any keyword arguments are also directly passed to the
+    :py:meth:`~pandas.DataFrame.update`.
+
+    >>> left = pd.DataFrame({"a": [1, 2, None], "b": [3, 4, 5]})
+    >>> right = pd.DataFrame({"a": [None, 3, 4], "c": [6, 7, 8]})
+    >>> update_and_expand(left, right)
+         a  b  c
+    0  1.0  3  6
+    1  3.0  4  7
+    2  4.0  5  8
+    """
+    result = left.copy()
+    result.update(right, **update_kwargs)
+
+    for column in right.columns:
+        if column not in result.columns:
+            result[column] = right[column]
+
+    return result
+
+
 @dataclass
 class _ColumnSpec:
     """Class for specifying column names and aggfuncs."""
@@ -123,12 +154,12 @@ def get_default_modalities() -> dict[str, ModalityConfig]:
 
 def infer_all_levels(
     dataset: pd.DataFrame,
-    infer_sublevels_kwargs: dict[str, Any] | None = None,
     infer_superlevels_kwargs: dict[str, Any] | None = None,
+    infer_sublevels_kwargs: dict[str, Any] | None = None,
 ) -> pd.DataFrame:
     """Infer all levels of involvement for each diagnostic modality.
 
-    This function first infers sublevel (e.g. 'IIa", and 'IIb') involvement for each
+    This function first infers sublevel (e.g. 'IIa', and 'IIb') involvement for each
     modality using :py:meth:`~lydata.accessor.LyDataAccessor.infer_sublevels`. Then,
     it infers superlevel (e.g. 'II') involvement for each modality using
     :py:meth:`~lydata.accessor.LyDataAccessor.infer_superlevels`.
@@ -138,14 +169,20 @@ def infer_all_levels(
 
     result = dataset.copy()
 
-    result = result.join(result.ly.infer_sublevels(**infer_sublevels_kwargs))
-    return result.join(result.ly.infer_superlevels(**infer_superlevels_kwargs))
+    result = update_and_expand(
+        left=result,
+        right=result.ly.infer_superlevels(**infer_superlevels_kwargs),
+    )
+    return update_and_expand(
+        left=result,
+        right=result.ly.infer_sublevels(**infer_sublevels_kwargs),
+    )
 
 
 def infer_and_combine_levels(
     dataset: pd.DataFrame,
-    infer_sublevels_kwargs: dict[str, Any] | None = None,
     infer_superlevels_kwargs: dict[str, Any] | None = None,
+    infer_sublevels_kwargs: dict[str, Any] | None = None,
     combine_kwargs: dict[str, Any] | None = None,
 ) -> pd.DataFrame:
     """Enhance the dataset by inferring additional columns from the data.
@@ -171,8 +208,8 @@ def infer_and_combine_levels(
     """
     result = infer_all_levels(
         dataset,
-        infer_sublevels_kwargs=infer_sublevels_kwargs,
         infer_superlevels_kwargs=infer_superlevels_kwargs,
+        infer_sublevels_kwargs=infer_sublevels_kwargs,
     )
     combine_kwargs = combine_kwargs or {}
     max_llh = pd.concat(

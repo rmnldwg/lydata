@@ -785,9 +785,6 @@ class LyDataAccessor:
 
             for subid in subids:
                 sublevel = superlevel + subid
-                if sublevel in self._obj[modality, side]:
-                    continue
-
                 result.loc[is_healthy, (modality, side, sublevel)] = False
                 result.loc[~is_healthy, (modality, side, sublevel)] = None
 
@@ -849,9 +846,6 @@ class LyDataAccessor:
                 is_any_involved = self._obj[sublevel_cols].any(axis=1)
                 is_unknown = self._obj[sublevel_cols].isna().all(axis=1)
             except KeyError:
-                continue
-
-            if superlevel in self._obj[modality, side]:
                 continue
 
             result.loc[are_all_healthy, (modality, side, superlevel)] = False
