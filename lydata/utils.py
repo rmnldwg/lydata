@@ -123,8 +123,8 @@ def get_default_modalities() -> dict[str, ModalityConfig]:
 
 def infer_all_levels(
     dataset: pd.DataFrame,
-    infer_sublevels_kwargs: dict[str, Any] | None = None,
     infer_superlevels_kwargs: dict[str, Any] | None = None,
+    infer_sublevels_kwargs: dict[str, Any] | None = None,
 ) -> pd.DataFrame:
     """Infer all levels of involvement for each diagnostic modality.
 
@@ -138,14 +138,14 @@ def infer_all_levels(
 
     result = dataset.copy()
 
-    result = result.join(result.ly.infer_sublevels(**infer_sublevels_kwargs))
-    return result.join(result.ly.infer_superlevels(**infer_superlevels_kwargs))
+    result = result.join(result.ly.infer_superlevels(**infer_superlevels_kwargs))
+    return result.join(result.ly.infer_sublevels(**infer_sublevels_kwargs))
 
 
 def infer_and_combine_levels(
     dataset: pd.DataFrame,
-    infer_sublevels_kwargs: dict[str, Any] | None = None,
     infer_superlevels_kwargs: dict[str, Any] | None = None,
+    infer_sublevels_kwargs: dict[str, Any] | None = None,
     combine_kwargs: dict[str, Any] | None = None,
 ) -> pd.DataFrame:
     """Enhance the dataset by inferring additional columns from the data.
@@ -171,8 +171,8 @@ def infer_and_combine_levels(
     """
     result = infer_all_levels(
         dataset,
-        infer_sublevels_kwargs=infer_sublevels_kwargs,
         infer_superlevels_kwargs=infer_superlevels_kwargs,
+        infer_sublevels_kwargs=infer_sublevels_kwargs,
     )
     combine_kwargs = combine_kwargs or {}
     max_llh = pd.concat(
