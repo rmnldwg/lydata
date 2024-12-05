@@ -120,6 +120,7 @@ def get_default_column_map() -> _ColumnMap:
             _ColumnSpec("midext", ("tumor", "1", "extension")),
             _ColumnSpec("subsite", ("tumor", "1", "subsite")),
             _ColumnSpec("volume", ("tumor", "1", "volume")),
+            _ColumnSpec("central", ("tumor", "1", "central")),
         ]
     )
 
