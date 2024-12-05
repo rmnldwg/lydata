@@ -55,7 +55,26 @@ def _get_all_true(df: pd.DataFrame) -> pd.Series:
 
 
 class CombineQMixin:
-    """Mixin class for combining queries."""
+    """Mixin class for combining queries.
+
+    Four operators are defined for combining queries:
+
+    1. ``&`` for logical AND operations.
+        The returned object is an :py:class:`AndQ` instance and - when executed -
+        returns a boolean mask where both queries are satisfied. When the right-hand
+        side is ``None``, the left-hand side query object is returned unchanged.
+    2. ``|`` for logical OR operations.
+        The returned object is an :py:class:`OrQ` instance and - when executed -
+        returns a boolean mask where either query is satisfied. When the right-hand
+        side is ``None``, the left-hand side query object is returned unchanged.
+    3. ``~`` for inverting a query.
+        The returned object is a :py:class:`NotQ` instance and - when executed -
+        returns a boolean mask where the query is not satisfied.
+    4. ``==`` for checking if two queries are equal.
+        Two queries are equal if their column names, operators, and values are equal.
+        Note that this does not check if the queries are semantically equal, i.e., if
+        they would return the same result when executed.
+    """
 
     def __and__(self, other: QTypes | None) -> AndQ:
         """Combine two queries with a logical AND."""
@@ -259,6 +278,7 @@ class NoneQ(CombineQMixin):
 
 
 QTypes = Q | AndQ | OrQ | NotQ | None
+"""Type for a query object or a combination of query objects."""
 
 
 class C:
