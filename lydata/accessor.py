@@ -164,6 +164,8 @@ class AndQ(CombineQMixin):
     1     True
     2    False
     dtype: bool
+    >>> all((q1 & None).execute(df) == q1.execute(df))
+    True
     """
 
     def __init__(self, q1: QTypes, q2: QTypes) -> None:
@@ -196,6 +198,8 @@ class OrQ(CombineQMixin):
     1    False
     2     True
     Name: col1, dtype: bool
+    >>> all((q1 | None).execute(df) == q1.execute(df))
+    True
     """
 
     def __init__(self, q1: QTypes, q2: QTypes) -> None:
