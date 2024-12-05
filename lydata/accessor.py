@@ -59,13 +59,11 @@ class CombineQMixin:
 
     def __and__(self, other: QTypes | None) -> AndQ:
         """Combine two queries with a logical AND."""
-        other = other or NoneQ()
-        return AndQ(self, other)
+        return self if other is None else AndQ(self, other)
 
     def __or__(self, other: QTypes | None) -> OrQ:
         """Combine two queries with a logical OR."""
-        other = other or NoneQ()
-        return OrQ(self, other)
+        return self if other is None else OrQ(self, other)
 
     def __invert__(self) -> NotQ:
         """Negate the query."""
