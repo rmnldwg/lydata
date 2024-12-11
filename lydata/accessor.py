@@ -11,20 +11,24 @@ the above mentioned functionality. That way, accessing the age of all patients i
 as easy as typing ``df.ly.age``.
 
 Beyond that, the module implements a convenient wat to query the
-:py:class:`pd.DataFrame`: The :py:class:`Q` object, that was inspired by Django's
+:py:class:`~pandas.DataFrame`: The :py:class:`Q` object, that was inspired by Django's
 ``Q`` object. It allows for more readable and modular queries, which can be combined
 with logical operators and reused across different DataFrames.
 
 The :py:class:`Q` objects can be passed to the :py:meth:`LyDataAccessor.query` and
 :py:meth:`LyDataAccessor.portion` methods to filter the DataFrame or compute the
-:py:class:`QueryPortion` of rows that satisfy the query.
+:py:class:`QueryPortion` of rows that satisfy the query. Alternatively, any of these
+:py:class:`Q` objects have a method called :py:meth:`~Q.execute` that can be called with
+a :py:class:`~pandas.DataFrame` to get a boolean mask of the rows satisfying the query.
 
-Further, we implement methods like :py:meth:`LyDataAccessor.combine`,
-:py:meth:`LyDataAccessor.infer_sublevels`, and
-:py:meth:`LyDataAccessor.infer_superlevels` to compute additional columns from the
+Further, we implement methods like :py:meth:`~LyDataAccessor.combine`,
+:py:meth:`~LyDataAccessor.infer_sublevels`, and
+:py:meth:`~LyDataAccessor.infer_superlevels` to compute additional columns from the
 lyDATA tables. This is sometimes necessary, because not all data contains all the
 possibly necessary columns. E.g., in some cohorts we do have detailed sublevel
 information (i.e., IIa and IIb), while in others only the superlevel (II) is reported.
+In such a case, one can now simply call ``df.ly.infer_sublevels()`` to get the
+additional columns.
 """
 
 from __future__ import annotations
