@@ -284,6 +284,10 @@ QTypes = Q | AndQ | OrQ | NotQ | None
 class C:
     """Wraps a column name and produces a :py:class:`Q` object upon comparison.
 
+    This is basically a shorthand for creating a :py:class:`Q` object that avoids
+    writing the operator and value in quotes. Thus, it may be more readable and allows
+    IDEs to provide better autocompletion.
+
     .. caution::
 
         Just like for the :py:class:`Q` object, it is not checked upon instantiation
@@ -300,6 +304,16 @@ class C:
         True
         """
         self.column = column[0] if len(column) == 1 else column
+
+    def __repr__(self) -> str:
+        """Return a string representation of the column object.
+
+        >>> repr(C('foo'))
+        "C('foo')"
+        >>> repr(C('foo', 'bar'))
+        "C(('foo', 'bar'))"
+        """
+        return f"C({self.column!r})"
 
     def __eq__(self, value: Any) -> Q:
         """Create a query object for comparing equality.
