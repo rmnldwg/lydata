@@ -107,9 +107,33 @@ class Q(CombineQMixin):
     .. caution::
 
         The column names are not checked upon instantiation. This is only done when the
-        query is executed. In fact, the ``Q`` object does not even know about the
-        :py:class:`~pandas.DataFrame` it will be applied to in the beginning. On the
+        query is executed. In fact, the :py:class:`Q` object does not even know about
+        the :py:class:`~pandas.DataFrame` it will be applied to in the beginning. On the
         flip side, this means a query may be reused for different DataFrames.
+
+    The ``operator`` argument may be one of the following:
+
+    - ``'=='``: Checks if ``column`` values are equal to the ``value``.
+    - ``'<'``: Checks if ``column`` values are less than the ``value``.
+    - ``'<='``: Checks if ``column`` values are less than or equal to ``value``.
+    - ``'>'``: Checks if ``column`` values are greater than the ``value``.
+    - ``'>='``: Checks if ``column`` values are greater than or equal to ``value``.
+    - ``'!='``: Checks if ``column`` values are not equal to the ``value``. This is
+      equivalent to ``~Q(column, '==', value)``.
+    - ``'in'``: Checks if ``column`` values are in the list of ``value``. For this,
+      pandas' :py:meth:`~pandas.Series.isin` method is used.
+    - ``'contains'``: Checks if ``column`` values contain the string ``value``.
+      Here, pandas' :py:meth:`~pandas.Series.str.contains` method is used.
+
+    .. note::
+
+        During initialization, a private attribute ``_column_map`` is set to the
+        default column map returned by :py:func:`~lydata.utils.get_default_column_map`.
+        This is used to convert short column names to long ones. If one feels
+        adventurous, they may set this attribute to a custom column map containing
+        additional or other column short names. This could also be achieved by
+        subclassing the :py:class:`Q`. However, the attribute may change in the future,
+        and without notice.
     """
 
     _OPERATOR_MAP: dict[str, Callable[[pd.Series, Any], pd.Series]] = {
