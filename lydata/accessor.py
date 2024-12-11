@@ -175,7 +175,7 @@ class AndQ(CombineQMixin):
     >>> q2 = Q('col2', 'contains', 'ba')
     >>> and_q = q1 & q2
     >>> print(and_q)
-    Q('col1', '!=', 3) & Q('col2', 'contains', 'ba')
+    (Q('col1', '!=', 3) & Q('col2', 'contains', 'ba'))
     >>> isinstance(and_q, AndQ)
     True
     >>> and_q.execute(df)
@@ -194,7 +194,7 @@ class AndQ(CombineQMixin):
 
     def __repr__(self) -> str:
         """Return a string representation of the query."""
-        return f"{self.q1!r} & {self.q2!r}"
+        return f"({self.q1!r} & {self.q2!r})"
 
     def execute(self, df: pd.DataFrame) -> pd.Series:
         """Return a boolean mask where both queries are satisfied."""
@@ -209,7 +209,7 @@ class OrQ(CombineQMixin):
     >>> q2 = Q('col1', '==', 3)
     >>> or_q = q1 | q2
     >>> print(or_q)
-    Q('col1', '==', 1) | Q('col1', '==', 3)
+    (Q('col1', '==', 1) | Q('col1', '==', 3))
     >>> isinstance(or_q, OrQ)
     True
     >>> or_q.execute(df)
@@ -228,7 +228,7 @@ class OrQ(CombineQMixin):
 
     def __repr__(self) -> str:
         """Return a string representation of the query."""
-        return f"{self.q1!r} | {self.q2!r}"
+        return f"({self.q1!r} | {self.q2!r})"
 
     def execute(self, df: pd.DataFrame) -> pd.Series:
         """Return a boolean mask where either query is satisfied."""
@@ -250,6 +250,8 @@ class NotQ(CombineQMixin):
     1    False
     2     True
     Name: col1, dtype: bool
+    >>> print(~(Q('col1', '==', 2) & Q('col1', '!=', 3)))
+    ~(Q('col1', '==', 2) & Q('col1', '!=', 3))
     """
 
     def __init__(self, q: QTypes) -> None:
@@ -298,7 +300,7 @@ class C:
         """Create a column object for comparison.
 
         For querying multi-level columns, both the syntax ``C('col1', 'col2')`` and
-        ``C(('col1', 'col2'))`` are valid.
+        ``C(('col1', 'col2'))`` is valid.
 
         >>> (C('col1', 'col2') == 1) == (C(('col1', 'col2')) == 1)
         True
