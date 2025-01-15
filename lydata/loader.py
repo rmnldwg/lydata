@@ -112,7 +112,8 @@ class LyDataset(BaseModel):
         """
         auth = _get_github_auth(token=token, user=user, password=password)
         gh = Github(auth=auth)
-        return gh.get_repo(self.repo_name)
+        repo = gh.get_repo(self.repo_name)
+        logger.info(f"Fetched repository {repo.full_name} from GitHub.")
 
     def get_content_file(
         self,
@@ -172,16 +173,14 @@ class LyDataset(BaseModel):
         kwargs.update(load_kwargs)
 
         if use_github:
-            msg = f"Trying to load dataset {self.name} from GitHub."
             from_location = self.get_content_file(
                 token=token, user=user, password=password
             ).download_url
         else:
-            msg = f"Trying to load dataset {self.name} from disk."
             from_location = self.path_on_disk
 
-        logger.info(msg)
         df = pd.read_csv(from_location, **kwargs)
+        logger.info(f"Loaded dataset {self.name} from {from_location}.")
         df.attrs.update(self.model_dump())
         return df
 
