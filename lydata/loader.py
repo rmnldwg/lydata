@@ -21,7 +21,6 @@ The docstring of all functions contains some basic doctest examples.
 """
 
 import fnmatch
-import logging
 import os
 import warnings
 from collections.abc import Generator
@@ -32,9 +31,9 @@ import numpy as np  # noqa: F401
 import pandas as pd
 from github import Auth, Github, Repository
 from github.ContentFile import ContentFile
+from loguru import logger
 from pydantic import BaseModel, Field, PrivateAttr, constr
 
-logger = logging.getLogger(__name__)
 _default_repo_name = "rmnldwg/lydata"
 low_min1_str = constr(to_lower=True, min_length=1)
 

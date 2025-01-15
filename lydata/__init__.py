@@ -1,6 +1,6 @@
 """Library for handling lymphatic involvement data."""
 
-import logging
+from loguru import logger
 
 import lydata._version as _version
 from lydata.accessor import C, Q
@@ -26,6 +26,4 @@ __all__ = [
     "infer_and_combine_levels",
 ]
 
-logger = logging.getLogger(__name__)
-logger.addHandler(logging.NullHandler())
-logger.setLevel(logging.WARNING)
+logger.disable("lydata")

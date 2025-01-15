@@ -16,16 +16,14 @@ platform database.
 .. _LyProX: https://lyprox.org
 """
 
-import logging
 from typing import Any
 
 import pandas as pd
+from loguru import logger
 from pandera import Check, Column, DataFrameSchema
 from pandera.errors import SchemaError
 
 from lydata.loader import available_datasets
-
-logger = logging.getLogger(__name__)
 
 _NULLABLE_OPTIONAL = {"required": False, "nullable": True}
 _NULLABLE_OPTIONAL_BOOLEAN_COLUMN = Column(
