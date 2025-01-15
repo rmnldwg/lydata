@@ -13,7 +13,7 @@ def update_and_expand(
     right: pd.DataFrame,
     **update_kwargs: Any,
 ) -> pd.DataFrame:
-    """Update ``left`` with values from ``right``, also adding .
+    """Update ``left`` with values from ``right``, also adding columns from ``right``.
 
     The added feature of this function over pandas' :py:meth:`~pandas.DataFrame.update`
     is that it also adds columns that are present in ``right`` but not in ``left``.
