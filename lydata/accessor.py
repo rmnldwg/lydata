@@ -11,20 +11,24 @@ the above mentioned functionality. That way, accessing the age of all patients i
 as easy as typing ``df.ly.age``.
 
 Beyond that, the module implements a convenient wat to query the
-:py:class:`pd.DataFrame`: The :py:class:`Q` object, that was inspired by Django's
+:py:class:`~pandas.DataFrame`: The :py:class:`Q` object, that was inspired by Django's
 ``Q`` object. It allows for more readable and modular queries, which can be combined
 with logical operators and reused across different DataFrames.
 
 The :py:class:`Q` objects can be passed to the :py:meth:`LyDataAccessor.query` and
 :py:meth:`LyDataAccessor.portion` methods to filter the DataFrame or compute the
-:py:class:`QueryPortion` of rows that satisfy the query.
+:py:class:`QueryPortion` of rows that satisfy the query. Alternatively, any of these
+:py:class:`Q` objects have a method called :py:meth:`~Q.execute` that can be called with
+a :py:class:`~pandas.DataFrame` to get a boolean mask of the rows satisfying the query.
 
-Further, we implement methods like :py:meth:`LyDataAccessor.combine`,
-:py:meth:`LyDataAccessor.infer_sublevels`, and
-:py:meth:`LyDataAccessor.infer_superlevels` to compute additional columns from the
+Further, we implement methods like :py:meth:`~LyDataAccessor.combine`,
+:py:meth:`~LyDataAccessor.infer_sublevels`, and
+:py:meth:`~LyDataAccessor.infer_superlevels` to compute additional columns from the
 lyDATA tables. This is sometimes necessary, because not all data contains all the
 possibly necessary columns. E.g., in some cohorts we do have detailed sublevel
 information (i.e., IIa and IIb), while in others only the superlevel (II) is reported.
+In such a case, one can now simply call ``df.ly.infer_sublevels()`` to get the
+additional columns.
 """
 
 from __future__ import annotations
@@ -107,9 +111,33 @@ class Q(CombineQMixin):
     .. caution::
 
         The column names are not checked upon instantiation. This is only done when the
-        query is executed. In fact, the ``Q`` object does not even know about the
-        :py:class:`~pandas.DataFrame` it will be applied to in the beginning. On the
+        query is executed. In fact, the :py:class:`Q` object does not even know about
+        the :py:class:`~pandas.DataFrame` it will be applied to in the beginning. On the
         flip side, this means a query may be reused for different DataFrames.
+
+    The ``operator`` argument may be one of the following:
+
+    - ``'=='``: Checks if ``column`` values are equal to the ``value``.
+    - ``'<'``: Checks if ``column`` values are less than the ``value``.
+    - ``'<='``: Checks if ``column`` values are less than or equal to ``value``.
+    - ``'>'``: Checks if ``column`` values are greater than the ``value``.
+    - ``'>='``: Checks if ``column`` values are greater than or equal to ``value``.
+    - ``'!='``: Checks if ``column`` values are not equal to the ``value``. This is
+      equivalent to ``~Q(column, '==', value)``.
+    - ``'in'``: Checks if ``column`` values are in the list of ``value``. For this,
+      pandas' :py:meth:`~pandas.Series.isin` method is used.
+    - ``'contains'``: Checks if ``column`` values contain the string ``value``.
+      Here, pandas' :py:meth:`~pandas.Series.str.contains` method is used.
+
+    .. note::
+
+        During initialization, a private attribute ``_column_map`` is set to the
+        default column map returned by :py:func:`~lydata.utils.get_default_column_map`.
+        This is used to convert short column names to long ones. If one feels
+        adventurous, they may set this attribute to a custom column map containing
+        additional or other column short names. This could also be achieved by
+        subclassing the :py:class:`Q`. However, the attribute may change in the future,
+        and without notice.
     """
 
     _OPERATOR_MAP: dict[str, Callable[[pd.Series, Any], pd.Series]] = {
@@ -175,7 +203,7 @@ class AndQ(CombineQMixin):
     >>> q2 = Q('col2', 'contains', 'ba')
     >>> and_q = q1 & q2
     >>> print(and_q)
-    Q('col1', '!=', 3) & Q('col2', 'contains', 'ba')
+    (Q('col1', '!=', 3) & Q('col2', 'contains', 'ba'))
     >>> isinstance(and_q, AndQ)
     True
     >>> and_q.execute(df)
@@ -194,7 +222,7 @@ class AndQ(CombineQMixin):
 
     def __repr__(self) -> str:
         """Return a string representation of the query."""
-        return f"{self.q1!r} & {self.q2!r}"
+        return f"({self.q1!r} & {self.q2!r})"
 
     def execute(self, df: pd.DataFrame) -> pd.Series:
         """Return a boolean mask where both queries are satisfied."""
@@ -209,7 +237,7 @@ class OrQ(CombineQMixin):
     >>> q2 = Q('col1', '==', 3)
     >>> or_q = q1 | q2
     >>> print(or_q)
-    Q('col1', '==', 1) | Q('col1', '==', 3)
+    (Q('col1', '==', 1) | Q('col1', '==', 3))
     >>> isinstance(or_q, OrQ)
     True
     >>> or_q.execute(df)
@@ -228,7 +256,7 @@ class OrQ(CombineQMixin):
 
     def __repr__(self) -> str:
         """Return a string representation of the query."""
-        return f"{self.q1!r} | {self.q2!r}"
+        return f"({self.q1!r} | {self.q2!r})"
 
     def execute(self, df: pd.DataFrame) -> pd.Series:
         """Return a boolean mask where either query is satisfied."""
@@ -250,6 +278,8 @@ class NotQ(CombineQMixin):
     1    False
     2     True
     Name: col1, dtype: bool
+    >>> print(~(Q('col1', '==', 2) & Q('col1', '!=', 3)))
+    ~(Q('col1', '==', 2) & Q('col1', '!=', 3))
     """
 
     def __init__(self, q: QTypes) -> None:
@@ -284,6 +314,10 @@ QTypes = Q | AndQ | OrQ | NotQ | None
 class C:
     """Wraps a column name and produces a :py:class:`Q` object upon comparison.
 
+    This is basically a shorthand for creating a :py:class:`Q` object that avoids
+    writing the operator and value in quotes. Thus, it may be more readable and allows
+    IDEs to provide better autocompletion.
+
     .. caution::
 
         Just like for the :py:class:`Q` object, it is not checked upon instantiation
@@ -294,12 +328,22 @@ class C:
         """Create a column object for comparison.
 
         For querying multi-level columns, both the syntax ``C('col1', 'col2')`` and
-        ``C(('col1', 'col2'))`` are valid.
+        ``C(('col1', 'col2'))`` is valid.
 
         >>> (C('col1', 'col2') == 1) == (C(('col1', 'col2')) == 1)
         True
         """
         self.column = column[0] if len(column) == 1 else column
+
+    def __repr__(self) -> str:
+        """Return a string representation of the column object.
+
+        >>> repr(C('foo'))
+        "C('foo')"
+        >>> repr(C('foo', 'bar'))
+        "C(('foo', 'bar'))"
+        """
+        return f"C({self.column!r})"
 
     def __eq__(self, value: Any) -> Q:
         """Create a query object for comparing equality.
