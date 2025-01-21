@@ -1,11 +1,10 @@
-numpy == 1.26.4
-pandas == 2.2.2
-matplotlib == 3.9.0
-dvc == 3.51.2
+numpy == 2.2.2
+pandas == 2.2.3
+matplotlib == 3.10.0
+dvc == 3.59.0
 jupyter
 jupyter-contrib-nbextensions
 icd10-cm == 0.0.5
-lyscripts == 0.7.2
-lymph-model == 0.4.3
+lyscripts @ git+https://github.com/rmnldwg/lyscripts@07ed81d1be39134823199cc5719227fb8d7eaf2e
 lazydocs == 0.4.8
-tueplots == 0.0.14
+tueplots == 0.0.17
