@@ -336,7 +336,7 @@ lydata==0.2.4
     # via lyscripts
 lymph-model==1.2.3
     # via lyscripts
-lyscripts @ git+https://github.com/rmnldwg/lyscripts@07ed81d1be39134823199cc5719227fb8d7eaf2e
+lyscripts @ git+https://github.com/rmnldwg/lyscripts@a48e223bed8fabb1add8f2fed291d1c65c77fd26
     # via -r requirements.in
 markdown-it-py==3.0.0
     # via rich

@@ -1,5 +1,4 @@
-"""
-Map the `raw.csv` data from the 2021-clb-oropharynx cohort to the `data.csv` file.
+"""Map the `raw.csv` data from the 2021-clb-oropharynx cohort to the `data.csv` file.
 
 This module defines how the command `lyscripts data lyproxify` (see
 [here](rmnldwg.github.io/lyscripts) for the documentation of the `lyscripts` module)
@@ -56,6 +55,7 @@ respective column is about. This is used to generate the documentation for the
 
 ---
 """
+
 import re
 
 import icd10
@@ -64,9 +64,7 @@ from dateutil.parser import ParserError, parse
 
 
 def robust_date(entry, *_args, **_kwargs):
-    """
-    Robustly parse a date string.
-    """
+    """Robustly parse a date string."""
     try:
         parsed_dt = parse(entry)
         return parsed_dt.strftime("%Y-%m-%d")
@@ -77,9 +75,7 @@ def robust_date(entry, *_args, **_kwargs):
 
 
 def robust_int(entry, *_args, **_kwargs):
-    """
-    Robustly convert a string to int, if possible.
-    """
+    """Robustly convert a string to int, if possible."""
     try:
         return int(entry)
     except ValueError:
@@ -89,9 +85,7 @@ def robust_int(entry, *_args, **_kwargs):
 
 
 def get_subsite(entry, *_args, **_kwargs):
-    """
-    Get human-readable subsite from ICD-10 code.
-    """
+    """Get human-readable subsite from ICD-10 code."""
     match = re.search("(C[0-9]{2})(.[0-9]{1})?", entry)
     if match:
         for i in [0, 1]:
@@ -103,18 +97,14 @@ def get_subsite(entry, *_args, **_kwargs):
 
 
 def parse_pathology(entry, *_args, **_kwargs):
-    """
-    Transform number of positive nodes to `True`, `False` or `None`.
-    """
+    """Transform number of positive nodes to `True`, `False` or `None`."""
     if np.isnan(entry):
         return None
     return False if entry == 0 else True
 
 
 def strip_letters(entry, *_args, **_kwargs):
-    """
-    Remove letters following a number.
-    """
+    """Remove letters following a number."""
     try:
         return int(entry)
     except ValueError:
