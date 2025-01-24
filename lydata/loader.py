@@ -21,7 +21,6 @@ The docstring of all functions contains some basic doctest examples.
 """
 
 import fnmatch
-import os
 import warnings
 from collections.abc import Generator
 from datetime import datetime
@@ -29,10 +28,12 @@ from pathlib import Path
 
 import numpy as np  # noqa: F401
 import pandas as pd
-from github import Auth, Github, Repository
+from github import Github, Repository
 from github.ContentFile import ContentFile
 from loguru import logger
 from pydantic import BaseModel, Field, PrivateAttr, constr
+
+from lydata.utils import get_github_auth
 
 _default_repo_name = "rmnldwg/lydata"
 low_min1_str = constr(to_lower=True, min_length=1)
@@ -110,10 +111,11 @@ class LyDataset(BaseModel):
         >>> conf.get_repo().visibility
         'public'
         """
-        auth = _get_github_auth(token=token, user=user, password=password)
+        auth = get_github_auth(token=token, user=user, password=password)
         gh = Github(auth=auth)
         repo = gh.get_repo(self.repo_name)
         logger.info(f"Fetched repository {repo.full_name} from GitHub.")
+        return repo
 
     def get_content_file(
         self,
@@ -205,26 +207,6 @@ def _available_datasets_on_disk(
                 )
 
 
-def _get_github_auth(
-    token: str | None = None,
-    user: str | None = None,
-    password: str | None = None,
-) -> Auth:
-    token = token or os.getenv("GITHUB_TOKEN")
-    user = user or os.getenv("GITHUB_USER")
-    password = password or os.getenv("GITHUB_PASSWORD")
-
-    if token:
-        logger.debug("Using GITHUB_TOKEN for authentication.")
-        return Auth.Token(token)
-
-    if user and password:
-        logger.debug("Using GITHUB_USER and GITHUB_PASSWORD for authentication.")
-        return Auth.Login(user, password)
-
-    raise ValueError("Neither GITHUB_TOKEN nor GITHUB_USER and GITHUB_PASSWORD set.")
-
-
 def _available_datasets_on_github(
     year: int | str = "*",
     institution: str = "*",
@@ -232,7 +214,7 @@ def _available_datasets_on_github(
     repo_name: str = _default_repo_name,
     ref: str = "main",
 ) -> Generator[LyDataset, None, None]:
-    gh = Github(auth=_get_github_auth())
+    gh = Github(auth=get_github_auth())
 
     repo = gh.get_repo(repo_name)
     contents = repo.get_contents(path="", ref=ref)
