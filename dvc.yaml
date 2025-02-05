@@ -2,11 +2,11 @@ stages:
   lyproxify:
     foreach:
       - folder: 2021-clb-oropharynx
-        args: "-r 0"
+        args: "--num-header-rows=1"
       - folder: 2023-clb-multisite
-        args: "-r 0 1 2 --drop-rows 439 --add-index"
+        args: "--num-header-rows=3 --drop-rows=439"
       - folder: 2023-isb-multisite
-        args: "-r 0"
+        args: "--num-header-rows=1"
     do:
       desc:
         Parse the `raw.csv` data using the `lyscripts` Python package and the
@@ -14,9 +14,10 @@ stages:
         interface LyProX understands.
       cmd: >
         lyscripts data lyproxify
-        -i ${item.folder}/raw.csv
-        -o ${item.folder}/data.csv
-        -m ${item.folder}/mapping.py
+        --version=1
+        --raw-input=${item.folder}/raw.csv
+        --output-file=${item.folder}/data.csv
+        --mapping-file=${item.folder}/mapping.py
         ${item.args}
       deps:
         - ${item.folder}/raw.csv
@@ -34,8 +35,9 @@ stages:
       - 2023-clb-multisite/data.csv
     cmd: >
       lyscripts data join
-      --inputs 2021-clb-oropharynx/data.csv 2023-isb-multisite/data.csv 2023-clb-multisite/data.csv
-      --output joined.csv
+      --version=1
+      --inputs='[{"source": "2021-clb-oropharynx/data.csv"}, {"source": "2023-isb-multisite/data.csv"}, {"source": "2023-clb-multisite/data.csv"}]'
+      --output=joined.csv
     outs:
       - joined.csv
 
@@ -46,14 +48,16 @@ stages:
       estimating the most likely involvement based on the observations only.
     cmd: >
       lyscripts data enhance
-      --consensus max_llh
-      --params modalities.yaml
-      joined.csv enhanced.csv
+      --configs=modalities.ly.yaml
+      --method=max_llh
+      --input.source=joined.csv
+      --output-file=enhanced.csv
     deps:
       - joined.csv
     params:
-      - modalities.yaml:
+      - modalities.ly.yaml:
           - modalities
+          - version
     outs:
       - enhanced.csv
 
