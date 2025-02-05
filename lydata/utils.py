@@ -237,8 +237,9 @@ def infer_and_combine_levels(
         infer_sublevels_kwargs=infer_sublevels_kwargs,
     )
     combine_kwargs = combine_kwargs or {}
+    method = combine_kwargs.get("method", "max_llh")
     max_llh = pd.concat(
-        {"max_llh": result.ly.combine(**combine_kwargs)},
+        {method: result.ly.combine(**combine_kwargs)},
         axis="columns",
     )
     return result.join(max_llh)
