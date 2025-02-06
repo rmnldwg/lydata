@@ -104,7 +104,7 @@ import lydata
 
 for dataset_spec in lydata.available_datasets(
     year=2023,              # show all datasets added in 2023
-    skip_disk=True,         # do not search on disk, but rather on GitHub
+    use_github=True,        # do not search on disk, but rather on GitHub
     ref="61a17e",           # may be some specific hash/tag/branch
 ):
     print(dataset_spec.name)
@@ -113,37 +113,37 @@ for dataset_spec in lydata.available_datasets(
 # 2023-clb-multisite
 # 2023-isb-multisite
 
-merged_data = lydata.join_datasets(
+first_dataset = next(lydata.load_datasets(
     subsite="oropharynx",   # merge data that include oropharyngeal tumor patients
-    skip_disk=True,         # again, search GitHub, not on disk (which is the default)
-)
-print(merged_data.head())
+    use_github=True,        # again, search GitHub, not on disk (which is the default)
+))
+print(first_dataset.head())
 
 # output:
-#     patient                                          ... pathology
-#           #                                          ...      ipsi
-#          id                 institution     sex age  ...        VI VIII  IX   X
-# 0      P011          Centre Léon Bérard    male  67  ...       NaN  NaN NaN NaN
-# 1      P012          Centre Léon Bérard  female  62  ...       NaN  NaN NaN NaN
-# ..      ...                         ...     ...  ..  ...       ...  ...  ..  ..
-# 548     286  University Hospital Zurich    male  67  ...       NaN  NaN NaN NaN
-# 549     287  University Hospital Zurich    male  76  ...       NaN  NaN NaN NaN
+#   patient                              ... positive_dissected
+#         #                              ...             contra
+#        id         institution     sex  ...                III   IV    V
+# 0    P011  Centre Léon Bérard    male  ...                0.0  0.0  0.0
+# 1    P012  Centre Léon Bérard  female  ...                0.0  0.0  0.0
+# 2    P014  Centre Léon Bérard    male  ...                0.0  0.0  NaN
+# 3    P015  Centre Léon Bérard    male  ...                0.0  0.0  NaN
+# 4    P018  Centre Léon Bérard    male  ...                NaN  NaN  NaN
 #
-# [550 rows x 242 columns]
+# [5 rows x 82 columns]
 ```
 
 And since the three-level header of the tables is a little unwieldy at times, we also provide some shortcodes via a custom pandas accessor. As soon as `lydata` is imported it can be used like this:
 
 ```python
-print(merged_data.ly.age)
+print(first_dataset.ly.age)
 
 # output:
 # 0      67
 # 1      62
 #        ..
-# 548    67
-# 549    76
-# Name: (patient, #, age), Length: 550, dtype: int64
+# 261    60
+# 262    60
+# Name: (patient, #, age), Length: 263, dtype: int64
 ```
 
 And we have implemented `Q` and `C` objects inspired by Django that allow easier querying of the tables:
@@ -152,20 +152,20 @@ And we have implemented `Q` and `C` objects inspired by Django that allow easier
 from lydata import C
 
 # select patients younger than 50 that are not HPV positive (includes NaNs)
-query_result = merged_data.ly.query((C("age") < 50) & ~(C("hpv") == True))
+query_result = first_dataset.ly.query((C("age") < 50) & ~(C("hpv") == True))
 print(query_result)
 
 # output:
-#     patient                                          ... pathology
-#           #                                          ...      ipsi
-#          id                 institution     sex age  ...        VI VIII  IX   X
-# 11     P030          Centre Léon Bérard    male  49  ...       NaN  NaN NaN NaN
-# 12     P031          Centre Léon Bérard    male  46  ...       NaN  NaN NaN NaN
-# ..      ...                         ...     ...  ..  ...       ...  ... ... ...
-# 545     283  University Hospital Zurich    male  49  ...       NaN  NaN NaN NaN
-# 547     285  University Hospital Zurich    male  44  ...       NaN  NaN NaN NaN
+#     patient                                  ... positive_dissected
+#           #                                  ...             contra
+#          id         institution     sex age  ...                 II  III   IV    V
+# 2      P014  Centre Léon Bérard    male  43  ...                1.0  0.0  0.0  NaN
+# 7      P024  Centre Léon Bérard    male  45  ...                NaN  NaN  NaN  NaN
+# ..      ...                 ...     ...  ..  ...                ...  ...  ...  ...
+# 212    P270  Centre Léon Bérard    male  47  ...                0.0  0.0  0.0  NaN
+# 217    P275  Centre Léon Bérard    male  49  ...                0.0  0.0  0.0  NaN
 #
-# [20 rows x 242 columns]
+# [13 rows x 82 columns]
 ```
 
 For more details and further examples or use-cases, have a look at the [official documentation](https://lydata.readthedocs.org/)
