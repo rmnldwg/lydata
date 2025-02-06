@@ -1,11 +1,35 @@
 """Utility functions and classes."""
 
+import os
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
 import pandas as pd
+from github import Auth
+from loguru import logger
 from pydantic import BaseModel, Field
+
+
+def get_github_auth(
+    token: str | None = None,
+    user: str | None = None,
+    password: str | None = None,
+) -> Auth:
+    """Get the GitHub authentication object."""
+    token = token or os.getenv("GITHUB_TOKEN")
+    user = user or os.getenv("GITHUB_USER")
+    password = password or os.getenv("GITHUB_PASSWORD")
+
+    if token:
+        logger.debug("Using GITHUB_TOKEN for authentication.")
+        return Auth.Token(token)
+
+    if user and password:
+        logger.debug("Using GITHUB_USER and GITHUB_PASSWORD for authentication.")
+        return Auth.Login(user, password)
+
+    raise ValueError("Neither GITHUB_TOKEN nor GITHUB_USER and GITHUB_PASSWORD set.")
 
 
 def update_and_expand(
@@ -213,8 +237,9 @@ def infer_and_combine_levels(
         infer_sublevels_kwargs=infer_sublevels_kwargs,
     )
     combine_kwargs = combine_kwargs or {}
+    method = combine_kwargs.get("method", "max_llh")
     max_llh = pd.concat(
-        {"max_llh": result.ly.combine(**combine_kwargs)},
+        {method: result.ly.combine(**combine_kwargs)},
         axis="columns",
     )
     return result.join(max_llh)
