@@ -14,8 +14,7 @@ stages:
         interface LyProX understands.
       cmd: >
         lyscripts data lyproxify
-        --version=1
-        --raw-input=${item.folder}/raw.csv
+        --input-file=${item.folder}/raw.csv
         --output-file=${item.folder}/data.csv
         --mapping-file=${item.folder}/mapping.py
         ${item.args}
@@ -35,7 +34,6 @@ stages:
       - 2023-clb-multisite/data.csv
     cmd: >
       lyscripts data join
-      --version=1
       --inputs='[{"source": "2021-clb-oropharynx/data.csv"}, {"source": "2023-isb-multisite/data.csv"}, {"source": "2023-clb-multisite/data.csv"}]'
       --output=joined.csv
     outs:
