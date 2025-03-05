@@ -55,7 +55,8 @@ stages:
     cmd: sed 's/\([0-9]\{2\}\)\/\([0-9]\{2\}\)\/\([0-9]\{4\}\)/\3-\2-\1/g' 2025-hvh-oropharynx/raw.csv
       | sed 's/,dataset,/,institution,/g' | sed "s/,2023_HVH_OROPHARYNX,/,Vall d'Hebron
       Barcelona Hospital,/g" | sed 's/,\s,/,,/g' | sed 's/,\([0-3]\)[A-C]*,/,\1,/g'
-      | sed 's/,N\sVI,/,FALSE,/g' | sed 's/"C05,1"/C05.1/g' > 2025-hvh-oropharynx/data.csv
+      | sed 's/,N\sVI,/,FALSE,/g' | sed 's/"C05,1"/C05.1/g' | sed 's/\(FEMALE\)/\L&/g'
+      | sed 's/\(MALE\)/\L&/g' | sed 's/\(OROPHARYNX\)/\L&/g' > 2025-hvh-oropharynx/data.csv
     deps:
     - path: 2025-hvh-oropharynx/raw.csv
       hash: md5
@@ -64,7 +65,7 @@ stages:
     outs:
     - path: 2025-hvh-oropharynx/data.csv
       hash: md5
-      md5: 7baa8021efbff0126fcf297e52106168
+      md5: 9dcad2ce5cacd103090c3abe9ce1920a
       size: 82567
   join:
     cmd: "lyscripts data join --inputs='[{\"source\": \"2021-clb-oropharynx/data.csv\"\
@@ -273,7 +274,7 @@ stages:
     deps:
     - path: 2025-hvh-oropharynx/data.csv
       hash: md5
-      md5: 7baa8021efbff0126fcf297e52106168
+      md5: 9dcad2ce5cacd103090c3abe9ce1920a
       size: 82567
     - path: scripts/t_category.py
       hash: md5
@@ -328,7 +329,7 @@ stages:
     deps:
     - path: 2025-hvh-oropharynx/data.csv
       hash: md5
-      md5: 7baa8021efbff0126fcf297e52106168
+      md5: 9dcad2ce5cacd103090c3abe9ce1920a
       size: 82567
     - path: scripts/age_and_sex.py
       hash: md5
@@ -383,7 +384,7 @@ stages:
     deps:
     - path: 2025-hvh-oropharynx/data.csv
       hash: md5
-      md5: 7baa8021efbff0126fcf297e52106168
+      md5: 9dcad2ce5cacd103090c3abe9ce1920a
       size: 82567
     - path: scripts/subsite.py
       hash: md5
@@ -433,7 +434,7 @@ stages:
       size: 166966
     - path: 2025-hvh-oropharynx/data.csv
       hash: md5
-      md5: 7baa8021efbff0126fcf297e52106168
+      md5: 9dcad2ce5cacd103090c3abe9ce1920a
       size: 82567
     - path: scripts/factors_diff.py
       hash: md5
