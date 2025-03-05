@@ -183,20 +183,6 @@ stages:
       cmd:
         python scripts/bar_plot.py ${item}/data.csv
 
-  upset-diff:
-    matrix:
-      first: [2021-usz-oropharynx]
-      second: [2025-hvh-oropharynx]
-    cmd: >
-      python scripts/upset_diff.py
-      --first-dataset ${item.first}
-      --second-dataset ${item.second}
-      --commit eb8a38ec56269d8c8f23d7155ecaad93f399b5f4
-    deps:
-      - ${item.first}/data.csv
-      - ${item.second}/data.csv
-      - scripts/upset_diff.py
-
   factors-diff:
     matrix:
       first: [2021-usz-oropharynx]
@@ -205,7 +191,8 @@ stages:
       python scripts/factors_diff.py
       --first-dataset ${item.first}
       --second-dataset ${item.second}
-      --commit eb8a38ec56269d8c8f23d7155ecaad93f399b5f4
+      --commit ee15c4cabdd160a10783fcf85ffe1cbfeb5c4826
+      --repo rmnldwg/lydata.private
     deps:
       - ${item.first}/data.csv
       - ${item.second}/data.csv

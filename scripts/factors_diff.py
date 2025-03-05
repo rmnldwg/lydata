@@ -1,17 +1,56 @@
 """Plot the difference of clinicopathological factors in two datasets as a bar plot."""
 
+import argparse
 from pathlib import Path
 
 import matplotlib.pyplot as plt
 from lyscripts.plots import COLORS
 from shared import MPLSTYLE
 from tueplots import figsizes, fontsizes
-from upset_diff import get_parser, kwargs_from_option
 
 import lydata
 from lydata import C
 
 OUTPUT_NAME = Path(__file__).with_suffix(".png").name
+
+
+def get_parser() -> argparse.ArgumentParser:
+    """Return the argument parser."""
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--repo",
+        type=str,
+        help="The repository from which to load the datasets.",
+        default="rmnldwg/lydata",
+    )
+    parser.add_argument(
+        "--commit",
+        type=str,
+        help="The commit hash at which to compare the datasets.",
+        default="5b85184ecece020f509ab0c9f05aa5c81257ffd3",
+    )
+    parser.add_argument(
+        "--first-dataset",
+        type=str,
+        default="2021-usz-oropharynx",
+    )
+    parser.add_argument(
+        "--second-dataset",
+        type=str,
+        default="2025-hvh-oropharynx",
+    )
+    return parser
+
+
+def kwargs_from_option(option: str) -> dict:
+    """Return the load_kwargs for the given option."""
+    year, institution, subsite = option.split("-")
+    return {
+        "year": int(year),
+        "institution": institution,
+        "subsite": subsite,
+        "use_github": True,
+    }
 
 
 def create_ax() -> plt.Axes:
@@ -28,7 +67,7 @@ def main() -> None:
     args = get_parser().parse_args()
 
     load_kwargs = {
-        "repo": "rmnldwg/lydata",
+        "repo_name": args.repo,
         "ref": args.commit,
     }
 

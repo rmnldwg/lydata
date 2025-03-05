@@ -401,7 +401,7 @@ numexpr==2.10.2
     # via
     #   blosc2
     #   tables
-numpy==2.2.2
+numpy==1.26.4
     # via
     #   -r requirements.in
     #   blosc2
@@ -444,7 +444,7 @@ packaging==24.2
     #   nbconvert
     #   pandera
     #   tables
-pandas==2.2.3
+pandas==1.5.3
     # via
     #   -r requirements.in
     #   lydata
@@ -452,7 +452,7 @@ pandas==2.2.3
     #   lyscripts
     #   pandera
     #   upsetplot
-pandera==0.23.0
+pandera==0.22.1
     # via lydata
 pandocfilters==1.5.1
     # via nbconvert
@@ -727,7 +727,6 @@ tzdata==2025.1
     # via
     #   celery
     #   kombu
-    #   pandas
 upsetplot==0.9.0
     # via -r requirements.in
 uri-template==1.3.0
