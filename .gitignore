@@ -134,10 +134,10 @@ dmypy.json
 # affinity photo file
 *.afphoto
 
-# Ignore documentation in any `docs` directory
-**/docs/**
-
 # DVC
 /scenario_showcase.png
 /joined.csv
 /enhanced.csv
+
+# SCM
+**/_version.py

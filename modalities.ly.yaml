@@ -1,0 +1,29 @@
+# Specificities and sensitivities of the diagnostic modalities used to compute
+# the most likely true involvement state of a patient.
+version: 1
+
+modalities:
+  CT:
+    spec: 0.76
+    sens: 0.81
+  MRI:
+    spec: 0.63
+    sens: 0.81
+  PET:
+    spec: 0.86
+    sens: 0.79
+  FNA:
+    spec: 0.98
+    sens: 0.80
+  diagnostic_consensus:
+    spec: 0.86
+    sens: 0.81
+  pathology:
+    spec: 1.0
+    sens: 1.0
+  pCT:
+    spec: 0.86
+    sens: 0.81
+  max_llh:
+    spec: 1.0
+    sens: 1.0

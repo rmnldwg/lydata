@@ -1,5 +1,4 @@
-"""
-Map the `raw.csv` data from the 2023-clb-multisite cohort to the `data.csv` file.
+"""Map the `raw.csv` data from the 2023-clb-multisite cohort to the `data.csv` file.
 
 This module defines how the command `lyscripts data lyproxify` (see
 [here](rmnldwg.github.io/lyscripts) for the documentation of the `lyscripts` module)
@@ -56,14 +55,15 @@ respective column is about. This is used to generate the documentation for the
 
 ---
 """
+
 import re
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 import icd10
 import numpy as np
 import pandas as pd
 from dateutil.parser import parse
-
 
 # columns that contain TNM info
 TNM_COLS = [
@@ -122,27 +122,24 @@ def smpl_diagnose(entry: str | int, *_args, **_kwargs) -> bool:
 
 
 def robust(func: Callable) -> Any | None:
-    """
-    Wrapper that makes any type-conversion function 'robust' by simply returning
-    `None` whenever any exception is thrown.
+    """Return 'robust' type-conversion function.
+
+    Do so by simply returning `None` whenever any exception is thrown.
     """
 
-    # pylint: disable=bare-except
     def wrapper(entry, *_args, **_kwargs):
         if pd.isna(entry):
             return None
         try:
             return func(entry)
-        except:
+        except:  # noqa: E722
             return None
 
     return wrapper
 
 
 def get_subsite(entry: str, *_args, **_kwargs) -> str | None:
-    """
-    Get human-readable subsite from ICD-10 code.
-    """
+    """Get human-readable subsite from ICD-10 code."""
     match = re.search("(C[0-9]{2})(.[0-9]{1})?", entry)
     if match:
         for i in [0, 1]:
@@ -154,42 +151,32 @@ def get_subsite(entry: str, *_args, **_kwargs) -> str | None:
 
 
 def parse_pathology(entry, *_args, **_kwargs) -> bool | None:
-    """
-    Transform number of positive nodes to `True`, `False` or `None`.
-    """
+    """Transform number of positive nodes to `True`, `False` or `None`."""
     if np.isnan(entry):
         return None
     return False if entry == 0 else True
 
 
 def set_diagnostic_consensus(entry, *_args, **_kwargs):
-    """
-    Return `False`, meaning 'healthy', when no entry about a resected LNL is available
-    or when the pathology report says it was healhty. This is a hack to tackle the
-    issue described here:
+    """Return `False` (i.e. 'healthy') when nothing about a resected LNL is available.
 
+    This is a hack to tackle the issue described here:
     https://github.com/rmnldwg/lyprox/issues/92
     """
-    if np.isnan(entry) or entry == 0:
-        return False
-    return None
+    return False if np.isnan(entry) else None
 
 
 def extract_hpv(value: int | None, *_args, **_kwargs) -> bool | None:
-    """
-    Translate the HPV value to a boolean.
-    """
+    """Translate the HPV value to a boolean."""
     if value == 0:
         return False
-    elif value == 1:
+    if value == 1:
         return True
     return None
 
 
 def strip_letters(entry: str, *_args, **_kwargs) -> int:
-    """
-    Remove letters following a number.
-    """
+    """Remove letters following a number."""
     try:
         return int(entry)
     except ValueError:
@@ -197,8 +184,8 @@ def strip_letters(entry: str, *_args, **_kwargs) -> int:
 
 
 def clean_cat(cat: str) -> int:
-    """
-    Extract T or N category as integer from the respective string.
+    """Extract T or N category as integer from the respective string.
+
     I.e., turn 'pN2+' into 2.
     """
     pattern = re.compile(r"[cp][TN]([0-4])[\s\S]*")
@@ -210,10 +197,7 @@ def clean_cat(cat: str) -> int:
 
 
 def get_tnm_info(ct7, cn7, pt7, pn7, ct8, cn8, pt8, pn8) -> tuple[int, int, int, str]:
-    """
-    Determine the TNM edition used based on which versions are available for T and/or
-    N category.
-    """
+    """Determine the TNM edition used."""
     ct7 = clean_cat(ct7)
     cn7 = clean_cat(cn7)
     pt7 = clean_cat(pt7)
@@ -268,8 +252,7 @@ def get_tnm_prefix(*args, **_kwargs) -> str:
 
 
 def check_excluded(column: pd.Series) -> pd.Index:
-    """
-    Check if a patient/row is excluded based on the content of a `column`.
+    """Check if a patient/row is excluded based on the content of a `column`.
 
     For the 2022 CLB multisite dataset this is the case when the first column with the
     three-level header `("Bauwens", "Database", "0_lvl_2")` is not empty or does not
@@ -282,9 +265,7 @@ def check_excluded(column: pd.Series) -> pd.Index:
 
 
 def sum_columns(*columns, **_kwargs) -> int:
-    """
-    Sum the values of multiple columns.
-    """
+    """Sum the values of multiple columns."""
     res = 0
     for column in columns:
         add = robust(int)(column)
@@ -309,11 +290,6 @@ COLUMN_MAP = {
                 "The second level header for the `patient` columns is only a "
                 "placeholder."
             ),
-            "id": {
-                "__doc__": "The patient ID.",
-                "func": str,
-                "columns": [("patient", "#", "id")],
-            },
             "institution": {
                 "__doc__": "The institution where the patient was treated.",
                 "default": "Centre Léon Bérard",
@@ -379,8 +355,8 @@ COLUMN_MAP = {
                 "columns": TNM_COLS,
             },
             "m_stage": {
-                "__doc__": "The M category of the patient.",
-                "default": 2,
+                "__doc__": "The M category of the patient. `-1` refers to `'X'`.",
+                "default": -1,
             },
             "extracapsular": {
                 "__doc__": (
@@ -399,7 +375,10 @@ COLUMN_MAP = {
         "1": {
             "__doc__": "The second level header enumerates synchronous tumors.",
             "location": {
-                "__doc__": "The location of the tumor. This is empty for all patients because we can later infer it from the subsite's ICD-O-3 code.",
+                "__doc__": (
+                    "The location of the tumor. This is empty for all patients because "
+                    "we can later infer it from the subsite's ICD-O-3 code."
+                ),
                 "default": None,
             },
             "subsite": {

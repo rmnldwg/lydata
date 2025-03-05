@@ -1,0 +1,72 @@
+[build-system]
+requires = [
+	"setuptools >= 64",
+    "setuptools_scm",
+	"wheel"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lydata"
+dynamic = ["version"]
+description = "Library for handling lymphatic involvement data"
+authors = [
+	{name = "Roman Ludwig", email = "roman.ludwig@usz.ch"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = ["data", "lymph", "involvement"]
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "numpy",
+    "pandas",
+    "pygithub",
+    "mistletoe",
+    "pandera",
+    "pydantic",
+    "loguru",
+]
+
+[project.urls]
+source = "https://github.com/rmnldwg/lydata"
+documentation = "https://lydata.readthedocs.io"
+
+[project.optional-dependencies]
+docs = [
+    "sphinx",
+    "sphinx-book-theme",
+    "sphinx-autodoc-typehints",
+    "myst-parser[linkify]",
+]
+test = [
+    "pytest",
+]
+
+[tool.setuptools.packages.find]
+include = ["lydata"]
+
+[tool.setuptools.package-data]
+"lydata" = ["../*/data.csv", "../*/README.md"]
+
+[tool.setuptools_scm]
+write_to = "lydata/_version.py"
+local_scheme = "no-local-version"
+
+[tool.pytest.ini_options]
+testpaths = "."
+
+[tool.ruff]
+exclude = ["docs"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B", "C", "R", "U", "D", "I", "S", "T", "A", "N"]
+ignore = ["B028", "N816", "E712"]
+
+[tool.markdownlint]
+MD003 = false
+MD013 = false
+MD033 = false
+MD041 = false

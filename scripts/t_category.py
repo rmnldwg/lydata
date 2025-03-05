@@ -5,10 +5,9 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 import pandas as pd
+from lyscripts.plots import COLORS
 from shared import MPLSTYLE
 from tueplots import figsizes, fontsizes
-
-from lyscripts.plot.utils import COLORS
 
 
 def create_label(percent):
@@ -28,7 +27,9 @@ if __name__ == "__main__":
         description=__doc__,
     )
     parser.add_argument(
-        "data", type=Path, help="Path to the data file.",
+        "data",
+        type=Path,
+        help="Path to the data file.",
     )
     args = parser.parse_args()
 
@@ -53,16 +54,18 @@ if __name__ == "__main__":
         t_stage_labels = ["T0", *t_stage_labels]
         colors = [COLORS["gray"], *colors]
 
-    tmp = data.groupby(
-        ("tumor", "1", "t_stage")
-    ).size().plot.pie(
-        y=("tumor", "1", "t_stage"),
-        ax=ax,
-        colors=colors,
-        labels=t_stage_labels,
-        autopct=create_label,
-        counterclock=False,
-        startangle=90,
+    tmp = (
+        data.groupby(("tumor", "1", "t_stage"))
+        .size()
+        .plot.pie(
+            y=("tumor", "1", "t_stage"),
+            ax=ax,
+            colors=colors,
+            labels=t_stage_labels,
+            autopct=create_label,
+            counterclock=False,
+            startangle=90,
+        )
     )
 
     plt.savefig(output_dir / OUTPUT_NAME, dpi=300)

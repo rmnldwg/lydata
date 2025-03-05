@@ -3,21 +3,22 @@
 import argparse
 from pathlib import Path
 
-import lydata
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import upsetplot
-from lyscripts.plot.utils import COLORS
+from lyscripts.plots import COLORS
 from shared import LNLS, MPLSTYLE, remove_artists
 from tueplots import figsizes, fontsizes
 
+import lydata
+
 OUTPUT_NAME = Path(__file__).with_suffix(".png").name
+
 
 def get_parser() -> argparse.ArgumentParser:
     """Return the argument parser."""
     parser = argparse.ArgumentParser(description=__doc__)
-
     parser.add_argument(
         "--commit",
         type=str,
@@ -34,7 +35,6 @@ def get_parser() -> argparse.ArgumentParser:
         type=str,
         default="2024-hvh-oropharynx",
     )
-
     return parser
 
 
@@ -96,16 +96,21 @@ def main() -> None:
     first_prevs = 100 * first_combined["ipsi"][LNLS].sum(axis="index") / first_total
     second_prevs = 100 * second_combined["ipsi"][LNLS].sum(axis="index") / second_total
     first_summable_inds, second_summable_inds = calculate_summable_indicators(
-        first_combined, second_combined,
+        first_combined,
+        second_combined,
     )
 
     first_institution = first_load_kwargs["institution"].upper()
     second_institution = second_load_kwargs["institution"].upper()
 
     plt.style.use(MPLSTYLE)
-    plt.rcParams.update(figsizes.icml2022_full(
-        nrows=1, ncols=2, height_to_width_ratio=0.75,
-    ))
+    plt.rcParams.update(
+        figsizes.icml2022_full(
+            nrows=1,
+            ncols=2,
+            height_to_width_ratio=0.75,
+        )
+    )
     plt.rcParams.update(fontsizes.icml2022())
 
     width = 0.35
@@ -128,14 +133,14 @@ def main() -> None:
     second_color = COLORS["red"]
 
     ax_dict["intersections"].bar(
-        x=np.arange(len(second_summable_inds)) - width/2,
+        x=np.arange(len(second_summable_inds)) - width / 2,
         height=second_summable_inds,
         width=width,
         color=first_color,
         label=f"{first_institution} ({first_total:d} patients)",
     )
     ax_dict["intersections"].bar(
-        x=np.arange(len(first_summable_inds)) + width/2,
+        x=np.arange(len(first_summable_inds)) + width / 2,
         height=first_summable_inds,
         width=width,
         color=second_color,
@@ -145,13 +150,13 @@ def main() -> None:
     ax_dict["intersections"].legend(loc="upper right")
 
     ax_dict["totals"].barh(
-        y=np.arange(len(first_prevs)) + width/2,
+        y=np.arange(len(first_prevs)) + width / 2,
         width=first_prevs[::-1],
         height=width,
         color=first_color,
     )
     ax_dict["totals"].barh(
-        y=np.arange(len(second_prevs)) - width/2,
+        y=np.arange(len(second_prevs)) - width / 2,
         width=second_prevs[::-1],
         height=width,
         color=second_color,

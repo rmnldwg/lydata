@@ -1,4 +1,4 @@
-![social card](./github-social-card.png)
+![social card](https://raw.githubusercontent.com/rmnldwg/lydata/main/github-social-card.png)
 
 ## What is lyDATA?
 
@@ -8,17 +8,17 @@ lyDATA is a repository for datasets that report detailed patterns of lymphatic p
 
 HNSCC spreads though the lymphatic system of the neck and forms metastases in regional lymph nodes. Macroscopic metastases can be detected with imaging modalities like MRI, PET and CT scans. They are then consequently included in the target volume, when radiotherapy is chosen as part of the treatment. However, microscopic metastases are too small be diagnosed with current imaging techniques.
 
-To account for this microscopic involvement, parts of the lymphatic system are often irradiated electively to increase tumor control. Which parts are included in this elective clinical target volume is curretnly decided based on guidelines like [[1]](#1), [[2]](#2), [[3]](#3) and [[4]](#4). These in turn are derived from reports of the prevalence of involvement per lymph node level (LNL), i.e. the portion of patients that were diagnosed with metastases in any given LNL, stratified by primary tumor location. It is recommended to include a LNL in the elective target volume if 10 - 15% of patients showed involvement in that particular level.
+To account for this microscopic involvement, parts of the lymphatic system are often irradiated electively to increase tumor control. Which parts are included in this elective clinical target volume is currently decided based on guidelines like [[1]](#1), [[2]](#2), [[3]](#3) and [[4]](#4). These in turn are derived from reports of the prevalence of involvement per lymph node level (LNL), i.e. the portion of patients that were diagnosed with metastases in any given LNL, stratified by primary tumor location. It is recommended to include a LNL in the elective target volume if 10 - 15% of patients showed involvement in that particular level.
 
 However, while the prevalence of involvement has been reported in the literature, e.g. in [[5]](#5) and [[6]](#6), and the general lymph drainage pathways are understood well, the detailed progression patterns of HNSCC remain poorly quantified. We believe that the risk for microscopic involvement in an LNL depends highly on the specific diagnose of a particular patient and their treatment can hence be personalized if the progression patterns were better quantified.
 
 ## Our Goal
 
-In this repository we aim to provide data on the detailed lymphatic progression patterns extracted from patients of the University Hospital Zurch (USZ). The data can be used freely and we hope clincians in the field find it useful as well. Ideally, we can motivate other researchers to share their data in similar detail and openness, so that large multicentric datasets can be built.
+In this repository we aim to provide data on the detailed lymphatic progression patterns extracted from patients of the University Hospital Zurich (USZ). The data can be used freely and we hope clinicians in the field find it useful as well. Ideally, we can motivate other researchers to share their data in similar detail and openness, so that large multi-centric datasets can be built.
 
 ## Available datasets
 
-### [:open_file_folder: 2021 USZ Oropharynx]
+### 📂 [2021 USZ Oropharynx]
 
 [![radonc badge](https://img.shields.io/badge/Rad%20Onc-j.radonc.2022.01.035-3e6e0e)](https://doi.org/10.1016/j.radonc.2022.01.035)
 [![medRxiv badge](https://img.shields.io/badge/medR%CF%87iv-2021.12.01.21267001-0e4c92)](https://doi.org/10.1101/2021.12.01.21267001)
@@ -29,9 +29,9 @@ The first dataset we are able to share consists of 287 patients with a primary t
 
 We have published a paper about it in *Radiotherapy & Oncology* [[9]](#9) (a preprint is also available on *medRxiv* [[10]](#10)). The dataset is described in detail and can be freely used and cited as a *Data in Brief* paper [[11]](#11).
 
-[:open_file_folder: 2021 USZ Oropharynx]: https://github.com/rmnldwg/lyDATA/tree/main/2021-usz-oropharynx
+[2021 USZ Oropharynx]: https://github.com/rmnldwg/lyDATA/tree/main/2021-usz-oropharynx
 
-### [:open_file_folder: 2021 CLB Oropharynx]
+### 📂 [2021 CLB Oropharynx]
 
 [![Green Journal](https://img.shields.io/badge/Rad%20Onc-j.radonc.2021.01.028-3e6e0e)](https://doi.org/10.1016/j.radonc.2021.01.028)
 [![DiB badge](https://img.shields.io/badge/DiB-10.1016%2Fj.dib.2023.110020-orange)](https://doi.org/10.1016/j.dib.2023.110020)
@@ -39,36 +39,36 @@ We have published a paper about it in *Radiotherapy & Oncology* [[9]](#9) (a pre
 
 We are glad and thankful that the research group around Prof. Vincent Grégoire from the [Centre Léon Bérard] in Lyon (France) have joined our effort to create a database of lymphatic patterns of progression by providing us with the data underlying their publication [[6]](#6). If you use this data, don't forget to cite either said publication or use the `CITATION.cff` file inside the `2021-clb-oropharynx` folder, where the `data.csv` also resides and a description of the data named `README.md`.
 
-[:open_file_folder: 2021 CLB Oropharynx]: https://github.com/rmnldwg/lyDATA/tree/main/2021-clb-oropharynx
+[2021 CLB Oropharynx]: https://github.com/rmnldwg/lyDATA/tree/main/2021-clb-oropharynx
 [Centre Léon Bérard]: https://www.centreleonberard.fr/en
 
-### [:open_file_folder: 2023 ISB Multisite]
+### 📂 [2023 ISB Multisite]
 
 [![DiB badge](https://img.shields.io/badge/DiB-10.1016%2Fj.dib.2023.110020-orange)](https://doi.org/10.1016/j.dib.2023.110020)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10210423.svg)](https://doi.org/10.5281/zenodo.10210423)
 
 As part of a collaboration with researchers from the [Inselspital Bern] (Switzerland) around Prof. Roland Giger, we are thankful and glad to be able to publish a large and exceptionally detailed dataset on lymphatic progression of HNSCC patients, assessed by pathology. In contrast to earlier datasets, this includes not only patients with oropharyngeal tumors, but also oral cavity, hypopharynx and larynx.
 
-[:open_file_folder: 2023 ISB Multisite]: https://github.com/rmnldwg/lyDATA/tree/main/2023-isb-multisite
+[2023 ISB Multisite]: https://github.com/rmnldwg/lyDATA/tree/main/2023-isb-multisite
 [Inselspital Bern]: https://www.insel.ch/de/
 
-### [:open_file_folder: 2023 CLB Multisite]
+### 📂 [2023 CLB Multisite]
 
 [![DiB badge](https://img.shields.io/badge/DiB-10.1016%2Fj.dib.2023.110020-orange)](https://doi.org/10.1016/j.dib.2023.110020)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10210361.svg)](https://doi.org/10.5281/zenodo.10210361)
 
-Completing the "2021 CLB Oropharynx" data table, these patient records detaul lymphatic involvement patterns in HNSCC patients with primary tumors beyond the oropharynx. Again, they are thankfully provided by researchers in Prof. Vincent Grégoire's group and the data was extracted at the [Centre Léon Bérard].
+Completing the "2021 CLB Oropharynx" data table, these patient records detail lymphatic involvement patterns in HNSCC patients with primary tumors beyond the oropharynx. Again, they are thankfully provided by researchers in Prof. Vincent Grégoire's group and the data was extracted at the [Centre Léon Bérard].
 
-[:open_file_folder: 2023 CLB Multisite]: https://github.com/rmnldwg/lyDATA/tree/main/2023-clb-multisite
+[2023 CLB Multisite]: <https://github.com/rmnldwg/lyDATA/tree/main/2023-clb-multisite>
 
-### [:open_file_folder: 2025 HVH Oropharynx]
+### 📂 [2025 HVH Oropharynx]
 
 > [!WARNING]
 > This dataset has not been published in a peer-reviewed journal yet. Contents may change.
 
 We are excited to announce that Dr. Sergi Benavente from the [Hospital Vall d'Hebron] (HVH) provided a very detailed and carefully curated dataset of oroharyngeal patients as an addition to our effort.
 
-[:open_file_folder: 2025 HVH Oropharynx]: https://github.com/rmnldwg/lyDATA/tree/main/2025-hvh-multisite
+[2025 HVH Oropharynx]: https://github.com/rmnldwg/lyDATA/tree/main/2025-hvh-multisite
 [Hospital Vall d'Hebron]: https://hospital.vallhebron.com/en
 
 ### stay tuned for more
@@ -81,6 +81,106 @@ We are in the process of collecting more data that we might publish soon. If you
 
 Every folder that corresponds to a dataset also contains a `CITATION.cff` file which may be used to cite the respective dataset. To cite the entire repository with all datasets inside, use the `CITATION.cff` at the root of the repository (or just click the *Cite this repository* button on the right).
 
+## Library
+
+Besides the data, this repository provides a Python library for loading, manipulating, and validating the available datasets.
+
+> [!WARNING]
+> This Python library is still highly experimental!
+
+[![Build](https://github.com/rmnldwg/lydata/actions/workflows/build.yml/badge.svg)](https://github.com/rmnldwg/lydata/actions/workflows/build.yml)
+[![Tests](https://github.com/rmnldwg/lydata/actions/workflows/tests.yml/badge.svg)](https://github.com/rmnldwg/lydata/actions/workflows/tests.yml)
+[![Documentation Status](https://readthedocs.org/projects/lydata/badge/?version=stable)](https://lydata.readthedocs.io/en/stable/?badge=stable)
+
+If you want to install this library, clone the repo and install it. You can do so by executing these commands:
+
+```bash
+git clone https://github.com/rmnldwg/lydata
+cd lydata
+python -m venv .venv
+source .venv/bin/activate
+pip install -U pip
+pip install .
+```
+
+You may have noticed that there are also `requirements.*` files here. These are independent of this library and instead related to reproducing the output of the Python files in the `scripts/` folder. You may ignore this.
+
+### Usage of Python Utilities
+
+The first and most common use case would probably listing and loading the published datasets:
+
+```python
+import lydata
+
+for dataset_spec in lydata.available_datasets(
+    year=2023,              # show all datasets added in 2023
+    skip_disk=True,         # do not search on disk, but rather on GitHub
+    ref="61a17e",           # may be some specific hash/tag/branch
+):
+    print(dataset_spec.name)
+
+# output:
+# 2023-clb-multisite
+# 2023-isb-multisite
+
+merged_data = lydata.join_datasets(
+    subsite="oropharynx",   # merge data that include oropharyngeal tumor patients
+    skip_disk=True,         # again, search GitHub, not on disk (which is the default)
+)
+print(merged_data.head())
+
+# output:
+#     patient                                          ... pathology
+#           #                                          ...      ipsi
+#          id                 institution     sex age  ...        VI VIII  IX   X
+# 0      P011          Centre Léon Bérard    male  67  ...       NaN  NaN NaN NaN
+# 1      P012          Centre Léon Bérard  female  62  ...       NaN  NaN NaN NaN
+# ..      ...                         ...     ...  ..  ...       ...  ...  ..  ..
+# 548     286  University Hospital Zurich    male  67  ...       NaN  NaN NaN NaN
+# 549     287  University Hospital Zurich    male  76  ...       NaN  NaN NaN NaN
+#
+# [550 rows x 242 columns]
+```
+
+And since the three-level header of the tables is a little unwieldy at times, we also provide some shortcodes via a custom pandas accessor. As soon as `lydata` is imported it can be used like this:
+
+```python
+print(merged_data.ly.age)
+
+# output:
+# 0      67
+# 1      62
+#        ..
+# 548    67
+# 549    76
+# Name: (patient, #, age), Length: 550, dtype: int64
+```
+
+And we have implemented `Q` and `C` objects inspired by Django that allow easier querying of the tables:
+
+```python
+from lydata import C
+
+# select patients younger than 50 that are not HPV positive (includes NaNs)
+query_result = merged_data.ly.query((C("age") < 50) & ~(C("hpv") == True))
+print(query_result)
+
+# output:
+#     patient                                          ... pathology
+#           #                                          ...      ipsi
+#          id                 institution     sex age  ...        VI VIII  IX   X
+# 11     P030          Centre Léon Bérard    male  49  ...       NaN  NaN NaN NaN
+# 12     P031          Centre Léon Bérard    male  46  ...       NaN  NaN NaN NaN
+# ..      ...                         ...     ...  ..  ...       ...  ... ... ...
+# 545     283  University Hospital Zurich    male  49  ...       NaN  NaN NaN NaN
+# 547     285  University Hospital Zurich    male  44  ...       NaN  NaN NaN NaN
+#
+# [20 rows x 242 columns]
+```
+
+For more details and further examples or use-cases, have a look at the [official documentation](https://lydata.readthedocs.org/)
+
+>>>>>>>
 ## See also
 
 ### LyProX Interface
