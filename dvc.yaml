@@ -41,17 +41,17 @@ stages:
       Finally, there are some occurences of `"C05,1"` instead of `C05.1`, which I will
       replace.
     cmd:
-      sed 's/\([0-9]\{2\}\)\/\([0-9]\{2\}\)\/\([0-9]\{4\}\)/\3-\2-\1/g' 2024-hvh-oropharynx/raw.csv |
+      sed 's/\([0-9]\{2\}\)\/\([0-9]\{2\}\)\/\([0-9]\{4\}\)/\3-\2-\1/g' 2025-hvh-oropharynx/raw.csv |
         sed 's/,dataset,/,institution,/g' |
         sed "s/,2023_HVH_OROPHARYNX,/,Vall d'Hebron Barcelona Hospital,/g" |
         sed 's/,\s,/,,/g' |
         sed 's/,\([0-3]\)[A-C]*,/,\1,/g' |
         sed 's/,N\sVI,/,FALSE,/g' |
-        sed 's/"C05,1"/C05.1/g' > 2024-hvh-oropharynx/data.csv
+        sed 's/"C05,1"/C05.1/g' > 2025-hvh-oropharynx/data.csv
     deps:
-      - 2024-hvh-oropharynx/raw.csv
+      - 2025-hvh-oropharynx/raw.csv
     outs:
-      - 2024-hvh-oropharynx/data.csv:
+      - 2025-hvh-oropharynx/data.csv:
           cache: false
 
   join:
@@ -133,7 +133,7 @@ stages:
       - 2021-clb-oropharynx
       - 2023-clb-multisite
       - 2023-isb-multisite
-      - 2024-hvh-oropharynx
+      - 2025-hvh-oropharynx
     do:
       deps:
         - scripts/t_category.py
@@ -147,7 +147,7 @@ stages:
       - 2021-clb-oropharynx
       - 2023-clb-multisite
       - 2023-isb-multisite
-      - 2024-hvh-oropharynx
+      - 2025-hvh-oropharynx
     do:
       deps:
         - scripts/age_and_sex.py
@@ -161,7 +161,7 @@ stages:
       - 2021-clb-oropharynx
       - 2023-clb-multisite
       - 2023-isb-multisite
-      - 2024-hvh-oropharynx
+      - 2025-hvh-oropharynx
     do:
       deps:
         - scripts/subsite.py
@@ -184,7 +184,7 @@ stages:
   upset-diff:
     matrix:
       first: [2021-usz-oropharynx]
-      second: [2024-hvh-oropharynx]
+      second: [2025-hvh-oropharynx]
     cmd: >
       python scripts/upset_diff.py
       --first-dataset ${item.first}
@@ -198,7 +198,7 @@ stages:
   factors-diff:
     matrix:
       first: [2021-usz-oropharynx]
-      second: [2024-hvh-oropharynx]
+      second: [2025-hvh-oropharynx]
     cmd: >
       python scripts/factors_diff.py
       --first-dataset ${item.first}
