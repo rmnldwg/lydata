@@ -191,7 +191,9 @@ Parse the diagnosis.
 robust(func: collections.abc.Callable) → Optional[Any]
 ```
 
-Wrapper that makes any type-conversion function 'robust' by simply returning `None` whenever any exception is thrown.
+Return 'robust' type-conversion function.
+
+Do so by simply returning `None` whenever any exception is thrown.
 
 ---
 
@@ -221,9 +223,9 @@ Transform number of positive nodes to `True`, `False` or `None`.
 set_diagnostic_consensus(entry, *_args, **_kwargs)
 ```
 
-Return `False`, meaning 'healthy', when no entry about a resected LNL is available. This is a hack to tackle theissue described here:
+Return `False` (i.e. 'healthy') when nothing about a resected LNL is available.
 
-<https://github.com/rmnldwg/lyprox/issues/92>
+This is a hack to tackle the issue described here: <https://github.com/rmnldwg/lyprox/issues/92>
 
 ---
 
@@ -253,7 +255,9 @@ Remove letters following a number.
 clean_cat(cat: str) → int
 ```
 
-Extract T or N category as integer from the respective string. I.e., turn 'pN2+' into 2.
+Extract T or N category as integer from the respective string.
+
+I.e., turn 'pN2+' into 2.
 
 ---
 
@@ -263,7 +267,7 @@ Extract T or N category as integer from the respective string. I.e., turn 'pN2+'
 get_tnm_info(ct7, cn7, pt7, pn7, ct8, cn8, pt8, pn8) → tuple[int, int, int, str]
 ```
 
-Determine the TNM edition used based on which versions are available for T and/or N category.
+Determine the TNM edition used.
 
 ---
 

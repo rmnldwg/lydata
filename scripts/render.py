@@ -1,7 +1,5 @@
-"""
-Short module to render the `README.md` file from the `README.template` file and
-the `mapping.py`.
-"""
+"""Render the `README.md` from the `README.template` and the docs for `mapping.py`."""
+
 import argparse
 import importlib.util
 import sys
@@ -18,19 +16,31 @@ if __name__ == "__main__":
         description=__doc__,
     )
     parser.add_argument(
-        "-m", "--mapping", type=Path, default="mapping.py",
+        "-m",
+        "--mapping",
+        type=Path,
+        default="mapping.py",
         help="Path to the mapping file.",
     )
     parser.add_argument(
-        "-t", "--template", type=Path, default="README.template",
+        "-t",
+        "--template",
+        type=Path,
+        default="README.template",
         help="Path to the template file.",
     )
     parser.add_argument(
-        "-o", "--output", type=Path, default="README.md",
+        "-o",
+        "--output",
+        type=Path,
+        default="README.md",
         help="Path to the output file.",
     )
     parser.add_argument(
-        "-d", "--data", type=Path, default="data.csv",
+        "-d",
+        "--data",
+        type=Path,
+        default="data.csv",
         help="Path to the data file.",
     )
     args = parser.parse_args()
@@ -50,7 +60,7 @@ if __name__ == "__main__":
 
     # use jinja2 to render the template
     parent_dir = Path(__file__).parent
-    env = Environment(loader=FileSystemLoader(args.template.parent))
+    env = Environment(loader=FileSystemLoader(args.template.parent))  # noqa: S701
     template = env.get_template(args.template.name)
     result = template.render(
         num_patients=num_patients,

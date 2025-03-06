@@ -1,16 +1,17 @@
+"""Create a bar plot of different filters applied to the dataset.
+
+This should illustrate how the patient-individual data may be used.
 """
-Create a bar plot of different filters applied to the dataset, illustrating how
-the patient-individual data may be used.
-"""
+
 import argparse
 from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from shared import MPLSTYLE
 from tueplots import figsizes, fontsizes
 
-MPLSTYLE = Path(__file__).parent / ".mplstyle"
 OUTPUT_NAME = Path(__file__).with_suffix(".png").name
 
 
@@ -20,14 +21,20 @@ if __name__ == "__main__":
         description=__doc__,
     )
     parser.add_argument(
-        "data", type=Path, help="Path to the data file.",
+        "data",
+        type=Path,
+        help="Path to the data file.",
     )
     args = parser.parse_args()
 
     plt.style.use(MPLSTYLE)
-    plt.rcParams.update(figsizes.icml2022_half(
-        nrows=1, ncols=1, height_to_width_ratio=0.75,
-    ))
+    plt.rcParams.update(
+        figsizes.icml2022_half(
+            nrows=1,
+            ncols=1,
+            height_to_width_ratio=0.75,
+        )
+    )
     plt.rcParams.update(fontsizes.icml2022())
     fig, ax = plt.subplots()
 
@@ -54,8 +61,8 @@ if __name__ == "__main__":
     }
 
     left = np.zeros(len(scenarios))
-    positions = - np.array([0, 2,3, 5,6, 8,9, 11,12])
-    for i, t_stage in enumerate([1, 2, 3, 4]):
+    positions = -np.array([0, 2, 3, 5, 6, 8, 9, 11, 12])
+    for t_stage in [1, 2, 3, 4]:
         is_t_stage = data["tumor", "1", "t_stage"] == t_stage
         right = left.copy()
         for j, condition in enumerate(scenarios.values()):

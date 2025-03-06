@@ -59,7 +59,20 @@ As part of a collaboration with researchers from the [Inselspital Bern] (Switzer
 
 Completing the "2021 CLB Oropharynx" data table, these patient records detail lymphatic involvement patterns in HNSCC patients with primary tumors beyond the oropharynx. Again, they are thankfully provided by researchers in Prof. Vincent Grégoire's group and the data was extracted at the [Centre Léon Bérard].
 
-[2023 CLB Multisite]: https://github.com/rmnldwg/lyDATA/tree/main/2023-clb-multisite
+[2023 CLB Multisite]: <https://github.com/rmnldwg/lyDATA/tree/main/2023-clb-multisite>
+
+### 📂 [2025 HVH Oropharynx]
+
+[![Zenodo DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.14976454-informational)][zenodo]
+
+> [!WARNING]
+> This dataset has not been published in a peer-reviewed journal yet. Contents may change.
+
+We are excited to announce that Dr. Sergi Benavente from the [Hospital Vall d'Hebron] (HVH) provided a very detailed and carefully curated dataset of oroharyngeal patients as an addition to our effort.
+
+[2025 HVH Oropharynx]: https://github.com/rmnldwg/lyDATA/tree/main/2025-hvh-multisite
+[zenodo]: https://doi.org/10.5281/zenodo.14976454
+[Hospital Vall d'Hebron]: https://hospital.vallhebron.com/en
 
 ### stay tuned for more
 
@@ -170,6 +183,7 @@ print(query_result)
 
 For more details and further examples or use-cases, have a look at the [official documentation](https://lydata.readthedocs.org/)
 
+>>>>>>>
 ## See also
 
 ### LyProX Interface
