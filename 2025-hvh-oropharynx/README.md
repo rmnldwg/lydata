@@ -1,5 +1,7 @@
 # 2025 HVH Oropharynx
 
+[![Zenodo DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.14976454-informational)][zenodo]
+
 > [!WARNING]
 > This dataset has not been published in a peer-reviewed journal yet. Contents may change.
 
@@ -10,6 +12,8 @@ You can find here
 * the data itself as `data.csv`
 * a citation file `CITATION.cff` that can be used to cite this dataset.
 * the folder `figures` containing some plots of characteristics of the data.
+
+[zenodo]: https://doi.org/10.5281/zenodo.14976454
 
 ## Cohort Characteristics
 

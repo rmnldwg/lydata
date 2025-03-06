@@ -63,12 +63,15 @@ Completing the "2021 CLB Oropharynx" data table, these patient records detail ly
 
 ### 📂 [2025 HVH Oropharynx]
 
+[![Zenodo DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.14976454-informational)][zenodo]
+
 > [!WARNING]
 > This dataset has not been published in a peer-reviewed journal yet. Contents may change.
 
 We are excited to announce that Dr. Sergi Benavente from the [Hospital Vall d'Hebron] (HVH) provided a very detailed and carefully curated dataset of oroharyngeal patients as an addition to our effort.
 
 [2025 HVH Oropharynx]: https://github.com/rmnldwg/lyDATA/tree/main/2025-hvh-multisite
+[zenodo]: https://doi.org/10.5281/zenodo.14976454
 [Hospital Vall d'Hebron]: https://hospital.vallhebron.com/en
 
 ### stay tuned for more
