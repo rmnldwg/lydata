@@ -266,7 +266,8 @@ def available_datasets(
     ['2021-clb-oropharynx',
      '2021-usz-oropharynx',
      '2023-clb-multisite',
-     '2023-isb-multisite']
+     '2023-isb-multisite',
+     '2025-hvh-oropharynx']
     >>> avail_gen = available_datasets(
     ...     repo_name="rmnldwg/lydata.private",
     ...     ref="2024-umcg-hypopharynx-larynx",
