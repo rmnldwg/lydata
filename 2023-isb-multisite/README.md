@@ -1,12 +1,11 @@
 # 2023 ISB Multisite
 
-[![DiB badge](https://img.shields.io/badge/DiB-10.1016%2Fj.dib.2023.110020-orange)](https://doi.org/10.1016/j.dib.2023.110020)
+[![Data-in-Brief badge](https://img.shields.io/badge/DiB-10.1016%2Fj.dib.2023.110020-orange)](https://doi.org/10.1016/j.dib.2023.110020)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10210423.svg)](https://doi.org/10.5281/zenodo.10210423)
 
 This folder contains data about clinically and pathologically diagnosed lymphatic patterns of progression from 332 patients treated at the [Inselspital Bern] between 2001 and 2018.
 
 [Inselspital Bern]: https://www.insel.ch/de/
-
 
 ## Table of Contents
 
@@ -17,8 +16,8 @@ This folder contains data about clinically and pathologically diagnosed lymphati
 - [Documentation of Columns](#documentation-of-columns)
 - [Mapping Documentation](#mapping)
 
-
 <a id="cohort-characteristics"></a>
+
 ## Cohort Characteristics
 
 Below we show some figures that aim to coarsely characterize the patient cohort in this directory.
@@ -27,31 +26,30 @@ Below we show some figures that aim to coarsely characterize the patient cohort 
 | ---------------------------------------------------------------------------- |
 | **Figure 1:** _Distribution over age, stratified by sex and smoking status._ |
 
-
 | ![T-category distribution](figures/t_category.png)                         | ![subsite distribution](figures/subsite.png)           |
 | ---------------------------------------------------------------------------- | -------------------------------------------------------- |
 | **Figure 2:** _Distribution over age, stratified by sex and smoking status._ | **Figure 3:** _Distribution over primary tumor subsite._ |
 
-
 <a id="online-interface"></a>
+
 ## Online Interface
 
-We provide a user-friendly and intuitive graphical user interface to view the dataset, which is available at https://lyprox.org/. The GUI has two main functionalities: the patient list and the dashboard. The patient list allows for viewing the characteristics of a patient, corresponding to one row of the csv file, in a visually appealing and intuitive way. The dashboard allows for filtering of the dataset. For example, the user may select all patients with primary tumors extending over the mid-sagittal plane with involvement of ipsilateral level III. The dashboard will then display the number or percentage of patients with metastases in each of the other LNLs.
-
+We provide a user-friendly and intuitive graphical user interface to view the dataset, which is available at <https://lyprox.org/>. The GUI has two main functionalities: the patient list and the dashboard. The patient list allows for viewing the characteristics of a patient, corresponding to one row of the csv file, in a visually appealing and intuitive way. The dashboard allows for filtering of the dataset. For example, the user may select all patients with primary tumors extending over the mid-sagittal plane with involvement of ipsilateral level III. The dashboard will then display the number or percentage of patients with metastases in each of the other LNLs.
 
 <a id="curation"></a>
+
 ## Curation
 
-Curation and inclusion criteria will be published in a separate *Data in Brief* article that is currently under review.
-
+Curation and inclusion criteria will be published in a separate _Data in Brief_ article that is currently under review.
 
 <a id="data-description"></a>
+
 ## Data Description
 
 The data is provided as a CSV-table containing one row for each of the 332 patients. The table has a header with three levels that describe the columns. Below we explain each column in the form of a list with three levels. So, for example, list entry 1.i.g refers to a column with the three-level header `patient | # | nicotine_abuse` and this column reports about the patient's smoking status.
 
-
 <a id="documentation-of-columns"></a>
+
 ## Documentation of Columns
 
 1. **`patient:`** This top-level header contains general patient information.
@@ -136,56 +134,53 @@ The data is provided as a CSV-table containing one row for each of the 332 patie
     1. **`left:`** For each LNL, this reports the number of en-bloc resected and positive lymph nodes on the left side.
     2. **`right:`** For each LNL, this reports the number of en-bloc resected and positive lymph nodes on the right side.
 
-
 ---
-
 
 <a id="mapping"></a>
 
 ## <kbd>module</kbd> `mapping`
-Map the `raw.csv` data from the 2023-isb-multisite cohort to the `data.csv` file. 
 
-This module defines how the command `lyscripts data lyproxify` (see [here](rmnldwg.github.io/lyscripts) for the documentation of the `lyscripts` module) should handle the `raw.csv` data that was extracted at the Inselspital Bern in order to transform it into a [LyProX](https://lyprox.org)-compatible `data.csv` file. 
+Map the `raw.csv` data from the 2023-isb-multisite cohort to the `data.csv` file.
 
-The most important definitions in here are the list `EXCLUDE` and the dictionary `COLUMN_MAP` that defines how to construct the new columns based on the `raw.csv` data. They are described in more detail below: 
+This module defines how the command `lyscripts data lyproxify` (see [here](rmnldwg.github.io/lyscripts) for the documentation of the `lyscripts` module) should handle the `raw.csv` data that was extracted at the Inselspital Bern in order to transform it into a [LyProX](https://lyprox.org)-compatible `data.csv` file.
 
+The most important definitions in here are the list `EXCLUDE` and the dictionary `COLUMN_MAP` that defines how to construct the new columns based on the `raw.csv` data. They are described in more detail below:
 
---- 
+---
 
-### <kbd>global</kbd> `EXCLUDE` 
+### <kbd>global</kbd> `EXCLUDE`
 
-List of tuples specifying which function to run for which columns to find out if patients/rows should be excluded in the lyproxified `data.csv`. 
+List of tuples specifying which function to run for which columns to find out if patients/rows should be excluded in the lyproxified `data.csv`.
 
-The first element of each tuple is the flattened multi-index column name, the second element is the function to run on the column to determine if a patient/row should be excluded: 
+The first element of each tuple is the flattened multi-index column name, the second element is the function to run on the column to determine if a patient/row should be excluded:
 
 ```python
 EXCLUDE = [
      (column_name, check_function),
 ]
-``` 
+```
 
-Essentially, a row is excluded, if for that row `check_function(raw_data[column_name])` evaluates to `True`. 
+Essentially, a row is excluded, if for that row `check_function(raw_data[column_name])` evaluates to `True`.
 
-More information can be found in the [documentation](https://rmnldwg.github.io/lyscripts/lyscripts/data/lyproxify.html#exclude_patients) of the `lyproxify` function. 
+More information can be found in the [documentation](https://rmnldwg.github.io/lyscripts/lyscripts/data/lyproxify.html#exclude_patients) of the `lyproxify` function.
 
+---
 
---- 
+### <kbd>global</kbd> `COLUMN_MAP`
 
-### <kbd>global</kbd> `COLUMN_MAP` 
+This is the actual mapping dictionary that describes how to transform the `raw.csv` table into the `data.csv` table that can be fed into and understood by [LyProX](https://lyprox.org).
 
-This is the actual mapping dictionary that describes how to transform the `raw.csv` table into the `data.csv` table that can be fed into and understood by [LyProX](https://lyprox.org). 
+See [here](https://rmnldwg.github.io/lyscripts/lyscripts/data/lyproxify.html#transform_to_lyprox) for details on how this dictionary is used by the `lyproxify` script.
 
-See [here](https://rmnldwg.github.io/lyscripts/lyscripts/data/lyproxify.html#transform_to_lyprox) for details on how this dictionary is used by the `lyproxify` script. 
+It contains a tree-like structure that is human-readable and mimics the tree of multi-level headers in the final `data.csv` file. For every column in the final `data.csv` file, the dictionary describes from which columns in the `raw.csv` file the data should be extracted and what function should be applied to it.
 
-It contains a tree-like structure that is human-readable and mimics the tree of multi-level headers in the final `data.csv` file. For every column in the final `data.csv` file, the dictionary describes from which columns in the `raw.csv` file the data should be extracted and what function should be applied to it. 
+It also contains a `__doc__` key for every sub-dictionary that describes what the respective column is about. This is used to generate the documentation for the `README.md` file of this data.
 
-It also contains a `__doc__` key for every sub-dictionary that describes what the respective column is about. This is used to generate the documentation for the `README.md` file of this data. 
-
-
---- 
+---
 
 **Global Variables**
 ---------------
+
 - **MRI_OR_CT_COL**
 - **PATHOLOGY_COLS_POSITIVE**
 - **PATHOLOGY_COLS_INVESTIGATED**
@@ -203,11 +198,6 @@ It also contains a `__doc__` key for every sub-dictionary that describes what th
 smpl_date(entry)
 ```
 
-
-
-
-
-
 ---
 
 ### <kbd>function</kbd> `smpl_diagnose`
@@ -215,11 +205,6 @@ smpl_date(entry)
 ```python
 smpl_diagnose(entry, *_args, **_kwargs)
 ```
-
-
-
-
-
 
 ---
 
@@ -229,8 +214,7 @@ smpl_diagnose(entry, *_args, **_kwargs)
 robust(func: collections.abc.Callable) → Optional[Any]
 ```
 
-Make casting function 'robust' by returning `None` when an error is thrown. 
-
+Make casting function 'robust' by returning `None` when an error is thrown.
 
 ---
 
@@ -240,8 +224,7 @@ Make casting function 'robust' by returning `None` when an error is thrown.
 get_subsite(entry, *_args, **_kwargs) → str | None
 ```
 
-Get human-readable subsite from ICD-10 code. 
-
+Get human-readable subsite from ICD-10 code.
 
 ---
 
@@ -251,8 +234,7 @@ Get human-readable subsite from ICD-10 code.
 map_to_lnl(entry, tumor_side, *_args, **_kwargs) → list[str] | None
 ```
 
-Map integers representing the location of the largest LN to the correct LNL. 
-
+Map integers representing the location of the largest LN to the correct LNL.
 
 ---
 
@@ -262,8 +244,7 @@ Map integers representing the location of the largest LN to the correct LNL.
 has_pathological_t(entry, *_args, **_kwargs) → bool
 ```
 
-Check whether the pathological T-stage is available. 
-
+Check whether the pathological T-stage is available.
 
 ---
 
@@ -273,10 +254,9 @@ Check whether the pathological T-stage is available.
 map_t_stage(clinical, pathological, *_args, **_kwargs) → int | None
 ```
 
-Map their T-stage encoding to actual T-stages. 
+Map their T-stage encoding to actual T-stages.
 
-The clinical stage is only used if the pathological stage is not available. 
-
+The clinical stage is only used if the pathological stage is not available.
 
 ---
 
@@ -286,8 +266,7 @@ The clinical stage is only used if the pathological stage is not available.
 map_t_stage_prefix(pathological, *_args, **_kwargs) → str | None
 ```
 
-Determine whether T category was assessed clinically or pathologically. 
-
+Determine whether T category was assessed clinically or pathologically.
 
 ---
 
@@ -297,8 +276,7 @@ Determine whether T category was assessed clinically or pathologically.
 map_n_stage(entry, *_args, **_kwargs) → int | None
 ```
 
-Map their N-stage encoding to actual N-stage. 
-
+Map their N-stage encoding to actual N-stage.
 
 ---
 
@@ -308,8 +286,7 @@ Map their N-stage encoding to actual N-stage.
 map_location(entry, *_args, **_kwargs) → str | None
 ```
 
-Map their location encoding to the semantic locations. 
-
+Map their location encoding to the semantic locations.
 
 ---
 
@@ -319,8 +296,7 @@ Map their location encoding to the semantic locations.
 map_side(entry, *_args, **_kwargs) → str | None
 ```
 
-Map their side encoding to the semantic side. 
-
+Map their side encoding to the semantic side.
 
 ---
 
@@ -330,8 +306,7 @@ Map their side encoding to the semantic side.
 map_ct(entry, mri_or_ct, *_args, **_kwargs) → bool | None
 ```
 
-Call `robust(smpl_diagnose)` if the patient has a CT diagnose. 
-
+Call `robust(smpl_diagnose)` if the patient has a CT diagnose.
 
 ---
 
@@ -341,8 +316,7 @@ Call `robust(smpl_diagnose)` if the patient has a CT diagnose.
 map_mri(entry, mri_or_ct, *_args, **_kwargs) → bool | None
 ```
 
-Call `robust(smpl_diagnose)` if the patient has an MRI diagnose. 
-
+Call `robust(smpl_diagnose)` if the patient has an MRI diagnose.
 
 ---
 
@@ -352,14 +326,13 @@ Call `robust(smpl_diagnose)` if the patient has an MRI diagnose.
 from_pathology(entry) → tuple[dict[str, int], bool]
 ```
 
-Infer how many nodes in an LNL where investigated/positive per resection. 
+Infer how many nodes in an LNL where investigated/positive per resection.
 
-If the LNL showed signs of extracapsular extension (ECE). 
+If the LNL showed signs of extracapsular extension (ECE).
 
-The way the data was collected is a bit tricky: Generally, they report the number of nodes in an LNL that were investigated or positive (depending on the column one looks at). But if multiple levels were resected and investigated en bloc, they wrote the finding in each LNL and appended a letter to the number. So, if LNL I was resected together with LNL II and they found in total 10 nodes, they would write `LNL I: 10a` and `LNL II: 10a`. 
+The way the data was collected is a bit tricky: Generally, they report the number of nodes in an LNL that were investigated or positive (depending on the column one looks at). But if multiple levels were resected and investigated en bloc, they wrote the finding in each LNL and appended a letter to the number. So, if LNL I was resected together with LNL II and they found in total 10 nodes, they would write `LNL I: 10a` and `LNL II: 10a`.
 
-Additionally, if extracapsular extension was found, they would add 100 to the number. And if parts of an LNL were resected with another LNL but another part of the LNL was investigated on its own, they would write something like `12 + 4b`. 
-
+Additionally, if extracapsular extension was found, they would add 100 to the number. And if parts of an LNL were resected with another LNL but another part of the LNL was investigated on its own, they would write something like `12 + 4b`.
 
 ---
 
@@ -369,8 +342,7 @@ Additionally, if extracapsular extension was found, they would add 100 to the nu
 num_from_pathology(entry, *_args, **_kwargs) → int | None
 ```
 
-Infer number of involved nodes in LNL from pathology report. 
-
+Infer number of involved nodes in LNL from pathology report.
 
 ---
 
@@ -380,8 +352,7 @@ Infer number of involved nodes in LNL from pathology report.
 binary_from_pathology(entry, *_args, **_kwargs) → bool | None
 ```
 
-Infer binary involvement from pathology report. 
-
+Infer binary involvement from pathology report.
 
 ---
 
@@ -391,10 +362,9 @@ Infer binary involvement from pathology report.
 num_super_from_pathology(*lnl_entries, lnl='I', side='left') → int | None
 ```
 
-Infer number of involved nodes in super LNL (e.g. I, II and V) from pathology. 
+Infer number of involved nodes in super LNL (e.g. I, II and V) from pathology.
 
-This involves checking if other LNLs have been resected with the LNL in question. In that case, we do not know if the LNL in question was involved or if it was only one of the co-resected LNLs. 
-
+This involves checking if other LNLs have been resected with the LNL in question. In that case, we do not know if the LNL in question was involved or if it was only one of the co-resected LNLs.
 
 ---
 
@@ -404,8 +374,7 @@ This involves checking if other LNLs have been resected with the LNL in question
 get_index(side: str, lnl: str) → int
 ```
 
-Return the index of the LNL in the `PATHOLOGY_COLS_INVESTIGATED` array. 
-
+Return the index of the LNL in the `PATHOLOGY_COLS_INVESTIGATED` array.
 
 ---
 
@@ -415,8 +384,7 @@ Return the index of the LNL in the `PATHOLOGY_COLS_INVESTIGATED` array.
 num_Ib_to_III_from_pathology(*lnl_entries, side='left') → int | None
 ```
 
-Infer number of involved lymph nodes in LNL Ib to III from pathology. 
-
+Infer number of involved lymph nodes in LNL Ib to III from pathology.
 
 ---
 
@@ -426,8 +394,7 @@ Infer number of involved lymph nodes in LNL Ib to III from pathology.
 binary_super_from_pathology(*lnl_entries, lnl='I', side='left') → bool | None
 ```
 
-Infer if super LNL is involved from pathology. 
-
+Infer if super LNL is involved from pathology.
 
 ---
 
@@ -437,8 +404,7 @@ Infer if super LNL is involved from pathology.
 enbloc_resected_from_pathology(*lnl_entries) → str | None
 ```
 
-Return number and symbol of co-resected LNLs. 
-
+Return number and symbol of co-resected LNLs.
 
 ---
 
@@ -448,10 +414,9 @@ Return number and symbol of co-resected LNLs.
 map_ece(*lnl_entries, **_kwargs)
 ```
 
-Infer if the patient had LNL involvement with extra-capsular extension. 
+Infer if the patient had LNL involvement with extra-capsular extension.
 
-In the data, this is encoded by the value 100 being added to the number of positive LNLs. 
-
+In the data, this is encoded by the value 100 being added to the number of positive LNLs.
 
 ---
 
@@ -461,10 +426,9 @@ In the data, this is encoded by the value 100 being added to the number of posit
 get_ct_date(entry, mri_or_ct, diagnose_date_col, *_args, **_kwargs)
 ```
 
-Determine the date of the CT diagnose. 
+Determine the date of the CT diagnose.
 
-If the date is missing, the date of diagnosis is used as a fallback. 
-
+If the date is missing, the date of diagnosis is used as a fallback.
 
 ---
 
@@ -474,6 +438,4 @@ If the date is missing, the date of diagnosis is used as a fallback.
 get_mri_date(entry, mri_or_ct, *_args, **_kwargs)
 ```
 
-Determine the date of the MRI diagnose. 
-
-
+Determine the date of the MRI diagnose.

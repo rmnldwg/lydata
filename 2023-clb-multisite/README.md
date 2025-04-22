@@ -1,6 +1,6 @@
 # 2023 CLB Multisite
 
-[![DiB badge](https://img.shields.io/badge/DiB-10.1016%2Fj.dib.2023.110020-orange)](https://doi.org/10.1016/j.dib.2023.110020)
+[![Data-in-Brief badge](https://img.shields.io/badge/DiB-10.1016%2Fj.dib.2023.110020-orange)](https://doi.org/10.1016/j.dib.2023.110020)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10210361.svg)](https://doi.org/10.5281/zenodo.10210361)
 
 This folder contains the pathology report data on lymphatic involvement in 373 patients with head and neck cancer, diagnosed and treated with neck dissection at the [Centre Léon Bérard] between 2001 and 2018.
