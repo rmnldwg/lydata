@@ -41,22 +41,46 @@ stages:
       Also, there are some occurences of `"C05,1"` instead of `C05.1`, which I will
       replace.
       Finally, it lowercases "(FE)MALE" and "OROPHARYNX"
-    cmd:
+    cmd: >
       sed 's/\([0-9]\{2\}\)\/\([0-9]\{2\}\)\/\([0-9]\{4\}\)/\3-\2-\1/g' 2025-hvh-oropharynx/raw.csv |
-        sed 's/,dataset,/,institution,/g' |
-        sed "s/,2023_HVH_OROPHARYNX,/,Vall d'Hebron Barcelona Hospital,/g" |
-        sed 's/,\s,/,,/g' |
-        sed 's/,\([0-3]\)[A-C]*,/,\1,/g' |
-        sed 's/,N\sVI,/,FALSE,/g' |
-        sed 's/"C05,1"/C05.1/g' |
-        sed 's/\(FEMALE\)/\L&/g' |
-        sed 's/\(MALE\)/\L&/g' |
-        sed 's/\(OROPHARYNX\)/\L&/g' > 2025-hvh-oropharynx/data.csv
+      sed 's/,dataset,/,institution,/g' |
+      sed "s/,2023_HVH_OROPHARYNX,/,Vall d'Hebron Barcelona Hospital,/g" |
+      sed 's/,\s,/,,/g' |
+      sed 's/,\([0-3]\)[A-C]*,/,\1,/g' |
+      sed 's/,N\sVI,/,FALSE,/g' |
+      sed 's/"C05,1"/C05.1/g' |
+      sed 's/\(FEMALE\)/\L&/g' |
+      sed 's/\(MALE\)/\L&/g' |
+      sed 's/\(OROPHARYNX\)/\L&/g' > 2025-hvh-oropharynx/tmp.csv
     deps:
       - 2025-hvh-oropharynx/raw.csv
+      - scripts/drop_cols.py
+    outs:
+      - 2025-hvh-oropharynx/tmp.csv:
+          cache: false
+
+  drop-cols:
+    desc: |
+      Drop some columns that are still present in the raw CSV, but are actually empty.
+    cmd: >
+      python scripts/drop_cols.py
+      --input-csv 2025-hvh-oropharynx/tmp.csv
+      --output-csv 2025-hvh-oropharynx/data.csv
+      --cols="diagnostic_consensus,FNA,pCT"
+    deps:
+      - scripts/drop_cols.py
+      - 2025-hvh-oropharynx/tmp.csv
     outs:
       - 2025-hvh-oropharynx/data.csv:
           cache: false
+
+  clean:
+    desc: |
+      Remove temporary files.
+    matrix:
+      file: [2025-hvh-oropharynx/tmp.csv]
+    cmd: >
+      rm -f ${item.file}
 
   join:
     desc:

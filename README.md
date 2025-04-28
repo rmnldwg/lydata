@@ -22,7 +22,7 @@ In this repository we aim to provide data on the detailed lymphatic progression 
 
 [![radonc badge](https://img.shields.io/badge/Rad%20Onc-j.radonc.2022.01.035-3e6e0e)](https://doi.org/10.1016/j.radonc.2022.01.035)
 [![medRxiv badge](https://img.shields.io/badge/medR%CF%87iv-2021.12.01.21267001-0e4c92)](https://doi.org/10.1101/2021.12.01.21267001)
-[![DiB badge](https://img.shields.io/badge/DiB-10.1016%2Fj.dib.2022.108345-orange)](https://doi.org/10.1016/j.dib.2022.108345)
+[![Data-in-Brief badge](https://img.shields.io/badge/DiB-10.1016%2Fj.dib.2022.108345-orange)](https://doi.org/10.1016/j.dib.2022.108345)
 [![zenodo badge](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.5833835-informational)](https://doi.org/10.5281/zenodo.5833835)
 
 The first dataset we are able to share consists of 287 patients with a primary tumor in the oropharynx, treated at the University Hospital Zurich (USZ) between 2013 and 2019. It can be found in the folder `2021-usz-oropharynx` alongside a `jupyter` notebook that was used to create figures.
@@ -34,7 +34,7 @@ We have published a paper about it in *Radiotherapy & Oncology* [[9]](#9) (a pre
 ### 📂 [2021 CLB Oropharynx]
 
 [![Green Journal](https://img.shields.io/badge/Rad%20Onc-j.radonc.2021.01.028-3e6e0e)](https://doi.org/10.1016/j.radonc.2021.01.028)
-[![DiB badge](https://img.shields.io/badge/DiB-10.1016%2Fj.dib.2023.110020-orange)](https://doi.org/10.1016/j.dib.2023.110020)
+[![Data-in-Brief badge](https://img.shields.io/badge/DiB-10.1016%2Fj.dib.2023.110020-orange)](https://doi.org/10.1016/j.dib.2023.110020)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10204085.svg)](https://doi.org/10.5281/zenodo.10204085)
 
 We are glad and thankful that the research group around Prof. Vincent Grégoire from the [Centre Léon Bérard] in Lyon (France) have joined our effort to create a database of lymphatic patterns of progression by providing us with the data underlying their publication [[6]](#6). If you use this data, don't forget to cite either said publication or use the `CITATION.cff` file inside the `2021-clb-oropharynx` folder, where the `data.csv` also resides and a description of the data named `README.md`.
@@ -44,7 +44,7 @@ We are glad and thankful that the research group around Prof. Vincent Grégoire 
 
 ### 📂 [2023 ISB Multisite]
 
-[![DiB badge](https://img.shields.io/badge/DiB-10.1016%2Fj.dib.2023.110020-orange)](https://doi.org/10.1016/j.dib.2023.110020)
+[![Data-in-Brief badge](https://img.shields.io/badge/DiB-10.1016%2Fj.dib.2023.110020-orange)](https://doi.org/10.1016/j.dib.2023.110020)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10210423.svg)](https://doi.org/10.5281/zenodo.10210423)
 
 As part of a collaboration with researchers from the [Inselspital Bern] (Switzerland) around Prof. Roland Giger, we are thankful and glad to be able to publish a large and exceptionally detailed dataset on lymphatic progression of HNSCC patients, assessed by pathology. In contrast to earlier datasets, this includes not only patients with oropharyngeal tumors, but also oral cavity, hypopharynx and larynx.
@@ -54,8 +54,8 @@ As part of a collaboration with researchers from the [Inselspital Bern] (Switzer
 
 ### 📂 [2023 CLB Multisite]
 
-[![DiB badge](https://img.shields.io/badge/DiB-10.1016%2Fj.dib.2023.110020-orange)](https://doi.org/10.1016/j.dib.2023.110020)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10210361.svg)](https://doi.org/10.5281/zenodo.10210361)
+[![Data-in-Brief badge](https://img.shields.io/badge/DiB-10.1016%2Fj.dib.2023.110020-orange)](https://doi.org/10.1016/j.dib.2023.110020)
+[![Zenodo Badge](https://zenodo.org/badge/DOI/10.5281/zenodo.10210361.svg)](https://doi.org/10.5281/zenodo.10210361)
 
 Completing the "2021 CLB Oropharynx" data table, these patient records detail lymphatic involvement patterns in HNSCC patients with primary tumors beyond the oropharynx. Again, they are thankfully provided by researchers in Prof. Vincent Grégoire's group and the data was extracted at the [Centre Léon Bérard].
 
@@ -63,20 +63,18 @@ Completing the "2021 CLB Oropharynx" data table, these patient records detail ly
 
 ### 📂 [2025 HVH Oropharynx]
 
-[![Zenodo DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.14976454-informational)][zenodo]
+[![Data-in-Brief Badge](https://img.shields.io/badge/DiB-10.1016%2Fj.dib.2025.111546-orange)](https://doi.org/10.1016/j.dib.2025.111546)
+[![Zenodo Badge](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.14976454-informational)][zenodo]
 
-> [!WARNING]
-> This dataset has not been published in a peer-reviewed journal yet. Contents may change.
-
-We are excited to announce that Dr. Sergi Benavente from the [Hospital Vall d'Hebron] (HVH) provided a very detailed and carefully curated dataset of oroharyngeal patients as an addition to our effort.
+We are excited to announce that Dr. Sergi Benavente from the [Hospital Vall d'Hebron] (HVH) provided a very detailed and carefully curated dataset of oroharyngeal patients as an addition to our original [2021 USZ Oropharynx] cohort.
 
 [2025 HVH Oropharynx]: https://github.com/rmnldwg/lyDATA/tree/main/2025-hvh-multisite
 [zenodo]: https://doi.org/10.5281/zenodo.14976454
 [Hospital Vall d'Hebron]: https://hospital.vallhebron.com/en
 
-### stay tuned for more
+### 🔭 stay tuned for more
 
-We are in the process of collecting more data that we might publish soon. If you would like to contribute to our effort, feel free to contact us: [roman.ludwig@usz.ch]
+We are always in the process of collecting more data that we might publish soon. If you would like to contribute to our effort, feel free to contact us: [roman.ludwig@usz.ch]
 
 [roman.ludwig@usz.ch]: mailto:roman.ludwig@usz.ch
 

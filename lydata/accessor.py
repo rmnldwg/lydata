@@ -657,6 +657,10 @@ class LyDataAccessor:
         >>> df.ly.query((C('x') > 1) & ~(C('x') < 3))
            x
         2  3
+        >>> df.ly.query(C('x').isin([1, 3]))
+           x
+        0  1
+        2  3
         """
         mask = (query or NoneQ()).execute(self._obj)
         return self._obj[mask]
